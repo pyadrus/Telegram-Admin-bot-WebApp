@@ -64,7 +64,6 @@ async def bot_message(message: types.Message) -> None:
 @dp.message_handler(content_types=['text'])
 async def del_link(message: types.Message) -> None:
     """Запрещенных слов"""
-
     for entity in message.entities:
         # url - обычная ссылка, text_link - ссылка, скрытая под текстом
         if entity.type in ["url", "text_link"]:
@@ -115,9 +114,7 @@ async def del_link(message: types.Message) -> None:
 @dp.message_handler(content_types=types.ContentTypes.ANY)
 async def handle_all_messages(message: types.Message) -> None:
     """Удаляем пересылаемое сообщение"""
-    # Выводим тип сообщения в консоль
-    print(message.content_type)
-
+    print(message.content_type)  # Выводим тип сообщения в консоль
     """Пересылаемое сообщение"""
     if message.forward_from:
         # Если записанный id пользователя в боте записан, то сообщения пропускаются
@@ -194,4 +191,3 @@ def bot_handlers():
     dp.register_message_handler(deleting_a_message_about_a_member_has_left_the_group)
     dp.register_message_handler(del_link)
     dp.register_message_handler(handle_all_messages)
-

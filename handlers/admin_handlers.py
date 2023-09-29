@@ -4,6 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext  # Определение состояний FSM
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
+from messages.user_messages import info
 from system.dispatcher import dp, bot
 from system.sqlite import record_the_id_of_allowed_users
 
@@ -15,42 +16,27 @@ class AddUserStates(StatesGroup):
     USER_ADDED = State()  # состояние, когда пользователь успешно добавлен в базу данных.
 
 
-# Игнорирование сообщений, когда состояние FSM = USER_ADDED
 @dp.message_handler(state=AddUserStates.USER_ADDED)
 async def ignore_messages(message: types.Message):
+    """Игнорирование сообщений, когда состояние FSM = USER_ADDED"""
     pass
 
 
-info = '''
-<b>✅ Основные команды бота:</b>
-<u>/start</u>     – 🤖 запустить бота,
-<u>/help</u>      – 🤖 информация по работе с ботом,
-<u>/id</u>        – 🧾 узнать ID участника чата (использование в виде ответа на сообщение),
-<u>/user_add</u>  – 🧾 дать пользователю определенные права в группе (нужен ID участника),
-<u>/pin</u>       – 📌 закрепить сообщение (использование в виде ответа на сообщение, которое хотите закрепить),
-<u>/unpin</u>     – 📌 открепить сообщение (использование в виде ответа на сообщение, которое хотите открепить),
-<u>/unpin_all</u> – 📌 открепить все закрепленные сообщения,
-<u>@PyAdminRUS</u>– 🔗 связь с администратором (разработчиком).
-'''
-
-
-# обработчик команды /start
 @dp.message_handler(commands=["start"])
 async def send_welcome(message: types.Message) -> None:
-    """Отвечаем на команду start"""
+    """Отвечаем на команду /start"""
     await message.reply(info, parse_mode="HTML")
 
 
-# обработчик команды /help
 @dp.message_handler(commands=["help"])
 async def help_handler(message: types.Message) -> None:
-    """Отвечаем на команду help"""
+    """Отвечаем на команду /help"""
     await message.reply(info, parse_mode="HTML")
 
 
-# обработчик команды /id
 @dp.message_handler(commands=['id'])
 async def send_id(message: types.Message):
+    """Обработчик команды /id"""
     chat_id = message.chat.id
     user_id = message.from_user.id
     print(f"Пользователь {user_id} вызвал команду '/id' в чате {chat_id}")
@@ -81,7 +67,6 @@ async def send_id(message: types.Message):
         await bot.send_message(chat_id=message.chat.id, text='Ответьте на сообщение пользователя, чтобы узнать его ID')
 
 
-# Обработчик команды /user_add
 @dp.message_handler(commands=['user_add'])
 async def cmd_user_add(message: types.Message):
     """Обработчик команды /user_add. Команда /user_add используется для добавления новых пользователей в базу данных
@@ -104,9 +89,9 @@ async def cmd_user_add(message: types.Message):
     await message.delete()  # Удаляем сообщение с командой /user_add
 
 
-# Обработчик ввода ID пользователя
 @dp.message_handler(state=AddUserStates.WAITING_FOR_USER_ID)
 async def process_user_id(message: types.Message, state: FSMContext):
+    """Обработчик ввода ID пользователя"""
     try:
         admin_id = message.from_user.id  # Получаем ID админа, который отправил сообщение с ID боту
         user_id = int(message.text)  # Получаем введенный админом ID
@@ -161,9 +146,9 @@ async def update(message: types.Message):
         member_username_id[message.chat.id]['@' + member.username if member.username is not None else ''] = member.id
 
 
-# Обработчик команды /pin
 @dp.message_handler(commands="pin")
 async def pin(message: types.Message):
+    """Обработчик команды /pin"""
     if message.from_user.id != message.chat.id:
         if await check_root(message):
             try:
@@ -177,9 +162,9 @@ async def pin(message: types.Message):
         await message.answer('Бот реагирует только на сообщения в чате, но не в личку')
 
 
-# Обработчик команды /unpin
 @dp.message_handler(commands="unpin")
 async def unpin(message: types.Message):
+    """Обработчик команды /unpin"""
     if message.from_user.id != message.chat.id:
         if await check_root(message):
             try:
@@ -193,9 +178,9 @@ async def unpin(message: types.Message):
         await message.answer('Бот реагирует только на сообщения в чате, но не в личку')
 
 
-# Обработчик команды /unpin_all
 @dp.message_handler(commands="unpin_all")
 async def unpin_all(message: types.Message):
+    """Обработчик команды /unpin_all"""
     # Проверка того, была ли команда вызвана из личных сообщений или в чате
     if message.from_user.id != message.chat.id:
         # Проверка того, является ли вызывающий команду пользователь администратором чата.
