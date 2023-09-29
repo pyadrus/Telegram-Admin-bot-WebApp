@@ -9,11 +9,17 @@ from aiogram.types import ParseMode
 
 from messages.user_messages import info
 from system.dispatcher import dp, bot, time_del
-from system.sqlite import record_the_id_of_allowed_users, recording_actions_check_word_in_the_database, \
-    recording_actions_in_the_database, writing_check_words_to_the_database, delete_bad_word, \
-    writing_bad_words_to_the_database, reading_data_from_the_database, \
-    reading_from_the_database_of_forbidden_check_word, reading_from_the_database_of_forbidden_words, \
-    reading_bad_words_from_the_database, reading_data_from_the_database_check
+from system.sqlite import delete_bad_word
+from system.sqlite import reading_bad_words_from_the_database
+from system.sqlite import reading_data_from_the_database
+from system.sqlite import reading_data_from_the_database_check
+from system.sqlite import reading_from_the_database_of_forbidden_check_word
+from system.sqlite import reading_from_the_database_of_forbidden_words
+from system.sqlite import record_the_id_of_allowed_users
+from system.sqlite import recording_actions_check_word_in_the_database
+from system.sqlite import recording_actions_in_the_database
+from system.sqlite import writing_bad_words_to_the_database
+from system.sqlite import writing_check_words_to_the_database
 
 date_now = datetime.datetime.now()
 
@@ -368,7 +374,7 @@ async def process_check_word(message: types.Message, state: FSMContext):
     await writing_check_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id,
                                               chat_title)  # Запись запрещенных слов в базу данных
     # Выводим сообщение об успешном добавлении слова
-    await message.reply(f'✅ Слово успешно добавлено ➕ в список check слов.', parse_mode=ParseMode.HTML)
+    await message.reply('✅ Слово успешно добавлено ➕ в список check слов.', parse_mode=ParseMode.HTML)
     await state.finish()  # Сбрасываем состояние
 
 

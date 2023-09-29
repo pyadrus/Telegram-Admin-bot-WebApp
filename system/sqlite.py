@@ -66,7 +66,7 @@ async def writing_bad_words_to_the_database(bad_word, user_id, username, user_fu
     Запись запрещенных слов в базу данных setting/bad_words.db, при добавлении нового слова функция ищет дубликаты слов,
     и при нахождении оставляет одно слово без повтора"""
     # Инициализируем базу данных sqlite
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS bad_words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, '
                        'user_id INTEGER, username TEXT, user_full_name TEXT, chat_id INTEGER, chat_title TEXT)')
@@ -89,7 +89,7 @@ async def writing_check_words_to_the_database(bad_word, user_id, username, user_
     Запись check слов в базу данных setting/bad_words.db, при добавлении нового слова функция ищет дубликаты слов, и при
     нахождении оставляет одно слово без повтора"""
     # Инициализируем базу данных sqlite
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS check_words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, '
                        'user_id INTEGER, username TEXT, user_full_name TEXT, chat_id INTEGER, chat_title TEXT)')
@@ -110,7 +110,7 @@ async def writing_check_words_to_the_database(bad_word, user_id, username, user_
 async def delete_bad_word(word):
     """Удаление плохих слов с базы данных"""
     # создаем подключение к базе данных
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         # удаляем слово из таблицы
         cursor.execute('DELETE FROM bad_words WHERE word = ?', (word,))
@@ -120,7 +120,7 @@ async def delete_bad_word(word):
 async def delete_check_word(word):
     """Удаление плохих слов с базы данных"""
     # создаем подключение к базе данных
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         # удаляем слово из таблицы
         cursor.execute('DELETE FROM check_word WHERE word = ?', (word,))
@@ -130,7 +130,7 @@ async def delete_check_word(word):
 async def recording_actions_in_the_database(word, message):
     """Запись действий в базу данных запрещенных слов"""
     # Создаем соединение с базой данных
-    conn = sqlite3.connect('setting/bad_words.db')
+    conn = sqlite3.connect(path_database)
     # Создаем таблицы для хранения информации о пользователях, использующих запрещенные слова, и самих запрещенных слов
     conn.execute('''CREATE TABLE IF NOT EXISTS bad_word_users
                      (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, username TEXT, full_name TEXT,
@@ -152,7 +152,7 @@ async def recording_actions_in_the_database(word, message):
 async def recording_actions_check_word_in_the_database(word, message):
     """Запись действий в базу данных check слов"""
     # Создаем соединение с базой данных
-    conn = sqlite3.connect('setting/bad_words.db')
+    conn = sqlite3.connect(path_database)
     # Создаем таблицы для хранения информации о пользователях, использующих запрещенные слова, и самих запрещенных слов
     conn.execute('''CREATE TABLE IF NOT EXISTS check_word_users (user_id INTEGER, username TEXT, full_name TEXT,
                                                                  word TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)''')
@@ -172,7 +172,7 @@ async def recording_actions_check_word_in_the_database(word, message):
 async def reading_from_the_database_of_forbidden_words():
     """Чтение с базы данных запрещенных слов"""
     # Инициализируем базу данных sqlite
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS bad_words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT)')
         conn.commit()
@@ -182,7 +182,7 @@ async def reading_from_the_database_of_forbidden_words():
 
 async def reading_bad_words_from_the_database():
     """Чтение списка запрещенных слов из базы данных"""
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         cursor.execute('SELECT word FROM bad_words')
         data = cursor.fetchall()
@@ -194,7 +194,7 @@ async def reading_bad_words_from_the_database():
 async def reading_data_from_the_databases():
     """Чтение с базы данных"""
     # Создаем соединение с базой данных
-    conn = sqlite3.connect('setting/bad_words.db')
+    conn = sqlite3.connect(path_database)
     # Получаем данные из базы данных
     data = conn.execute("SELECT * FROM bad_word_users").fetchall()
     # Закрываем соединение с базой данных
@@ -205,7 +205,7 @@ async def reading_data_from_the_databases():
 async def reading_data_from_the_database_check():
     """Чтение с базы данных check слов"""
     # Создаем соединение с базой данных
-    conn = sqlite3.connect('setting/bad_words.db')
+    conn = sqlite3.connect(path_database)
     # Получаем данные из базы данных
     data = conn.execute("SELECT * FROM check_word_users").fetchall()
     # Закрываем соединение с базой данных
@@ -216,7 +216,7 @@ async def reading_data_from_the_database_check():
 async def reading_from_the_database_of_forbidden_check_word():
     """Чтение из базы данных запрещенных слов"""
     # Инициализируем базу данных sqlite
-    with sqlite3.connect('setting/bad_words.db') as conn:
+    with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS check_words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT)')
         conn.commit()
