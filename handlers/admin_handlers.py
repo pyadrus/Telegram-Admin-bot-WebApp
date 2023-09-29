@@ -380,8 +380,7 @@ async def process_check_word(message: types.Message, state: FSMContext):
 
 @dp.message_handler()
 async def process_message(message: types.Message):
-    """Обрабатываем сообщения от пользователей"""
-    # Проверяем наличие запрещенных слов в сообщении
+    """Обрабатываем сообщения от пользователей, проверяем наличие запрещенных слов в сообщении"""
     bad_words = await reading_from_the_database_of_forbidden_words()
     for word in bad_words:
         if word[0] in message.text.lower():

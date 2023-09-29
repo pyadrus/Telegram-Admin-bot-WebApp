@@ -2,7 +2,6 @@ import datetime
 
 from aiogram import types
 
-from setting.bad_words import bad_words
 from system.dispatcher import dp, bot
 from system.sqlite import reading_data_from_the_database, writing_to_the_database_about_a_new_user
 
@@ -52,9 +51,6 @@ async def bot_message(message: types.Message) -> None:
         print(f"{str(message.from_user.full_name)} отправил стикер в группу")
     else:
         await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-        """
-        Стиль текста для parse_mode="HTML", <code> - моноширинный, <b> - жирный, <i> - наклонный
-        """
         # Отправляем сообщение в группу
         await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                              f"<code>В чате запрещено отправлять стикеры, для получения разрешения напишите "
@@ -78,9 +74,6 @@ async def del_link(message: types.Message) -> None:
                 pass
             else:
                 await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-                """
-                Стиль текста для parse_mode="HTML", <code> - моноширинный, <b> - жирный, <i> - наклонный
-                """
                 # Отправляем сообщение в группу
                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
@@ -88,27 +81,24 @@ async def del_link(message: types.Message) -> None:
                 pass
 
     # lower() — это строковый метод, который возвращает новую строку полностью в нижнем регистре
-    lower_message = message.text.lower()
-    for bad_word in bad_words:
-        if bad_word in lower_message:
-            # Если записанный id пользователя в боте записан, то сообщения пропускаются
-            data_dict = reading_data_from_the_database()
-            chat_id = message.chat.id
-            user_id = message.from_user.id
-            print(f"message.from_user.id: {user_id}")
-            print(f"chat_id: {chat_id}, user_id: {user_id}")
-            if (message.chat.id, message.from_user.id) in data_dict:
-                print(f"{str(message.from_user.full_name)} ругается в группе")
-                pass
-            else:
-                await message.delete()  # Удаляем сообщение
-                """
-                Стиль текста для parse_mode="HTML", <code> - моноширинный, <b> - жирный, <i> - наклонный
-                """
-                # Отправляем сообщение в группу
-                await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-                                     f"<code>В чате запрещено ругаться и даже админу</code> ➡️ @PyAdminRUS",
-                                     parse_mode="HTML")
+    # lower_message = message.text.lower()
+    # for bad_word in bad_words:
+    #     if bad_word in lower_message:
+    #         # Если записанный id пользователя в боте записан, то сообщения пропускаются
+    #         data_dict = reading_data_from_the_database()
+    #         chat_id = message.chat.id
+    #         user_id = message.from_user.id
+    #         print(f"message.from_user.id: {user_id}")
+    #         print(f"chat_id: {chat_id}, user_id: {user_id}")
+    #         if (message.chat.id, message.from_user.id) in data_dict:
+    #             print(f"{str(message.from_user.full_name)} ругается в группе")
+    #             pass
+    #         else:
+    #             await message.delete()  # Удаляем сообщение
+    #             # Отправляем сообщение в группу
+    #             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
+    #                                  f"<code>В чате запрещено ругаться и даже админу</code> ➡️ @PyAdminRUS",
+    #                                  parse_mode="HTML")
 
 
 @dp.message_handler(content_types=types.ContentTypes.ANY)
@@ -128,9 +118,6 @@ async def handle_all_messages(message: types.Message) -> None:
             pass
         else:
             await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-            """
-            Стиль текста для parse_mode="HTML", <code> - моноширинный, <b> - жирный, <i> - наклонный
-            """
             # Отправляем сообщение в группу
             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                  f"<code>В чате запрещены пересылаемые сообщения, для получения разрешения напишите "
@@ -149,9 +136,6 @@ async def handle_all_messages(message: types.Message) -> None:
             pass
         else:
             await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-            """
-            Стиль текста для parse_mode="HTML", <code> - моноширинный, <b> - жирный, <i> - наклонный
-            """
             # Отправляем сообщение в группу
             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                  f"<code>В чате запрещены пересылаемые сообщения, для получения разрешения напишите "
@@ -174,9 +158,6 @@ async def handle_all_messages(message: types.Message) -> None:
                 pass
             else:
                 await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-                """
-                Стиль текста для parse_mode="HTML", <code> - моноширинный, <b> - жирный, <i> - наклонный
-                """
                 # Отправляем сообщение в группу
                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
