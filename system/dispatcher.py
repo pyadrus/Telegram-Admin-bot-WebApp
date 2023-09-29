@@ -7,6 +7,7 @@ config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=T
 # Считываем токен бота с файла config.ini
 config.read("setting/config.ini")
 bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')
+time_del = config.get('TIME_DEL', 'TIME_DEL')
 
 # Инициализация бота и диспетчера
 bot = Bot(token=bot_token, parse_mode="HTML")
