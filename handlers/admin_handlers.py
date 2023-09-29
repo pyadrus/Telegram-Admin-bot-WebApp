@@ -7,6 +7,7 @@ from aiogram.dispatcher import FSMContext  # Определение состоя
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ParseMode
 
+from handlers.bot_handlers import username_admin
 from messages.user_messages import info
 from system.dispatcher import dp, bot, time_del
 from system.sqlite import delete_bad_word
@@ -128,7 +129,7 @@ async def process_user_id(message: types.Message, state: FSMContext):
                                        last_name, date_now, admin_id, chat_title)  # Записываем данные
         # Отправляем сообщение об успешной записи в чат
         await message.answer(f"<code>✅ Участнику {first_name} {last_name} "
-                             f"даны особые права в группе</code> ➡️ @PyAdminRUS", parse_mode="HTML")
+                             f"даны особые права в группе</code> ➡️ {username_admin}", parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с введенным ID пользователя
         await state.finish()  # Сбрасываем состояние FSM
     except ValueError:

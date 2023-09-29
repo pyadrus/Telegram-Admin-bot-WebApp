@@ -5,6 +5,7 @@ from aiogram import types
 from system.dispatcher import dp, bot
 from system.sqlite import reading_data_from_the_database, writing_to_the_database_about_a_new_user
 
+username_admin = "@PyAdminRU"
 
 @dp.message_handler(content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
 async def deleting_message_about_adding_new_group_member(message: types.Message):
@@ -54,7 +55,7 @@ async def bot_message(message: types.Message) -> None:
         # Отправляем сообщение в группу
         await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                              f"<code>В чате запрещено отправлять стикеры, для получения разрешения напишите "
-                             f"админу</code> ➡️ @PyAdminRUS", parse_mode="HTML")
+                             f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
 
 
 @dp.message_handler(content_types=['text'])
@@ -77,7 +78,7 @@ async def del_link(message: types.Message) -> None:
                 # Отправляем сообщение в группу
                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
-                                     f"разрешения напишите админу</code> ➡️ @PyAdminRUS", parse_mode="HTML")
+                                     f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
                 pass
 
     # lower() — это строковый метод, который возвращает новую строку полностью в нижнем регистре
@@ -121,7 +122,7 @@ async def handle_all_messages(message: types.Message) -> None:
             # Отправляем сообщение в группу
             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                  f"<code>В чате запрещены пересылаемые сообщения, для получения разрешения напишите "
-                                 f"админу</code> ➡️ @PyAdminRUS", parse_mode="HTML")
+                                 f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
             pass
 
     if message.forward_from_chat:
@@ -139,7 +140,7 @@ async def handle_all_messages(message: types.Message) -> None:
             # Отправляем сообщение в группу
             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                  f"<code>В чате запрещены пересылаемые сообщения, для получения разрешения напишите "
-                                 f"админу</code> ➡️ @PyAdminRUS", parse_mode="HTML")
+                                 f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
             pass
 
     """Сообщения с ссылками"""
@@ -161,7 +162,7 @@ async def handle_all_messages(message: types.Message) -> None:
                 # Отправляем сообщение в группу
                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
-                                     f"разрешения напишите админу</code> ➡️ @PyAdminRUS", parse_mode="HTML")
+                                     f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
                 pass
 
 
