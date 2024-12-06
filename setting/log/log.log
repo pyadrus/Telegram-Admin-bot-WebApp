@@ -1,0 +1,68 @@
+2024-02-26 17:37:45.549 | ERROR    | __main__:main:43 - name 'get_count_members' is not defined
+Traceback (most recent call last):
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 48, in <module>
+    main()  # Запуск бота
+    └ <function main at 0x0000020B0923D120>
+
+> File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 40, in main
+    admin_handlers()  # Register handlers for admin and users
+    └ <function admin_handlers at 0x0000020B0888EC00>
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\handlers\admin_handlers.py", line 294, in admin_handlers
+    dp.register_message_handler(get_count_members)
+    │  └ <function Dispatcher.register_message_handler at 0x0000020B09220E00>
+    └ <aiogram.dispatcher.dispatcher.Dispatcher object at 0x0000020B09382E10>
+
+NameError: name 'get_count_members' is not defined
+2024-02-26 17:38:15.639 | ERROR    | __main__:main:44 - name 'get_count_members' is not defined
+Traceback (most recent call last):
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 49, in <module>
+    main()  # Запуск бота
+    └ <function main at 0x000002336CE6D120>
+
+> File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 40, in main
+    admin_handlers()  # Register handlers for admin and users
+    └ <function admin_handlers at 0x000002336CF15F80>
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\handlers\admin_handlers.py", line 294, in admin_handlers
+    dp.register_message_handler(get_count_members)
+    │  └ <function Dispatcher.register_message_handler at 0x000002336CE50E00>
+    └ <aiogram.dispatcher.dispatcher.Dispatcher object at 0x000002336BAC2E10>
+
+NameError: name 'get_count_members' is not defined
+2024-02-26 17:39:03.858 | ERROR    | __main__:main:44 - name 'get_count_members' is not defined
+Traceback (most recent call last):
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 49, in <module>
+    main()  # Запуск бота
+    └ <function main at 0x000002096FD6D120>
+
+> File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 40, in main
+    admin_handlers()  # Register handlers for admin and users
+    └ <function admin_handlers at 0x000002096FE15F80>
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\handlers\admin_handlers.py", line 294, in admin_handlers
+    dp.register_message_handler(get_count_members)
+    │  └ <function Dispatcher.register_message_handler at 0x000002096FD50E00>
+    └ <aiogram.dispatcher.dispatcher.Dispatcher object at 0x000002096FDC18D0>
+
+NameError: name 'get_count_members' is not defined
+2024-02-26 17:40:04.948 | ERROR    | __main__:main:43 - name 'get_count_members' is not defined
+Traceback (most recent call last):
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 48, in <module>
+    main()  # Запуск бота
+    └ <function main at 0x000002BE8382D120>
+
+> File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\main.py", line 40, in main
+    admin_handlers()  # Register handlers for admin and users
+    └ <function admin_handlers at 0x000002BE838D5F80>
+
+  File "C:\Users\zhvit\YandexDisk\Python\Боты Telegram\На запуск\watchman_admin_bot 2.0\handlers\admin_handlers.py", line 294, in admin_handlers
+    dp.register_message_handler(get_count_members)
+    │  └ <function Dispatcher.register_message_handler at 0x000002BE83810E00>
+    └ <aiogram.dispatcher.dispatcher.Dispatcher object at 0x000002BE82A4F1D0>
+
+NameError: name 'get_count_members' is not defined

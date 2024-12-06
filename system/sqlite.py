@@ -61,7 +61,7 @@ def reading_data_from_the_database():
     return data_dict
 
 
-async def writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id, chat_title):
+def writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id, chat_title):
     """
     Запись запрещенных слов в базу данных setting/bad_words.db, при добавлении нового слова функция ищет дубликаты слов,
     и при нахождении оставляет одно слово без повтора"""
@@ -84,7 +84,7 @@ async def writing_bad_words_to_the_database(bad_word, user_id, username, user_fu
         conn.commit()
 
 
-async def writing_check_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id, chat_title):
+def writing_check_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id, chat_title):
     """
     Запись check слов в базу данных setting/bad_words.db, при добавлении нового слова функция ищет дубликаты слов, и при
     нахождении оставляет одно слово без повтора"""
@@ -117,17 +117,17 @@ async def delete_bad_word(word):
         conn.commit()
 
 
-async def delete_check_word(word):
-    """Удаление плохих слов с базы данных"""
-    # создаем подключение к базе данных
-    with sqlite3.connect(path_database) as conn:
-        cursor = conn.cursor()
-        # удаляем слово из таблицы
-        cursor.execute('DELETE FROM check_word WHERE word = ?', (word,))
-        conn.commit()
+# def delete_check_word(word):
+#     """Удаление плохих слов с базы данных"""
+#     # создаем подключение к базе данных
+#     with sqlite3.connect(path_database) as conn:
+#         cursor = conn.cursor()
+#         # удаляем слово из таблицы
+#         cursor.execute('DELETE FROM check_word WHERE word = ?', (word,))
+#         conn.commit()
 
 
-async def recording_actions_in_the_database(word, message):
+def recording_actions_in_the_database(word, message):
     """Запись действий в базу данных запрещенных слов"""
     # Создаем соединение с базой данных
     conn = sqlite3.connect(path_database)
@@ -149,7 +149,7 @@ async def recording_actions_in_the_database(word, message):
     conn.close()
 
 
-async def recording_actions_check_word_in_the_database(word, message):
+def recording_actions_check_word_in_the_database(word, message):
     """Запись действий в базу данных check слов"""
     # Создаем соединение с базой данных
     conn = sqlite3.connect(path_database)
@@ -169,7 +169,7 @@ async def recording_actions_check_word_in_the_database(word, message):
     conn.close()
 
 
-async def reading_from_the_database_of_forbidden_words():
+def reading_from_the_database_of_forbidden_words():
     """Чтение с базы данных запрещенных слов"""
     # Инициализируем базу данных sqlite
     with sqlite3.connect(path_database) as conn:
@@ -180,7 +180,7 @@ async def reading_from_the_database_of_forbidden_words():
     return bad_words
 
 
-async def reading_bad_words_from_the_database():
+def reading_bad_words_from_the_database():
     """Чтение списка запрещенных слов из базы данных"""
     with sqlite3.connect(path_database) as conn:
         cursor = conn.cursor()
@@ -190,16 +190,16 @@ async def reading_bad_words_from_the_database():
         words = [row[0] for row in data]
         return words
 
-
-async def reading_data_from_the_databases():
-    """Чтение с базы данных"""
-    # Создаем соединение с базой данных
-    conn = sqlite3.connect(path_database)
-    # Получаем данные из базы данных
-    data = conn.execute("SELECT * FROM bad_word_users").fetchall()
-    # Закрываем соединение с базой данных
-    conn.close()
-    return data
+#
+# async def reading_data_from_the_databases():
+#     """Чтение с базы данных"""
+#     # Создаем соединение с базой данных
+#     conn = sqlite3.connect(path_database)
+#     # Получаем данные из базы данных
+#     data = conn.execute("SELECT * FROM bad_word_users").fetchall()
+#     # Закрываем соединение с базой данных
+#     conn.close()
+#     return data
 
 
 async def reading_data_from_the_database_check():
@@ -226,3 +226,8 @@ async def reading_from_the_database_of_forbidden_check_word():
 
 if __name__ == '__main__':
     reading_data_from_the_database()
+    reading_from_the_database_of_forbidden_check_word()
+    reading_data_from_the_database_check()
+    # reading_data_from_the_databases()
+    reading_bad_words_from_the_database()
+    reading_from_the_database_of_forbidden_words()
