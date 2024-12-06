@@ -1,7 +1,10 @@
+import asyncio
+import logging
+import sys
+
 from aiogram import types
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.utils import executor
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
 from loguru import logger
 
 from handlers.admin_handlers import admin_handlers
@@ -34,18 +37,15 @@ async def get_count_members_state(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-def main():
-    """Запустить бота"""
+async def main():
+    """Запуск бота"""
     try:
         admin_handlers()  # Регистрация обработчиков для администратора и пользователей
-        executor.start_polling(dp, skip_updates=True)
+        await dp.start_polling(bot)
     except Exception as error:
         logger.exception(error)
 
 
 if __name__ == "__main__":
-    try:
-        main()  # Запуск бота
-    except Exception as e:
-        logger.exception(e)
-        print("[bold red][!] Произошла ошибка, для подробного изучения проблемы просмотрите файл log.log")
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())

@@ -2,13 +2,13 @@ import asyncio
 import datetime
 
 from aiogram import types
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import ParseMode
-from aiogram.utils import exceptions
+from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
 
 from messages.user_messages import username_admin, info
 from system.dispatcher import dp, bot, time_del
+from system.dispatcher import router
 from system.sqlite import reading_data_from_the_database
 from system.sqlite import reading_from_the_database_of_forbidden_words
 from system.sqlite import record_the_id_of_allowed_users
@@ -30,8 +30,7 @@ class AddAndDelBadWords(StatesGroup):
     waiting_for_check_word = State()
     del_for_bad_word = State()
 
-
-@dp.message_handler(commands=['id'])
+@router.message(Command("id"))
 async def send_id(message: types.Message):
     """Обработчик команды /id"""
     chat_id = message.chat.id
@@ -61,10 +60,10 @@ async def send_id(message: types.Message):
     except AttributeError:
         # если произошла ошибка AttributeError, то сообщаем об этом пользователю
         await bot.send_message(chat_id=message.chat.id, text='Ответьте на сообщение пользователя, чтобы узнать его ID')
-    except exceptions.MessageCantBeDeleted:
-        # если произошла ошибка MessageCantBeDeleted, то сообщаем об этом пользователю
-        await bot.send_message(chat_id=message.chat.id,
-                               text='Бот не является админом, нет возможности удалить сообщение')
+    # except MessageCantBeDeleted:
+    #     # если произошла ошибка MessageCantBeDeleted, то сообщаем об этом пользователю
+    #     await bot.send_message(chat_id=message.chat.id,
+    #                            text='Бот не является админом, нет возможности удалить сообщение')
 
 
 @dp.message_handler(commands=['user_add'])
@@ -124,7 +123,7 @@ async def cmd_add_bad(message: types.Message):
         await message.reply('Эту команду может использовать только администратор чата.')
         return
     await message.answer('✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
-                         parse_mode=ParseMode.HTML)
+                         parse_mode="HTML")
     await AddAndDelBadWords.waiting_for_bad_word.set()  # Переходим в состояние ожидания плохого слова
 
 
@@ -140,7 +139,7 @@ async def process_bad_word(message: types.Message, state: FSMContext):
     writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id,
                                       chat_title)  # Запись запрещенных слов в базу данных
     # Выводим сообщение об успешном добавлении слова
-    await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode=ParseMode.HTML)
+    await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
     await state.finish()  # Сбрасываем состояние
 
 
