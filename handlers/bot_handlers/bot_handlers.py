@@ -8,7 +8,7 @@ from loguru import logger
 
 # Импорты из системы
 from system.dispatcher import dp  # Экземпляр диспетчера (бота и роутера)
-from system.sqlite import writing_to_the_database_about_a_new_user  # Функция для записи данных в базу данных
+from system.sqlite import add_new_left_user_to_database  # Функция для записи данных в базу данных
 
 
 @dp.chat_member(ChatMemberUpdatedFilter(IS_NOT_MEMBER >> IS_MEMBER))
@@ -40,7 +40,7 @@ async def handle_new_member(event: ChatMemberUpdated):
         database_table_name = "group_members_add"
 
         # Записываем данные о новом участнике в базу данных
-        writing_to_the_database_about_a_new_user(
+        add_new_left_user_to_database(
             database_table_name, group_id, group_title, user_id, user_username,
             user_first_name, user_last_name, current_datetime
         )
@@ -78,7 +78,7 @@ async def handle_member_left(event: ChatMemberUpdated):
         database_table_name = "group_members_left"
 
         # Записываем данные о вышедшем участнике в базу данных
-        writing_to_the_database_about_a_new_user(
+        add_new_left_user_to_database(
             database_table_name, group_id, group_title, user_id, user_username,
             user_first_name, user_last_name, current_datetime
         )

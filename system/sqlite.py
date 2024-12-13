@@ -4,8 +4,8 @@ from datetime import datetime
 path_database = 'setting/database.db'
 
 
-def writing_to_the_database_about_a_new_user(name_table, chat_id, chat_title, user_id, username, first_name, last_name,
-                                             date_now):
+def add_new_left_user_to_database(name_table, chat_id, chat_title, user_id, username, first_name, last_name,
+                                  date_now):
     """Запись данных о новом пользователе
 
     :param name_table: название таблицы
