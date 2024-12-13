@@ -64,7 +64,7 @@ def record_the_id_of_allowed_users(chat_id, user_id, username, first_name, last_
         conn.commit()
 
 
-def reading_data_from_the_database():
+def fetch_user_data():
     conn = sqlite3.connect(path_database)
     cursor = conn.cursor()
     cursor.execute("SELECT chat_id, user_id FROM privileged_users")
@@ -218,7 +218,7 @@ async def reading_from_the_database_of_forbidden_check_word():
 
 
 if __name__ == '__main__':
-    reading_data_from_the_database()
+    fetch_user_data()
     reading_from_the_database_of_forbidden_check_word()
     reading_data_from_the_database_check()
     reading_bad_words_from_the_database()

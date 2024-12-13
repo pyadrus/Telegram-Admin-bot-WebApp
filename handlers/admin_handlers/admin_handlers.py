@@ -11,8 +11,7 @@
 # from states.states import AddUserStates, AddAndDelBadWords, GetCountMembers
 # from system.dispatcher import dp, bot, time_del
 # from system.dispatcher import router
-# from system.sqlite import reading_data_from_the_database
-# from system.sqlite import reading_from_the_database_of_forbidden_words
+# from system.sqlite import reading_from_the_database_of_forbidden_words, fetch_user_data
 # from system.sqlite import record_the_id_of_allowed_users
 # from system.sqlite import recording_actions_in_the_database
 # from system.sqlite import writing_bad_words_to_the_database
@@ -129,84 +128,7 @@
 #     await state.clear()  # Сбрасываем состояние
 #
 #
-# @dp.message(F.content_type == ContentType.ANY)
-# async def handle_all_messages(message: Message) -> None:
-#     """Удаляем пересылаемое сообщение"""
-#     print(message.content_type)  # Выводим тип сообщения в консоль
-#     """Пересылаемое сообщение"""
-#     if message.forward_from:
-#         # Если записанный id пользователя в боте записан, то сообщения пропускаются
-#         data_dict = reading_data_from_the_database()
-#         chat_id = message.chat.id
-#         user_id = message.from_user.id
-#         print(f"message.from_user.id: {user_id}")
-#         print(f"chat_id: {chat_id}, user_id: {user_id}")
-#         if (message.chat.id, message.from_user.id) in data_dict:
-#             print(f"{str(message.from_user.full_name)} переслал сообщение")
-#         else:
-#             await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-#             # Отправляем сообщение в группу
-#             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-#                                  f"<code>В чате запрещены пересылаемые сообщения, для получения разрешения напишите "
-#                                  f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
-#
-#     if message.forward_from_chat:
-#         # Если записанный id пользователя в боте записан, то сообщения пропускаются
-#         data_dict = reading_data_from_the_database()
-#         chat_id = message.chat.id
-#         user_id = message.from_user.id
-#         print(f"message.from_user.id: {user_id}")
-#         print(f"chat_id: {chat_id}, user_id: {user_id}")
-#         if (message.chat.id, message.from_user.id) in data_dict:
-#             print(f"{str(message.from_user.full_name)} переслал сообщение")
-#         else:
-#             await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-#             # Отправляем сообщение в группу
-#             await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-#                                  f"<code>В чате запрещены пересылаемые сообщения, для получения разрешения напишите "
-#                                  f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
-#     """Сообщения с ссылками"""
-#     for cap in message.caption_entities:
-#         # url - обычная ссылка, text_link - ссылка, скрытая под текстом
-#         if cap.type in ["mention"]:
-#             # Если записанный id пользователя в боте записан, то сообщения пропускаются
-#             data_dict = reading_data_from_the_database()
-#             chat_id = message.chat.id
-#             user_id = message.from_user.id
-#             print(f"message.from_user.id: {user_id}")
-#             print(f"chat_id: {chat_id}, user_id: {user_id}")
-#             if (message.chat.id, message.from_user.id) in data_dict:
-#                 print(f"{str(message.from_user.full_name)} написал сообщение со ссылкой")
-#             else:
-#                 await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-#                 # Отправляем сообщение в группу
-#                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-#                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
-#                                      f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
-#
-#
-#
-#
-#
-# @dp.message(F.content_type == ContentType.STICKER)
-# async def bot_message(message: Message) -> None:
-#     """Удаление стикеров"""
-#     # Если записанный id пользователя в боте записан, то сообщения пропускаются
-#     data_dict = reading_data_from_the_database()
-#     chat_id = message.chat.id
-#     user_id = message.from_user.id
-#     print(f"message.from_user.id: {user_id}")
-#     print(f"chat_id: {chat_id}, user_id: {user_id}")
-#     if (message.chat.id, message.from_user.id) in data_dict:
-#         print(f"{str(message.from_user.full_name)} отправил стикер в группу")
-#     else:
-#         await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-#         # Отправляем сообщение в группу
-#         warning = await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-#                                        f"<code>В чате запрещено отправлять стикеры, для получения разрешения напишите "
-#                                        f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
-#         await asyncio.sleep(int(time_del))  # Спим 20 секунд
-#         await warning.delete()  # Удаляем предупреждение от бота
+
 #
 #
 # @router.message(Command("count"))
@@ -225,8 +147,6 @@
 #     await message.answer(f'The number of members in the group is: {count}')
 #     # Сброс состояния
 #     await state.clear()  # Сбрасываем состояние FSM
-#
-#
 #
 #
 # @dp.message(F.content_type == ContentType.TEXT)
@@ -248,7 +168,7 @@
 #     for entity in message.entities:
 #         if entity.type in ["url", "text_link"]:
 #             # If the user is allowed, don't take any action
-#             data_dict = reading_data_from_the_database()
+#             data_dict = fetch_user_data()
 #             if (message.chat.id, message.from_user.id) in data_dict:
 #                 print(f"{str(message.from_user.full_name)} написал сообщение со ссылкой")
 #             else:
@@ -262,7 +182,6 @@
 #     """Регистрируем handlers для всех пользователей"""
 #     dp.message.register(send_id)
 #     dp.message.register(get_count_members)
-#     dp.message.register(bot_message)
 #     dp.message.register(handle_all_messages)
 #     dp.message.register(process_message)
 #     dp.message.register(cmd_user_add)

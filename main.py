@@ -7,6 +7,7 @@ from loguru import logger  # https://github.com/Delgan/loguru
 # Импортируем обработчики команд
 from handlers.admin_handlers.admin_help import register_help_handlers  # Регистрация команд администратора
 from handlers.bot_handlers.bot_handlers import register_bot_handlers
+from handlers.bot_handlers.messages_handlers import register_message_handlers
 from handlers.user_handlers.user_handlers import user_handlers  # Регистрация команд пользователя
 from system.dispatcher import bot  # Экземпляр бота
 from system.dispatcher import dp  # Диспетчер событий (Dispatcher)
@@ -30,6 +31,8 @@ async def main():
         register_help_handlers()
         # Регистрация обработчиков функций бота (удаление системных сообщений в группе)
         register_bot_handlers()
+        # Удаление стикеров
+        register_message_handlers()
 
     except Exception as error:
         # Логирование исключений, если что-то пошло не так
