@@ -5,7 +5,8 @@ from loguru import logger
 
 from messages.user_messages import username_admin
 from system.dispatcher import dp, bot, time_del
-from system.sqlite import fetch_user_data
+from system.sqlite import fetch_user_data, reading_from_the_database_of_forbidden_words, \
+    recording_actions_in_the_database
 
 async def process_forwarded_message(message: Message, data_dict: dict) -> None:
     """
@@ -78,7 +79,7 @@ async def process_sticker_message(message: Message, data_dict: dict) -> None:
 @dp.message(F.content_type == ContentType.TEXT)
 async def handle_text_messages(message: Message) -> None:
     """
-    Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения и упоминания.
+    Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения, упоминания, запрещенные слова и ссылки.
 
     :param message: Сообщение Telegram.
     """
@@ -90,6 +91,35 @@ async def handle_text_messages(message: Message) -> None:
             await process_forwarded_message(message, data_dict)
         else:
             await process_mentions(message, data_dict)
+
+        # Проверка на запрещенные слова
+        bad_words = reading_from_the_database_of_forbidden_words()
+        for word in bad_words:
+            if word[0] in message.text.lower():
+                recording_actions_in_the_database(word[0], message)
+                await message.delete()
+                warning = await bot.send_message(
+                    message.chat.id,
+                    f'В вашем сообщении обнаружено запрещенное слово. Пожалуйста, не используйте его в дальнейшем.'
+                )
+                await asyncio.sleep(int(time_del))
+                await warning.delete()
+
+        # Проверка на ссылки
+        for entity in message.entities or []:
+            if entity.type in ["url", "text_link"]:
+                if (message.chat.id, message.from_user.id) in data_dict:
+                    logger.info(f"{message.from_user.full_name} написал сообщение со ссылкой.")
+                else:
+                    await bot.delete_message(message.chat.id, message.message_id)
+                    warning = await message.answer(
+                        f"<code>✅ {message.from_user.full_name}</code>\n"
+                        f"<code>В чате запрещена публикация сообщений со ссылками. Напишите админу:</code> ➡️ {username_admin}",
+                        parse_mode="HTML",
+                    )
+                    await asyncio.sleep(int(time_del))
+                    await warning.delete()
+
     except Exception as e:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
 

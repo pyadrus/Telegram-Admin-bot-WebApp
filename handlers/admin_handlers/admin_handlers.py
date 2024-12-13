@@ -1,19 +1,14 @@
-# import asyncio
 # import datetime
 #
-# from aiogram import F
 # from aiogram.filters import Command
 # from aiogram.fsm.context import FSMContext
-# from aiogram.types import ContentType
 # from aiogram.types import Message
 #
 # from messages.user_messages import username_admin
 # from states.states import AddUserStates, AddAndDelBadWords, GetCountMembers
-# from system.dispatcher import dp, bot, time_del
+# from system.dispatcher import dp, bot
 # from system.dispatcher import router
-# from system.sqlite import reading_from_the_database_of_forbidden_words, fetch_user_data
 # from system.sqlite import record_the_id_of_allowed_users
-# from system.sqlite import recording_actions_in_the_database
 # from system.sqlite import writing_bad_words_to_the_database
 #
 # date_now = datetime.datetime.now()
@@ -128,9 +123,6 @@
 #     await state.clear()  # Сбрасываем состояние
 #
 #
-
-#
-#
 # @router.message(Command("count"))
 # async def get_count_members(message: Message, state: FSMContext):
 #     await message.answer(text='Enter the group ID for tracking')
@@ -149,39 +141,8 @@
 #     await state.clear()  # Сбрасываем состояние FSM
 #
 #
-# @dp.message(F.content_type == ContentType.TEXT)
-# async def process_message(message: Message):
-#     """Обрабатываем обычные текстовые сообщения"""
-#
-#     # Check for forbidden words
-#     bad_words = reading_from_the_database_of_forbidden_words()
-#     for word in bad_words:
-#         if word[0] in message.text.lower():
-#             recording_actions_in_the_database(word[0], message)
-#             await message.delete()  # Удаляем сообщение от пользователя с запрещенным словом
-#             warning = await bot.send_message(message.chat.id, f'В вашем сообщении обнаружено запрещенное слово. '
-#                                                               f'Пожалуйста, не используйте его в дальнейшем.')
-#             await asyncio.sleep(int(time_del))  # Спим 20 секунд
-#             await warning.delete()  # Удаляем предупреждение от бота
-#
-#     # Check for forbidden links
-#     for entity in message.entities:
-#         if entity.type in ["url", "text_link"]:
-#             # If the user is allowed, don't take any action
-#             data_dict = fetch_user_data()
-#             if (message.chat.id, message.from_user.id) in data_dict:
-#                 print(f"{str(message.from_user.full_name)} написал сообщение со ссылкой")
-#             else:
-#                 await bot.delete_message(message.chat.id, message.message_id)  # Удаляем сообщение
-#                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-#                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
-#                                      f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
-#
-#
 # def admin_handlers():
 #     """Регистрируем handlers для всех пользователей"""
 #     dp.message.register(send_id)
 #     dp.message.register(get_count_members)
-#     dp.message.register(handle_all_messages)
-#     dp.message.register(process_message)
 #     dp.message.register(cmd_user_add)
