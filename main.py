@@ -3,6 +3,7 @@ import logging
 import sys
 
 from aiogram import types
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from loguru import logger
@@ -10,6 +11,7 @@ from loguru import logger
 from handlers.admin_handlers import admin_handlers
 from system.dispatcher import bot
 from system.dispatcher import dp
+from system.dispatcher import router
 
 logger.add("setting/log/log.log", rotation="1 MB", compression="zip")
 
@@ -18,8 +20,7 @@ class GetCountMembers(StatesGroup):
     """Создайте состояние, чтобы получить количество членов группы"""
     get_count_members_grup = State()
 
-
-@dp.message_handler(commands=['count'])
+@router.message(Command("count"))
 async def get_count_members(message: types.Message):
     await message.answer(text='Enter the group ID for tracking')
     await GetCountMembers.get_count_members_grup.set()
@@ -39,6 +40,7 @@ async def get_count_members_state(message: types.Message, state: FSMContext):
 
 async def main():
     """Запуск бота"""
+
     try:
         admin_handlers()  # Регистрация обработчиков для администратора и пользователей
         await dp.start_polling(bot)
