@@ -123,7 +123,7 @@ async def cmd_add_bad(message: Message, state: FSMContext):
         return
     await message.answer('✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
                          parse_mode="HTML")
-    await AddAndDelBadWords.waiting_for_bad_word.set()  # Переходим в состояние ожидания плохого слова
+    await state.set_state(AddAndDelBadWords.waiting_for_bad_word)  # Переходим в состояние ожидания плохого слова
 
 
 @router.message(AddAndDelBadWords.waiting_for_bad_word)
@@ -282,6 +282,29 @@ async def bot_message(message: Message, state: FSMContext) -> None:
                                        f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
         await asyncio.sleep(int(time_del))  # Спим 20 секунд
         await warning.delete()  # Удаляем предупреждение от бота
+
+
+class GetCountMembers(StatesGroup):
+    """Создайте состояние, чтобы получить количество членов группы"""
+    get_count_members_grup = State()
+
+
+@router.message(Command("count"))
+async def get_count_members(message: Message, state: FSMContext):
+    await message.answer(text='Enter the group ID for tracking')
+    await state.set_state(GetCountMembers.get_count_members_grup)
+
+
+@router.message(GetCountMembers.get_count_members_grup)
+async def get_count_members_state(message: Message, state: FSMContext):
+    """Получить количество участников в указанной группе"""
+    chat_id = int(message.text)
+    # Получить количество участников в группе
+    count = await bot.get_chat_members_count(chat_id)
+    # Ответить с помощью счетчика
+    await message.answer(f'The number of members in the group is: {count}')
+    # Сброс состояния
+    await state.finish()
 
 
 def admin_handlers():

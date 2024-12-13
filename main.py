@@ -16,27 +16,7 @@ from system.dispatcher import router
 logger.add("setting/log/log.log", rotation="1 MB", compression="zip")
 
 
-class GetCountMembers(StatesGroup):
-    """Создайте состояние, чтобы получить количество членов группы"""
-    get_count_members_grup = State()
 
-
-@router.message(Command("count"))
-async def get_count_members(message: types.Message):
-    await message.answer(text='Enter the group ID for tracking')
-    await GetCountMembers.get_count_members_grup.set()
-
-
-@router.message(GetCountMembers.get_count_members_grup)
-async def get_count_members_state(message: types.Message, state: FSMContext):
-    """Получить количество участников в указанной группе"""
-    chat_id = int(message.text)
-    # Получить количество участников в группе
-    count = await bot.get_chat_members_count(chat_id)
-    # Ответить с помощью счетчика
-    await message.answer(f'The number of members in the group is: {count}')
-    # Сброс состояния
-    await state.finish()
 
 
 async def main():
