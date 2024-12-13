@@ -4,23 +4,37 @@ import sys
 
 from loguru import logger
 
-from handlers.admin_handlers import admin_handlers
-from system.dispatcher import bot
-from system.dispatcher import dp
+# Импортируем обработчики команд
+from handlers.admin_handlers.admin_help import register_help_handlers  # Регистрация команд администратора
+from handlers.user_handlers.user_handlers import user_handlers  # Регистрация команд пользователя
+from system.dispatcher import bot  # Экземпляр бота
+from system.dispatcher import dp  # Диспетчер событий (Dispatcher)
 
+# Настройка логирования: указываем файл, размер ротации и сжатие
 logger.add("setting/log/log.log", rotation="1 MB", compression="zip")
 
-
 async def main():
-    """Запуск бота"""
+    """
+    Главная асинхронная функция для запуска бота.
+    Здесь инициализируются обработчики команд и запускается polling.
+    """
 
     try:
-        admin_handlers()  # Регистрация обработчиков для администратора и пользователей
+        # Запуск диспетчера событий для обработки входящих сообщений
         await dp.start_polling(bot)
+        # Регистрация обработчиков пользовательских команд, таких как /start
+        user_handlers()
+        # Регистрация обработчиков административных команд, таких как /help
+        register_help_handlers()
+
     except Exception as error:
+        # Логирование исключений, если что-то пошло не так
         logger.exception(error)
 
-
+# Точка входа в программу
 if __name__ == "__main__":
+    # Настройка базового логирования для вывода сообщений в консоль
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+
+    # Запуск асинхронной главной функции
     asyncio.run(main())
