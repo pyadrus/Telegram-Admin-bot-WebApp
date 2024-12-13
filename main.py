@@ -2,7 +2,7 @@ import asyncio
 import logging
 import sys
 
-from loguru import logger
+from loguru import logger  # https://github.com/Delgan/loguru
 
 # Импортируем обработчики команд
 from handlers.admin_handlers.admin_help import register_help_handlers  # Регистрация команд администратора
@@ -28,7 +28,7 @@ async def main():
         user_handlers()
         # Регистрация обработчиков административных команд, таких как /help
         register_help_handlers()
-        # Регистрация обработчиков функций бота
+        # Регистрация обработчиков функций бота (удаление системных сообщений в группе)
         register_bot_handlers()
 
     except Exception as error:
