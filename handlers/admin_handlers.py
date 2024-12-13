@@ -32,6 +32,7 @@ class AddAndDelBadWords(StatesGroup):
     waiting_for_check_word = State()
     del_for_bad_word = State()
 
+
 @router.message(Command("id"))
 async def send_id(message: Message, state: FSMContext):
     """Обработчик команды /id"""
@@ -62,10 +63,7 @@ async def send_id(message: Message, state: FSMContext):
     except AttributeError:
         # если произошла ошибка AttributeError, то сообщаем об этом пользователю
         await bot.send_message(chat_id=message.chat.id, text='Ответьте на сообщение пользователя, чтобы узнать его ID')
-    # except MessageCantBeDeleted:
-    #     # если произошла ошибка MessageCantBeDeleted, то сообщаем об этом пользователю
-    #     await bot.send_message(chat_id=message.chat.id,
-    #                            text='Бот не является админом, нет возможности удалить сообщение')
+
 
 @router.message(Command("user_add"))
 async def cmd_user_add(message: Message, state: FSMContext):
@@ -83,8 +81,9 @@ async def cmd_user_add(message: Message, state: FSMContext):
         return
     # Если пользователь является админом, отправляем запрос на ввод ID пользователя
     await message.answer('Введите ID пользователя, для назначения особых прав в группе')
-    await state.set_state(AddUserStates.WAITING_FOR_USER_ID)# Переводим бота в состояние WAITING_FOR_USER_ID
+    await state.set_state(AddUserStates.WAITING_FOR_USER_ID)  # Переводим бота в состояние WAITING_FOR_USER_ID
     await message.delete()  # Удаляем сообщение с командой /user_add
+
 
 @router.message(AddUserStates.WAITING_FOR_USER_ID)
 async def process_user_id(message: Message, state: FSMContext):
@@ -113,6 +112,7 @@ async def process_user_id(message: Message, state: FSMContext):
         await message.answer('Введите целое число')
         await message.delete()  # Удаляем сообщение с неправильным вводом
 
+
 @router.message(Command("add_bad"))
 async def cmd_add_bad(message: Message, state: FSMContext):
     """Обработчик команды /add_bad"""
@@ -124,6 +124,7 @@ async def cmd_add_bad(message: Message, state: FSMContext):
     await message.answer('✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
                          parse_mode="HTML")
     await AddAndDelBadWords.waiting_for_bad_word.set()  # Переходим в состояние ожидания плохого слова
+
 
 @router.message(AddAndDelBadWords.waiting_for_bad_word)
 async def process_bad_word(message: Message, state: FSMContext):
@@ -140,9 +141,11 @@ async def process_bad_word(message: Message, state: FSMContext):
     await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
     await state.clear()  # Сбрасываем состояние
 
+
 @router.message(Command("help"))
 async def help_handler(message: Message) -> None:
     await message.answer(info, parse_mode="HTML")
+
 
 @dp.message(F.content_type == ContentType.TEXT)
 async def process_message(message: Message):
@@ -171,6 +174,7 @@ async def process_message(message: Message):
                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
                                      f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
+
 
 @dp.message(F.content_type == ContentType.ANY)
 async def handle_all_messages(message: Message, state: FSMContext) -> None:
@@ -227,6 +231,7 @@ async def handle_all_messages(message: Message, state: FSMContext) -> None:
                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
                                      f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
 
+
 @dp.message(F.content_type == ContentType.NEW_CHAT_MEMBERS)
 async def deleting_message_about_adding_new_group_member(message: Message, state: FSMContext):
     """Удаляем сообщение о новом участнике группы и записываем данные в базу данных"""
@@ -240,6 +245,7 @@ async def deleting_message_about_adding_new_group_member(message: Message, state
     name_table = "group_members_add"  # Имя таблицы в которую записываем данные
     writing_to_the_database_about_a_new_user(name_table, chat_id, chat_title, user_id, username, first_name, last_name,
                                              date_now)
+
 
 @dp.message(F.content_type == ContentType.LEFT_CHAT_MEMBER)
 async def deleting_a_message_about_a_member_has_left_the_group(message: Message):
@@ -255,6 +261,7 @@ async def deleting_a_message_about_a_member_has_left_the_group(message: Message)
     name_table = "group_members_left"  # Имя таблицы в которую записываем данные
     writing_to_the_database_about_a_new_user(name_table, chat_id, chat_title, user_id, username, first_name, last_name,
                                              date_left)
+
 
 @dp.message(F.content_type == ContentType.STICKER)
 async def bot_message(message: Message, state: FSMContext) -> None:
@@ -279,4 +286,4 @@ async def bot_message(message: Message, state: FSMContext) -> None:
 
 def admin_handlers():
     """Регистрируем handlers для всех пользователей"""
-    dp.register_message_handler(send_id, commands=['id'])
+    dp.message.register(send_id)

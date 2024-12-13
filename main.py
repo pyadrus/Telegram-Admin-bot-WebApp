@@ -20,13 +20,14 @@ class GetCountMembers(StatesGroup):
     """Создайте состояние, чтобы получить количество членов группы"""
     get_count_members_grup = State()
 
+
 @router.message(Command("count"))
 async def get_count_members(message: types.Message):
     await message.answer(text='Enter the group ID for tracking')
     await GetCountMembers.get_count_members_grup.set()
 
 
-@dp.message_handler(state=GetCountMembers.get_count_members_grup)
+@router.message(GetCountMembers.get_count_members_grup)
 async def get_count_members_state(message: types.Message, state: FSMContext):
     """Получить количество участников в указанной группе"""
     chat_id = int(message.text)

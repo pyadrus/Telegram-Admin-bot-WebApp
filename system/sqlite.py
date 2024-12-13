@@ -190,6 +190,7 @@ def reading_bad_words_from_the_database():
         words = [row[0] for row in data]
         return words
 
+
 #
 # async def reading_data_from_the_databases():
 #     """Чтение с базы данных"""
