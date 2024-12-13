@@ -1,24 +1,22 @@
 from aiogram.filters import CommandStart
-from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
+from loguru import logger
 
 from messages.user_messages import user_info
 from system.dispatcher import dp
 from system.dispatcher import router
-from loguru import logger
 
 
 # Обработчик команды /start
 @router.message(CommandStart())
-async def user_start_handler(message: Message, state: FSMContext) -> None:
+async def user_start_handler(message: Message) -> None:
     """
     Обработчик команды /start
     :param message:
-    :param state:
     :return:
     """
     try:
-        await state.clear()  # Очистка предыдущих состояний
+        # await state.clear()  # Очистка предыдущих состояний
 
         user_id = message.from_user.id
         user_name = message.from_user.username or ""
@@ -37,3 +35,7 @@ async def user_start_handler(message: Message, state: FSMContext) -> None:
 def user_handlers():
     """Регистрируем handlers для всех пользователей"""
     dp.message.register(user_start_handler)
+
+
+if __name__ == "__main__":
+    user_handlers()

@@ -4,11 +4,9 @@
 # from aiogram.fsm.context import FSMContext
 # from aiogram.types import Message
 #
-# from messages.user_messages import username_admin
-# from states.states import AddUserStates, AddAndDelBadWords, GetCountMembers
-# from system.dispatcher import dp, bot
+# from states.states import AddAndDelBadWords
+# from system.dispatcher import dp
 # from system.dispatcher import router
-# from system.sqlite import record_the_id_of_allowed_users
 # from system.sqlite import writing_bad_words_to_the_database
 #
 # date_now = datetime.datetime.now()
@@ -93,34 +91,8 @@
 #         await message.answer('Введите целое число')
 #         await message.delete()  # Удаляем сообщение с неправильным вводом
 #
-#
-# @router.message(Command("add_bad"))
-# async def cmd_add_bad(message: Message, state: FSMContext):
-#     """Обработчик команды /add_bad"""
-#     # Проверяем, вызвал ли команду админ чата
-#     chat_member = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
-#     if not chat_member.is_chat_admin():
-#         await message.reply('Эту команду может использовать только администратор чата.')
-#         return
-#     await message.answer('✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
-#                          parse_mode="HTML")
-#     await state.set_state(AddAndDelBadWords.waiting_for_bad_word)  # Переходим в состояние ожидания плохого слова
-#
-#
-# @router.message(AddAndDelBadWords.waiting_for_bad_word)
-# async def process_bad_word(message: Message, state: FSMContext):
-#     """Обработчик текстовых сообщений в состоянии ожидания плохого слова"""
-#     bad_word = message.text.strip().lower()  # Получаем слово от пользователя
-#     user_id = message.from_user.id  # Получаем ID пользователя
-#     username = message.from_user.username  # Получаем username пользователя
-#     user_full_name = message.from_user.full_name  # Получаем Ф.И. пользователя
-#     chat_id = message.chat.id  # Получаем ID чата / канала
-#     chat_title = message.chat.title  # Получаем название чата / канала
-#     writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id,
-#                                       chat_title)  # Запись запрещенных слов в базу данных
-#     # Выводим сообщение об успешном добавлении слова
-#     await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
-#     await state.clear()  # Сбрасываем состояние
+
+
 #
 #
 # @router.message(Command("count"))
@@ -141,8 +113,57 @@
 #     await state.clear()  # Сбрасываем состояние FSM
 #
 #
-# def admin_handlers():
+# def register_admin_handlers():
 #     """Регистрируем handlers для всех пользователей"""
-#     dp.message.register(send_id)
+#     dp.message.register(cmd_add_bad)
 #     dp.message.register(get_count_members)
 #     dp.message.register(cmd_user_add)
+
+
+# from aiogram.filters import Command
+# from aiogram.fsm.context import FSMContext
+# from aiogram.types import Message
+#
+# from states.states import AddAndDelBadWords
+# from system.dispatcher import dp, router
+# from system.sqlite import writing_bad_words_to_the_database
+#
+#
+# @router.message(Command("add_bad"))
+# async def cmd_add_bad(message: Message, state: FSMContext):
+#     """Обработчик команды /add_bad"""
+#     # Проверяем, вызвал ли команду админ чата
+#     admin_id = 535185511  # ID администратора
+#
+#     if message.from_user.id == admin_id:
+#         await message.answer(
+#             '✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
+#             parse_mode="HTML"
+#         )
+#         await state.set_state(AddAndDelBadWords.waiting_for_bad_word)  # Переходим в состояние ожидания плохого слова
+#     else:
+#         await message.reply('Эту команду может использовать только администратор бота.')
+#
+#
+# @router.message(AddAndDelBadWords.waiting_for_bad_word)
+# async def process_bad_word(message: Message, state: FSMContext):
+#     """Обработчик текстовых сообщений в состоянии ожидания плохого слова"""
+#     bad_word = message.text.strip().lower()  # Получаем слово от пользователя
+#     user_id = message.from_user.id  # Получаем ID пользователя
+#     username = message.from_user.username  # Получаем username пользователя
+#     user_full_name = message.from_user.full_name  # Получаем Ф.И. пользователя
+#     chat_id = message.chat.id  # Получаем ID чата / канала
+#     chat_title = message.chat.title  # Получаем название чата / канала
+#     writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id,
+#                                       chat_title)  # Запись запрещенных слов в базу данных
+#     # Выводим сообщение об успешном добавлении слова
+#     await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
+#     await state.clear()  # Сбрасываем состояние
+#
+#
+# def register_add_bad_handlers():
+#     """Регистрация обработчиков команд"""
+#     dp.message.register(cmd_add_bad)
+#
+# if __name__ == '__main__':
+#     register_add_bad_handlers()

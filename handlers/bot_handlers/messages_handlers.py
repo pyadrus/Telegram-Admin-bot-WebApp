@@ -8,6 +8,7 @@ from system.dispatcher import dp, bot, time_del
 from system.sqlite import fetch_user_data, reading_from_the_database_of_forbidden_words, \
     recording_actions_in_the_database
 
+
 async def process_forwarded_message(message: Message, data_dict: dict) -> None:
     """
     Обрабатывает пересылаемые сообщения, удаляя их, если пользователь не имеет разрешения.
@@ -29,6 +30,7 @@ async def process_forwarded_message(message: Message, data_dict: dict) -> None:
         )
         await asyncio.sleep(int(time_del))
         await warning.delete()
+
 
 async def process_mentions(message: Message, data_dict: dict) -> None:
     """
@@ -54,6 +56,7 @@ async def process_mentions(message: Message, data_dict: dict) -> None:
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
 
+
 async def process_sticker_message(message: Message, data_dict: dict) -> None:
     """
     Обрабатывает сообщения со стикерами, удаляя их, если пользователь не имеет разрешения.
@@ -75,6 +78,7 @@ async def process_sticker_message(message: Message, data_dict: dict) -> None:
         )
         await asyncio.sleep(int(time_del))
         await warning.delete()
+
 
 @dp.message(F.content_type == ContentType.TEXT)
 async def handle_text_messages(message: Message) -> None:
@@ -123,6 +127,7 @@ async def handle_text_messages(message: Message) -> None:
     except Exception as e:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
 
+
 @dp.message(F.content_type == ContentType.STICKER)
 async def handle_sticker_messages(message: Message) -> None:
     """
@@ -137,6 +142,7 @@ async def handle_sticker_messages(message: Message) -> None:
         await process_sticker_message(message, data_dict)
     except Exception as e:
         logger.error(f"Ошибка при обработке сообщения со стикером: {e}")
+
 
 def register_message_handlers() -> None:
     """

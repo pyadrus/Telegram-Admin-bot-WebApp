@@ -13,3 +13,7 @@ async def help_handler(message: Message) -> None:
 def register_help_handlers():
     """Регистрация обработчиков для бота"""
     dp.message.register(help_handler)
+
+
+if __name__ == '__main__':
+    register_help_handlers()
