@@ -6,7 +6,18 @@ path_database = 'setting/database.db'
 
 def writing_to_the_database_about_a_new_user(name_table, chat_id, chat_title, user_id, username, first_name, last_name,
                                              date_now):
-    """Запись данных о новом пользователе"""
+    """Запись данных о новом пользователе
+
+    :param name_table: название таблицы
+    :param chat_id: id чата
+    :param chat_title: название чата
+    :param user_id: id пользователя
+    :param username: username пользователя
+    :param first_name: имя пользователя
+    :param last_name: фамилия пользователя
+    :param date_now: дата и время
+    :return: None
+    """
     # Записываем данные в базу данных
     conn = sqlite3.connect(path_database)
     cursor = conn.cursor()
@@ -27,14 +38,17 @@ def record_the_id_of_allowed_users(chat_id, user_id, username, first_name, last_
     """
     Мы записываем идентификатор пользователя, которому будет разрешено выполнение определенных действий в чате,
     в базу данных. Будут сохранены идентификаторы чата и участника чата:
-    chat_id - идентификатор чата, в котором пользователю будут предоставлены права;
-    user_id - идентификатор пользователя, которому будут предоставлены определенные права;
-    username - username пользователя
-    first_name - имя пользователя
-    last_name - фамилия пользователя
-    date_add - дата добавления идентификатора пользователя в базу данных;
-    admin_id - идентификатор администратора, который добавил пользователя в базу данных;
-    chat_title - название чата
+
+    Аргументы:
+    :param chat_id: Идентификатор чата, в котором пользователю будут предоставлены права;
+    :param user_id: Идентификатор пользователя, которому будут предоставлены определенные права;
+    :param username: username пользователя
+    :param first_name: имя пользователя
+    :param last_name: фамилия пользователя
+    :param date_add: дата добавления идентификатора пользователя в базу данных;
+    :param admin_id: идентификатор администратора, который добавил пользователя в базу данных;
+    :param chat_title: название чата
+    :return: None
     """
     with sqlite3.connect(path_database) as conn:
         # Инициализация соединения с базой данных SQLite
@@ -117,16 +131,6 @@ async def delete_bad_word(word):
         conn.commit()
 
 
-# def delete_check_word(word):
-#     """Удаление плохих слов с базы данных"""
-#     # создаем подключение к базе данных
-#     with sqlite3.connect(path_database) as conn:
-#         cursor = conn.cursor()
-#         # удаляем слово из таблицы
-#         cursor.execute('DELETE FROM check_word WHERE word = ?', (word,))
-#         conn.commit()
-
-
 def recording_actions_in_the_database(word, message):
     """Запись действий в базу данных запрещенных слов"""
     # Создаем соединение с базой данных
@@ -191,18 +195,6 @@ def reading_bad_words_from_the_database():
         return words
 
 
-#
-# async def reading_data_from_the_databases():
-#     """Чтение с базы данных"""
-#     # Создаем соединение с базой данных
-#     conn = sqlite3.connect(path_database)
-#     # Получаем данные из базы данных
-#     data = conn.execute("SELECT * FROM bad_word_users").fetchall()
-#     # Закрываем соединение с базой данных
-#     conn.close()
-#     return data
-
-
 async def reading_data_from_the_database_check():
     """Чтение с базы данных check слов"""
     # Создаем соединение с базой данных
@@ -229,6 +221,5 @@ if __name__ == '__main__':
     reading_data_from_the_database()
     reading_from_the_database_of_forbidden_check_word()
     reading_data_from_the_database_check()
-    # reading_data_from_the_databases()
     reading_bad_words_from_the_database()
     reading_from_the_database_of_forbidden_words()

@@ -4,11 +4,11 @@ import datetime
 from aiogram import F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import ContentType
 from aiogram.types import Message
 
 from messages.user_messages import username_admin, info
+from states.states import AddUserStates, AddAndDelBadWords, GetCountMembers
 from system.dispatcher import dp, bot, time_del
 from system.dispatcher import router
 from system.sqlite import reading_data_from_the_database
@@ -19,18 +19,6 @@ from system.sqlite import writing_bad_words_to_the_database
 from system.sqlite import writing_to_the_database_about_a_new_user
 
 date_now = datetime.datetime.now()
-
-
-class AddUserStates(StatesGroup):
-    WAITING_FOR_USER_ID = State()  # ожидание ввода ID пользователя;
-    USER_ADDED = State()  # состояние, когда пользователь успешно добавлен в базу данных.
-
-
-class AddAndDelBadWords(StatesGroup):
-    """Создаем состояние для добавления плохих слов"""
-    waiting_for_bad_word = State()
-    waiting_for_check_word = State()
-    del_for_bad_word = State()
 
 
 @router.message(Command("id"))
@@ -284,11 +272,6 @@ async def bot_message(message: Message, state: FSMContext) -> None:
         await warning.delete()  # Удаляем предупреждение от бота
 
 
-class GetCountMembers(StatesGroup):
-    """Создайте состояние, чтобы получить количество членов группы"""
-    get_count_members_grup = State()
-
-
 @router.message(Command("count"))
 async def get_count_members(message: Message, state: FSMContext):
     await message.answer(text='Enter the group ID for tracking')
@@ -304,7 +287,7 @@ async def get_count_members_state(message: Message, state: FSMContext):
     # Ответить с помощью счетчика
     await message.answer(f'The number of members in the group is: {count}')
     # Сброс состояния
-    await state.finish()
+    await state.clear()  # Сбрасываем состояние FSM
 
 
 def admin_handlers():
