@@ -1,53 +1,116 @@
 import asyncio
-
 from aiogram import F
-from aiogram.types import ContentType
-from aiogram.types import Message
+from aiogram.types import ContentType, Message
 from loguru import logger
 
 from messages.user_messages import username_admin
 from system.dispatcher import dp, bot, time_del
 from system.sqlite import fetch_user_data
 
-
-@dp.message(F.content_type == ContentType.STICKER)
-async def handle_sticker_message(message: Message) -> None:
+async def process_forwarded_message(message: Message, data_dict: dict) -> None:
     """
-    Обработчик сообщений со стикерами. Удаляет стикеры, отправленные пользователями,
-    если их ID не зарегистрированы в базе данных. Отправляет предупреждение, если
-    стикеры запрещены в чате.
+    Обрабатывает пересылаемые сообщения, удаляя их, если пользователь не имеет разрешения.
 
-    Аргументы:
-    :param message: (Message): Сообщение Telegram, содержащее стикер.
-    :return: None
+    :param message: Сообщение Telegram.
+    :param data_dict: Словарь зарегистрированных пользователей.
     """
-
-    # Получение данных из базы данных
-    data_dict = fetch_user_data()
     chat_id = message.chat.id
     user_id = message.from_user.id
-    # Логирование ID пользователя и чата для отладки
-    logger.info(f"Получен ID пользователя: {user_id}")
-    logger.info(f"Chat ID: {chat_id}, User ID: {user_id}")
 
-    if (message.chat.id, message.from_user.id) in data_dict:
-        logger.info(f"{str(message.from_user.full_name)} отправил стикер в группу")
+    if (chat_id, user_id) in data_dict:
+        logger.info(f"{message.from_user.full_name} переслал сообщение.")
     else:
-        # Удаление стикера
-        await bot.delete_message(chat_id, message.message_id)  # Удаляем сообщение
-        # Отправляем сообщение в группу
-        warning = await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
-                                       f"<code>В чате запрещено отправлять стикеры, для получения разрешения напишите "
-                                       f"админу</code> ➡️ {username_admin}", parse_mode="HTML")
-        await asyncio.sleep(int(time_del))  # Спим 20 секунд
-        await warning.delete()  # Удаляем предупреждение от бота
+        await bot.delete_message(chat_id, message.message_id)
+        warning = await message.answer(
+            f"<code>✅ {message.from_user.full_name}</code>\n"
+            f"<code>В чате запрещены пересылаемые сообщения. Напишите админу:</code> ➡️ {username_admin}",
+            parse_mode="HTML",
+        )
+        await asyncio.sleep(int(time_del))
+        await warning.delete()
 
+async def process_mentions(message: Message, data_dict: dict) -> None:
+    """
+    Обрабатывает сообщения с упоминаниями, удаляя их, если пользователь не имеет разрешения.
 
-def register_message_handlers():
+    :param message: Сообщение Telegram.
+    :param data_dict: Словарь зарегистрированных пользователей.
+    """
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+
+    for entity in message.entities or []:
+        if entity.type == "mention":
+            if (chat_id, user_id) in data_dict:
+                logger.info(f"{message.from_user.full_name} написал сообщение с упоминанием.")
+            else:
+                await bot.delete_message(chat_id, message.message_id)
+                warning = await message.answer(
+                    f"<code>✅ {message.from_user.full_name}</code>\n"
+                    f"<code>В чате запрещено использование упоминаний. Напишите админу:</code> ➡️ {username_admin}",
+                    parse_mode="HTML",
+                )
+                await asyncio.sleep(int(time_del))
+                await warning.delete()
+
+async def process_sticker_message(message: Message, data_dict: dict) -> None:
+    """
+    Обрабатывает сообщения со стикерами, удаляя их, если пользователь не имеет разрешения.
+
+    :param message: Сообщение Telegram.
+    :param data_dict: Словарь зарегистрированных пользователей.
+    """
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+
+    if (chat_id, user_id) in data_dict:
+        logger.info(f"{message.from_user.full_name} отправил стикер в группу.")
+    else:
+        await bot.delete_message(chat_id, message.message_id)
+        warning = await message.answer(
+            f"<code>✅ {message.from_user.full_name}</code>\n"
+            f"<code>В чате запрещено отправлять стикеры. Напишите админу:</code> ➡️ {username_admin}",
+            parse_mode="HTML",
+        )
+        await asyncio.sleep(int(time_del))
+        await warning.delete()
+
+@dp.message(F.content_type == ContentType.TEXT)
+async def handle_text_messages(message: Message) -> None:
+    """
+    Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения и упоминания.
+
+    :param message: Сообщение Telegram.
+    """
+    logger.info(f"Обработка текстового сообщения от {message.from_user.full_name}.")
+    data_dict = fetch_user_data()
+
+    try:
+        if message.forward_from or message.forward_from_chat:
+            await process_forwarded_message(message, data_dict)
+        else:
+            await process_mentions(message, data_dict)
+    except Exception as e:
+        logger.error(f"Ошибка при обработке текстового сообщения: {e}")
+
+@dp.message(F.content_type == ContentType.STICKER)
+async def handle_sticker_messages(message: Message) -> None:
+    """
+    Обработчик сообщений со стикерами. Удаляет стикеры, если пользователь не имеет разрешения.
+
+    :param message: Сообщение Telegram.
+    """
+    logger.info(f"Обработка стикера от {message.from_user.full_name}.")
+    data_dict = fetch_user_data()
+
+    try:
+        await process_sticker_message(message, data_dict)
+    except Exception as e:
+        logger.error(f"Ошибка при обработке сообщения со стикером: {e}")
+
+def register_message_handlers() -> None:
     """
     Регистрирует обработчики событий для бота.
-
-    Обработчики включают удаление запрещенных сообщений, таких как стикеры,
-    и другие действия, связанные с событиями в чате.
     """
-    dp.message.register(handle_sticker_message, F.content_type == ContentType.STICKER)
+    dp.message.register(handle_text_messages)
+    dp.message.register(handle_sticker_messages)
