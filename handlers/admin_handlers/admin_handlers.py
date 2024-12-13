@@ -7,7 +7,7 @@
 # from aiogram.types import ContentType
 # from aiogram.types import Message
 #
-# from messages.user_messages import username_admin, info
+# from messages.user_messages import username_admin
 # from states.states import AddUserStates, AddAndDelBadWords, GetCountMembers
 # from system.dispatcher import dp, bot, time_del
 # from system.dispatcher import router
@@ -16,13 +16,12 @@
 # from system.sqlite import record_the_id_of_allowed_users
 # from system.sqlite import recording_actions_in_the_database
 # from system.sqlite import writing_bad_words_to_the_database
-# from system.sqlite import writing_to_the_database_about_a_new_user
 #
 # date_now = datetime.datetime.now()
 #
 #
 # @router.message(Command("id"))
-# async def send_id(message: Message, state: FSMContext):
+# async def send_id(message: Message):
 #     """Обработчик команды /id"""
 #     chat_id = message.chat.id
 #     user_id = message.from_user.id
@@ -131,7 +130,7 @@
 #
 #
 # @dp.message(F.content_type == ContentType.ANY)
-# async def handle_all_messages(message: Message, state: FSMContext) -> None:
+# async def handle_all_messages(message: Message) -> None:
 #     """Удаляем пересылаемое сообщение"""
 #     print(message.content_type)  # Выводим тип сообщения в консоль
 #     """Пересылаемое сообщение"""
@@ -186,11 +185,11 @@
 #                                      f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
 #
 #
-
+#
 #
 #
 # @dp.message(F.content_type == ContentType.STICKER)
-# async def bot_message(message: Message, state: FSMContext) -> None:
+# async def bot_message(message: Message) -> None:
 #     """Удаление стикеров"""
 #     # Если записанный id пользователя в боте записан, то сообщения пропускаются
 #     data_dict = reading_data_from_the_database()
@@ -226,10 +225,10 @@
 #     await message.answer(f'The number of members in the group is: {count}')
 #     # Сброс состояния
 #     await state.clear()  # Сбрасываем состояние FSM
-
-
-
-
+#
+#
+#
+#
 # @dp.message(F.content_type == ContentType.TEXT)
 # async def process_message(message: Message):
 #     """Обрабатываем обычные текстовые сообщения"""
@@ -257,16 +256,13 @@
 #                 await message.answer(f"<code>✅ {str(message.from_user.full_name)}</code>\n"
 #                                      f"<code>В чате запрещена публикация сообщений со ссылками, для получения "
 #                                      f"разрешения напишите админу</code> ➡️ {username_admin}", parse_mode="HTML")
-
+#
 #
 # def admin_handlers():
 #     """Регистрируем handlers для всех пользователей"""
 #     dp.message.register(send_id)
 #     dp.message.register(get_count_members)
 #     dp.message.register(bot_message)
-#     dp.message.register(deleting_a_message_about_a_member_has_left_the_group)
-#     dp.message.register(deleting_message_about_adding_new_group_member)
 #     dp.message.register(handle_all_messages)
 #     dp.message.register(process_message)
-#     dp.message.register(help_handler)
 #     dp.message.register(cmd_user_add)
