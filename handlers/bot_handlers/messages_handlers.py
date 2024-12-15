@@ -4,10 +4,10 @@ from aiogram import F
 from aiogram.types import ContentType, Message
 from loguru import logger
 
-from handlers.user_handlers.user_handlers import read_json_file
 from system.dispatcher import time_del, router
 from system.sqlite import fetch_user_data, reading_from_the_database_of_forbidden_words, \
     recording_actions_in_the_database
+from utils.file_utils import read_json_file
 
 
 @router.message(F.content_type == ContentType.TEXT)

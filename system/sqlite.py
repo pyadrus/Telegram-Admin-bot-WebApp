@@ -22,8 +22,7 @@ def add_new_left_user_to_database(name_table, chat_id, chat_title, user_id, user
     conn = sqlite3.connect(path_database)
     cursor = conn.cursor()
     cursor.execute(
-        f"CREATE TABLE IF NOT EXISTS {name_table} (chat_id, chat_title, user_id, username, first_name, last_name, "
-        "date_joined)"
+        f"""CREATE TABLE IF NOT EXISTS {name_table} (chat_id, chat_title, user_id, username, first_name, last_name, date_joined)"""
     )
     cursor.execute(
         f"INSERT INTO {name_table} (chat_id, chat_title, user_id, username, first_name, last_name, date_joined) "

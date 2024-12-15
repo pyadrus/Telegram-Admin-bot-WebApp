@@ -4,6 +4,7 @@ import sys
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
+from handlers.admin_handlers.admin_handlers import register_admin_handlers
 from handlers.bot_handlers.bot_handlers import register_bot_handlers
 from handlers.bot_handlers.messages_handlers import register_message_handlers
 # Импортируем обработчики команд
@@ -24,6 +25,8 @@ async def main():
         register_message_handlers()
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
         register_bot_handlers()
+        # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
+        register_admin_handlers()
 
         await dp.start_polling(bot)
 

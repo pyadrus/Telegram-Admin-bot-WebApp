@@ -97,6 +97,7 @@ async def delete_system_message_new_member(message: Message):
     await message.delete()  # Удаляем системное сообщение
     logger.info("Удаляем системное сообщение")
 
+
 @router.message(F.left_chat_member)
 async def delete_system_message_member_left(message: Message):
     """
@@ -106,6 +107,7 @@ async def delete_system_message_member_left(message: Message):
     """
     await message.delete()  # Удаляем системное сообщение
     logger.info("Удаляем системное сообщение")
+
 
 def register_bot_handlers():
     """
