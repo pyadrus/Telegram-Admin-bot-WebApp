@@ -6,7 +6,6 @@ from loguru import logger  # https://github.com/Delgan/loguru
 
 from handlers.bot_handlers.messages_handlers import register_message_handlers
 # Импортируем обработчики команд
-from handlers.user_handlers.user_handlers import user_handlers
 from system.dispatcher import bot  # Экземпляр бота
 from system.dispatcher import dp  # Диспетчер событий (Dispatcher)
 
@@ -20,9 +19,6 @@ async def main():
     Здесь инициализируются обработчики команд и запускается polling.
     """
     try:
-
-        # Регистрация обработчиков пользовательских команд, таких как /start
-        user_handlers()
         # Удаление ссылок и стикеров
         register_message_handlers()
         await dp.start_polling(bot)

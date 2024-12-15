@@ -29,6 +29,18 @@ async def handle_text_messages(message: Message) -> None:
         logger.error(f"Ошибка в обработчике /help: {e}")
 
     try:
+        if message.text == "/start":
+            user_id = message.from_user.id
+            user_name = message.from_user.username or ""
+            user_first_name = message.from_user.first_name or ""
+            user_last_name = message.from_user.last_name or ""
+            user_date = message.date.strftime("%Y-%m-%d %H:%M:%S")
+            logger.info(f"User Info: {user_id}, {user_name}, {user_first_name}, {user_last_name}, {user_date}")
+            await message.answer(read_json_file("messages/start_messages.json"), parse_mode="HTML")
+    except Exception as e:
+        logger.error(f"Ошибка в обработчике /start: {e}")
+
+    try:
         # Проверка на пересылку сообщений
         if message.forward_from or message.forward_from_chat:
             data_dict = fetch_user_data()
