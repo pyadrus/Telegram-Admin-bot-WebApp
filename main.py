@@ -4,6 +4,7 @@ import sys
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
+from handlers.bot_handlers.bot_handlers import register_bot_handlers
 from handlers.bot_handlers.messages_handlers import register_message_handlers
 # Импортируем обработчики команд
 from system.dispatcher import bot  # Экземпляр бота
@@ -21,6 +22,9 @@ async def main():
     try:
         # Удаление ссылок и стикеров
         register_message_handlers()
+        # Удаление системных сообщений об присоединении новых участников в группу Telegram
+        register_bot_handlers()
+
         await dp.start_polling(bot)
 
 
