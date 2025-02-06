@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from loguru import logger
 
-from states.states import AddAndDelBadWords, AddUserStates, GetCountMembers
+from states.states import AddAndDelBadWords, AddUserStates
 from system.dispatcher import bot
 from system.dispatcher import router
 from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_allowed_users
@@ -93,24 +93,6 @@ async def process_user_id(message: Message, state: FSMContext):
         await message.delete()  # Удаляем сообщение с неправильным вводом
 
 
-@router.message(Command("count"))
-async def get_count_members(message: Message, state: FSMContext):
-    await message.answer(text='Введите идентификатор группы для отслеживания')
-    await state.set_state(GetCountMembers.get_count_members_grup)
-
-
-@router.message(GetCountMembers.get_count_members_grup)
-async def get_count_members_state(message: Message, state: FSMContext):
-    """Получить количество участников в указанной группе"""
-    chat_id = int(message.text)
-    # Получить количество участников в группе
-    count = await bot.get_chat_members_count(chat_id)
-    # Ответить с помощью счетчика
-    await message.answer(f'Количество участников в группе составляет: {count}')
-    # Сброс состояния
-    await state.clear()  # Сбрасываем состояние FSM
-
-
 @router.message(Command("add_bad"))
 async def cmd_add_bad(message: Message, state: FSMContext):
     """Обработчик команды /add_bad"""
@@ -146,7 +128,6 @@ async def process_bad_word(message: Message, state: FSMContext):
 def register_admin_handlers():
     """Регистрируем handlers для всех пользователей"""
     router.message.register(cmd_add_bad)
-    router.message.register(get_count_members)
     router.message.register(cmd_user_add)
 
 

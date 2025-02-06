@@ -1,7 +1,10 @@
 import asyncio
 
 from aiogram import F
-from aiogram.types import ContentType, Message
+from aiogram.fsm.context import FSMContext
+from aiogram.types import ContentType
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message
 from loguru import logger
 
 from system.dispatcher import time_del, router
@@ -11,13 +14,13 @@ from utils.file_utils import read_json_file
 
 
 @router.message(F.content_type == ContentType.TEXT)
-async def handle_text_messages(message: Message) -> None:
+async def handle_text_messages(message: Message, state: FSMContext) -> None:
     """
     Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения, упоминания, запрещенные слова и ссылки.
 
     :param message: Сообщение Telegram.
     """
-
+    await state.clear()
     logger.info(f"Обработка текстового сообщения от {message.from_user.full_name}.")
     chat_id = message.chat.id
     user_id = message.from_user.id
@@ -25,18 +28,26 @@ async def handle_text_messages(message: Message) -> None:
     try:
         if message.text == "/help":
             await message.answer(read_json_file("messages/bot_commands.json"), parse_mode="HTML")
+
     except Exception as e:
         logger.error(f"Ошибка в обработчике /help: {e}")
 
     try:
         if message.text == "/start":
+            await state.clear()  # Сбрасываем состояние FSM
             user_id = message.from_user.id
             user_name = message.from_user.username or ""
             user_first_name = message.from_user.first_name or ""
             user_last_name = message.from_user.last_name or ""
             user_date = message.date.strftime("%Y-%m-%d %H:%M:%S")
             logger.info(f"User Info: {user_id}, {user_name}, {user_first_name}, {user_last_name}, {user_date}")
-            await message.answer(read_json_file("messages/start_messages.json"), parse_mode="HTML")
+
+            rows = [
+                [InlineKeyboardButton(text='Получить количество участников в группе', callback_data='get_number_participants_group')],
+            ]
+            inline_keyboard_markup = InlineKeyboardMarkup(inline_keyboard=rows)
+
+            await message.answer(read_json_file("messages/start_messages.json"), reply_markup=inline_keyboard_markup, parse_mode="HTML")
     except Exception as e:
         logger.error(f"Ошибка в обработчике /start: {e}")
 
