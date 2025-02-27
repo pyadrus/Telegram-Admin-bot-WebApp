@@ -24,12 +24,12 @@ async def handle_new_member(event: ChatMemberUpdated):
         # Записываем данные о новом участнике в базу данных
         add_new_left_user_to_database(
             name_table="group_members_add",  # Имя таблицы для записи информации о новых участниках
-            chat_id=event.chat.id,
-            chat_title=event.chat.title,
-            user_id=event.from_user.id,
-            username=event.from_user.username,
-            first_name=event.from_user.first_name,
-            last_name=event.from_user.last_name,
+            chat_id=event.chat.id,  # Получаем ID чата
+            chat_title=event.chat.title,  # Получаем название чата
+            user_id=event.from_user.id,  # Получаем ID пользователя, который зашел в группу
+            username=event.from_user.username,  # Получаем username пользователя, который вступил в группу
+            first_name=event.from_user.first_name,  # Получаем имя пользователя который вступил в группу
+            last_name=event.from_user.last_name,  # Получаем фамилию пользователя который вступил в группу
             date_now=datetime.datetime.now()  # Текущее время
         )
     except Exception as error:
@@ -49,12 +49,12 @@ async def handle_member_left(event: ChatMemberUpdated):
         # Записываем данные о вышедшем участнике в базу данных
         add_new_left_user_to_database(
             name_table="group_members_left",  # Имя таблицы для записи информации о новых участниках
-            chat_id=event.chat.id,
-            chat_title=event.chat.title,
-            user_id=event.from_user.id,
-            username=event.from_user.username,
-            first_name=event.from_user.first_name,
-            last_name=event.from_user.last_name,
+            chat_id=event.chat.id,  # Получаем ID чата
+            chat_title=event.chat.title,  # Получаем название чата
+            user_id=event.from_user.id,  # Получаем ID пользователя, который зашел в группу
+            username=event.from_user.username,  # Получаем username пользователя, который вступил в группу
+            first_name=event.from_user.first_name,  # Получаем имя пользователя который вступил в группу
+            last_name=event.from_user.last_name,  # Получаем фамилию пользователя который вступил в группу
             date_now=datetime.datetime.now()  # Текущее время
         )
     except Exception as error:
