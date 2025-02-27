@@ -14,21 +14,18 @@ from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_al
 @router.message(Command("id"))
 async def send_id(message: Message):
     """Обработчик команды /id"""
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    logger.info(f"Пользователь {user_id} вызвал команду '/id' в чате {chat_id}")
+    logger.info(f"Пользователь {message.from_user.id} вызвал команду '/id' в чате {message.chat.id}")
     # Проверяем, является ли пользователь админом в текущем чате
-    chat_member = await bot.get_chat_member(chat_id=chat_id, user_id=user_id)
+    chat_member = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     if chat_member.status not in ["administrator", "creator"]:
         # Если пользователь не является админом, отправляем ему сообщение с предупреждением
-        await bot.send_message(chat_id, "Команда доступна только для администраторов.")
+        await bot.send_message(message.chat.id, "Команда доступна только для администраторов.")
         await message.delete()  # Удаляем сообщение с командой /id
         return
     try:
         # получаем ID пользователя, который написал сообщение
-        user_id = message.reply_to_message.from_user.id
         # получаем информацию о пользователе по его ID
-        user = await bot.get_chat(user_id)
+        user = await bot.get_chat(message.reply_to_message.from_user.id)
         # отправляем ID, имя и фамилию пользователя в личку
         await bot.send_message(chat_id=message.from_user.id,
                                text=f'Пользователь: {user.first_name} {user.last_name}\nID: {user.id}')
@@ -41,16 +38,17 @@ async def send_id(message: Message):
 
 @router.message(Command("user_add"))
 async def cmd_user_add(message: Message, state: FSMContext):
-    """Обработчик команды /user_add. Команда /user_add используется для добавления новых пользователей в базу данных
-    с определенными правами в группе"""
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    logger.info(f"Пользователь {user_id} вызвал команду '/user_add' в чате {chat_id}")
+    """
+    Обработчик команды /user_add. Команда /user_add используется для добавления новых пользователей в базу данных
+    с определенными правами в группе
+    """
+    logger.info(f"Пользователь {message.from_user.id} вызвал команду '/user_add' в чате {message.chat.id}")
     # Проверяем, является ли пользователь админом в текущем чате
-    chat_member = await bot.get_chat_member(chat_id=chat_id, user_id=user_id)
+    chat_member = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     if chat_member.status not in ["administrator", "creator"]:
         # Если пользователь не является админом, отправляем ему сообщение с предупреждением
-        await bot.send_message(chat_id, "<code>✅ Команда доступна только для администраторов</code>", parse_mode="HTML")
+        await bot.send_message(message.chat.id, "<code>✅ Команда доступна только для администраторов</code>",
+                               parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с командой /user_add
         return
     # Если пользователь является админом, отправляем запрос на ввод ID пользователя
@@ -63,22 +61,21 @@ async def cmd_user_add(message: Message, state: FSMContext):
 async def process_user_id(message: Message, state: FSMContext):
     """Обработчик ввода ID пользователя"""
     try:
-        admin_id = message.from_user.id  # Получаем ID админа, который отправил сообщение с ID боту
-        user_id = int(message.text)  # Получаем введенный админом ID
-        chat_id = message.chat.id  # Получаем ID чата
-        chat_title = message.chat.title  # Получаем название чата
-        chat_member = await bot.get_chat_member(chat_id, user_id)
-        # Получаем username пользователя, который вступил в группу
-        username = chat_member.user.username if chat_member.user.username else ""
-        # Получаем имя пользователя который вступил в группу
-        first_name = chat_member.user.first_name if chat_member.user.first_name else ""
-        # Получаем фамилию пользователя который вступил в группу
-        last_name = chat_member.user.last_name if chat_member.user.last_name else ""
-        record_the_id_of_allowed_users(chat_id, user_id, username, first_name,
-                                       last_name, datetime.datetime.now(), admin_id, chat_title)  # Записываем данные
+        chat_member = await bot.get_chat_member(message.chat.id, int(message.text))
+        record_the_id_of_allowed_users(
+            chat_id=message.chat.id,  # Получаем ID чата
+            user_id=int(message.text),  # Получаем введенный админом ID
+            username=chat_member.user.username if chat_member.user.username else "",
+            first_name=chat_member.user.first_name if chat_member.user.first_name else "",
+            last_name=chat_member.user.last_name if chat_member.user.last_name else "",
+            date_add=datetime.datetime.now(),
+            admin_id=message.from_user.id,  # Получаем ID админа, который отправил сообщение с ID боту
+            chat_title=message.chat.title  # Получаем название чата
+        )  # Записываем данные
         # Отправляем сообщение об успешной записи в чат
-        await message.answer(f"<code>✅ Участнику {first_name} {last_name} "
-                             f"даны особые права в группе</code>", parse_mode="HTML")
+        await message.answer(
+            f"<code>✅ Участнику {chat_member.user.first_name if chat_member.user.first_name else ""} {chat_member.user.last_name if chat_member.user.last_name else ""} "
+            f"даны особые права в группе</code>", parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с введенным ID пользователя
         await state.clear()  # Сбрасываем состояние FSM
     except ValueError:
@@ -91,9 +88,7 @@ async def process_user_id(message: Message, state: FSMContext):
 async def cmd_add_bad(message: Message, state: FSMContext):
     """Обработчик команды /add_bad"""
     # Проверяем, вызвал ли команду админ чата
-    admin_id = 535185511  # ID администратора
-
-    if message.from_user.id == admin_id:
+    if message.from_user.id == 535185511:  # ID администратора
         await message.answer(
             '✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
             parse_mode="HTML"
@@ -106,14 +101,14 @@ async def cmd_add_bad(message: Message, state: FSMContext):
 @router.message(AddAndDelBadWords.waiting_for_bad_word)
 async def process_bad_word(message: Message, state: FSMContext):
     """Обработчик текстовых сообщений в состоянии ожидания плохого слова"""
-    bad_word = message.text.strip().lower()  # Получаем слово от пользователя
-    user_id = message.from_user.id  # Получаем ID пользователя
-    username = message.from_user.username  # Получаем username пользователя
-    user_full_name = message.from_user.full_name  # Получаем Ф.И. пользователя
-    chat_id = message.chat.id  # Получаем ID чата / канала
-    chat_title = message.chat.title  # Получаем название чата / канала
-    writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id,
-                                      chat_title)  # Запись запрещенных слов в базу данных
+    writing_bad_words_to_the_database(
+        bad_word=message.text.strip().lower(),  # Получаем слово от пользователя
+        user_id=message.from_user.id,  # Получаем ID пользователя
+        username=message.from_user.username,  # Получаем username пользователя
+        user_full_name=message.from_user.full_name,  # Получаем Ф.И. пользователя
+        chat_id=message.chat.id,  # Получаем ID чата / канала
+        chat_title=message.chat.title  # Получаем название чата / канала
+    )  # Запись запрещенных слов в базу данных
     # Выводим сообщение об успешном добавлении слова
     await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
     await state.clear()  # Сбрасываем состояние

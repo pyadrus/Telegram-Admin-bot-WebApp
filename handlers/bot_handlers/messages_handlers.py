@@ -8,8 +8,8 @@ from aiogram.types import Message
 from loguru import logger
 
 from system.dispatcher import time_del, router
-from system.sqlite import fetch_user_data, reading_from_the_database_of_forbidden_words, \
-    recording_actions_in_the_database
+from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidden_words,
+                           recording_actions_in_the_database)
 from utils.file_utils import read_json_file
 
 
@@ -21,17 +21,13 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
     :param message: Сообщение Telegram.
     """
     await state.clear()
-    logger.info(f"Обработка текстового сообщения от {message.from_user.full_name}.")
     chat_id = message.chat.id
     user_id = message.from_user.id
-
     try:
         if message.text == "/help":
             await message.answer(read_json_file("messages/bot_commands.json"), parse_mode="HTML")
-
     except Exception as e:
         logger.error(f"Ошибка в обработчике /help: {e}")
-
     try:
         if message.text == "/start":
             await state.clear()  # Сбрасываем состояние FSM
@@ -40,12 +36,10 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
                                       callback_data='get_number_participants_group')],
             ]
             inline_keyboard_markup = InlineKeyboardMarkup(inline_keyboard=rows)
-
             await message.answer(read_json_file("messages/start_messages.json"), reply_markup=inline_keyboard_markup,
                                  parse_mode="HTML")
     except Exception as e:
         logger.error(f"Ошибка в обработчике /start: {e}")
-
     try:
         # Проверка на пересылку сообщений
         if message.forward_from or message.forward_from_chat:
@@ -60,10 +54,8 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
             return
-
         # Проверка на запрещенные слова
-        bad_words = reading_from_the_database_of_forbidden_words()
-        for word in bad_words:
+        for word in reading_from_the_database_of_forbidden_words():
             if word[0].lower() in message.text.lower():
                 recording_actions_in_the_database(word[0], message)
                 await message.delete()
@@ -75,12 +67,10 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
                 return  # После удаления сообщения больше ничего не проверяем
-
         # Проверка на ссылки
         for entity in message.entities or []:
             if entity.type in ["url", "text_link", "mention"]:
-                data_dict = fetch_user_data()
-                if (chat_id, user_id) not in data_dict:
+                if (chat_id, user_id) not in fetch_user_data():
                     await message.delete()
                     warning = await message.answer(
                         f"<code>✅ {message.from_user.full_name}</code>\n"
@@ -90,8 +80,6 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
                     await asyncio.sleep(int(time_del))
                     await warning.delete()
                     return  # После удаления сообщения больше ничего не проверяем
-
-
     except Exception as e:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
 

@@ -23,9 +23,7 @@ async def get_count_members_state(message: Message, state: FSMContext):
     try:
         chat_id = int(message.text)
         chat = await bot.get_chat(chat_id)
-        count = chat.member_count
-
-        await message.answer(f'Количество участников в группе: {count}')
+        await message.answer(f'Количество участников в группе: {chat.member_count}')
     except ValueError:
         await message.answer('Ошибка! Введите корректный идентификатор группы (пример: -1001234567890).')
     except Exception as e:
