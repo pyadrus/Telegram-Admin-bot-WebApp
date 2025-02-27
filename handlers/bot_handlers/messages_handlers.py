@@ -35,19 +35,14 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
     try:
         if message.text == "/start":
             await state.clear()  # Сбрасываем состояние FSM
-            user_id = message.from_user.id
-            user_name = message.from_user.username or ""
-            user_first_name = message.from_user.first_name or ""
-            user_last_name = message.from_user.last_name or ""
-            user_date = message.date.strftime("%Y-%m-%d %H:%M:%S")
-            logger.info(f"User Info: {user_id}, {user_name}, {user_first_name}, {user_last_name}, {user_date}")
-
             rows = [
-                [InlineKeyboardButton(text='Получить количество участников в группе', callback_data='get_number_participants_group')],
+                [InlineKeyboardButton(text='Получить количество участников в группе',
+                                      callback_data='get_number_participants_group')],
             ]
             inline_keyboard_markup = InlineKeyboardMarkup(inline_keyboard=rows)
 
-            await message.answer(read_json_file("messages/start_messages.json"), reply_markup=inline_keyboard_markup, parse_mode="HTML")
+            await message.answer(read_json_file("messages/start_messages.json"), reply_markup=inline_keyboard_markup,
+                                 parse_mode="HTML")
     except Exception as e:
         logger.error(f"Ошибка в обработчике /start: {e}")
 
@@ -112,17 +107,9 @@ async def handle_sticker_messages(message: Message) -> None:
     if not message.from_user:
         logger.warning("Сообщение без отправителя (from_user отсутствует).")
         return
-
     logger.info(f"Обработка стикера от {message.from_user.full_name}.")
-
-    # Получение данных пользователей
-    data_dict = fetch_user_data()  # Убедитесь, что эта функция возвращает корректный словарь
-
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-
     # Проверяем, есть ли пользователь в списке разрешенных
-    if (chat_id, user_id) in data_dict:
+    if (message.chat.id, message.from_user.id) in fetch_user_data():
         logger.info(f"{message.from_user.full_name} отправил стикер в группу.")
     else:
         # Удаляем сообщение

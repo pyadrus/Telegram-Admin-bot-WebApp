@@ -29,13 +29,9 @@ async def send_id(message: Message):
         user_id = message.reply_to_message.from_user.id
         # получаем информацию о пользователе по его ID
         user = await bot.get_chat(user_id)
-        # получаем ID, имя и фамилию пользователя
-        user_id = user.id
-        first_name = user.first_name
-        last_name = user.last_name
         # отправляем ID, имя и фамилию пользователя в личку
         await bot.send_message(chat_id=message.from_user.id,
-                               text=f'Пользователь: {first_name} {last_name}\nID: {user_id}')
+                               text=f'Пользователь: {user.first_name} {user.last_name}\nID: {user.id}')
         # удаляем сообщение с командой /id
         await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
     except AttributeError:
