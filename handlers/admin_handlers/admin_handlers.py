@@ -10,8 +10,6 @@ from system.dispatcher import bot
 from system.dispatcher import router
 from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_allowed_users
 
-date_now = datetime.datetime.now()
-
 
 @router.message(Command("id"))
 async def send_id(message: Message):
@@ -81,7 +79,7 @@ async def process_user_id(message: Message, state: FSMContext):
         # Получаем фамилию пользователя который вступил в группу
         last_name = chat_member.user.last_name if chat_member.user.last_name else ""
         record_the_id_of_allowed_users(chat_id, user_id, username, first_name,
-                                       last_name, date_now, admin_id, chat_title)  # Записываем данные
+                                       last_name, datetime.datetime.now(), admin_id, chat_title)  # Записываем данные
         # Отправляем сообщение об успешной записи в чат
         await message.answer(f"<code>✅ Участнику {first_name} {last_name} "
                              f"даны особые права в группе</code>", parse_mode="HTML")

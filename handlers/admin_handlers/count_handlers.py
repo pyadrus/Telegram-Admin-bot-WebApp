@@ -1,5 +1,3 @@
-import datetime
-
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
@@ -7,7 +5,6 @@ from aiogram.types import Message, CallbackQuery
 from states.states import GetCountMembers
 from system.dispatcher import bot, router
 
-date_now = datetime.datetime.now()
 
 @router.callback_query(F.data == "get_number_participants_group")
 async def get_count_members(callback_query: CallbackQuery, state: FSMContext):
@@ -18,6 +15,7 @@ async def get_count_members(callback_query: CallbackQuery, state: FSMContext):
         'Введите идентификатор группы для отслеживания (пример: -1001234567890):'
     )
     await state.set_state(GetCountMembers.get_count_members_grup)  # Исправлено!
+
 
 @router.message(GetCountMembers.get_count_members_grup)
 async def get_count_members_state(message: Message, state: FSMContext):
@@ -34,6 +32,7 @@ async def get_count_members_state(message: Message, state: FSMContext):
         await message.answer(f'Ошибка при получении данных: {e}')
     finally:
         await state.clear()
+
 
 def regis_count_members():
     router.callback_query.register(get_count_members, F.data == "get_number_participants_group")
