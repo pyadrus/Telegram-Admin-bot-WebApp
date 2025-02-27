@@ -21,30 +21,17 @@ async def handle_new_member(event: ChatMemberUpdated):
     (https://docs.aiogram.dev/en/latest/dispatcher/filters/chat_member_updated.html#usage)
     """
     try:
-        current_datetime = datetime.datetime.now()  # Текущее время
-
-        # Извлечение данных о группе и участнике
-        group_id = event.chat.id
-        group_title = event.chat.title
-        user_id = event.from_user.id
-        user_username = event.from_user.username
-        user_first_name = event.from_user.first_name
-        user_last_name = event.from_user.last_name
-
-        # Логируем событие добавления участника
-        logger.info(
-            f"Новый участник: {user_first_name} {user_last_name} (username: {user_username}, id: {user_id}) присоединился к группе '{group_title}' (id: {group_id})."
-        )
-
-        # Имя таблицы для записи информации о новых участниках
-        database_table_name = "group_members_add"
-
         # Записываем данные о новом участнике в базу данных
         add_new_left_user_to_database(
-            database_table_name, group_id, group_title, user_id, user_username,
-            user_first_name, user_last_name, current_datetime
+            name_table="group_members_add",  # Имя таблицы для записи информации о новых участниках
+            chat_id=event.chat.id,
+            chat_title=event.chat.title,
+            user_id=event.from_user.id,
+            username=event.from_user.username,
+            first_name=event.from_user.first_name,
+            last_name=event.from_user.last_name,
+            date_now=datetime.datetime.now()  # Текущее время
         )
-
     except Exception as error:
         logger.exception(f"Ошибка обработки добавления нового участника: {error}")
 
@@ -59,30 +46,17 @@ async def handle_member_left(event: ChatMemberUpdated):
     (https://docs.aiogram.dev/en/latest/dispatcher/filters/chat_member_updated.html#usage)
     """
     try:
-        current_datetime = datetime.datetime.now()  # Текущее время
-
-        # Извлечение данных о группе и участнике
-        group_id = event.chat.id
-        group_title = event.chat.title
-        user_id = event.from_user.id
-        user_username = event.from_user.username
-        user_first_name = event.from_user.first_name
-        user_last_name = event.from_user.last_name
-
-        # Логируем событие выхода участника
-        logger.info(
-            f"Участник: {user_first_name} {user_last_name} (username: {user_username}, id: {user_id}) покинул группу '{group_title}' (id: {group_id}) в {current_datetime}."
-        )
-
-        # Имя таблицы для записи информации о вышедших участниках
-        database_table_name = "group_members_left"
-
         # Записываем данные о вышедшем участнике в базу данных
         add_new_left_user_to_database(
-            database_table_name, group_id, group_title, user_id, user_username,
-            user_first_name, user_last_name, current_datetime
+            name_table="group_members_left",  # Имя таблицы для записи информации о новых участниках
+            chat_id=event.chat.id,
+            chat_title=event.chat.title,
+            user_id=event.from_user.id,
+            username=event.from_user.username,
+            first_name=event.from_user.first_name,
+            last_name=event.from_user.last_name,
+            date_now=datetime.datetime.now()  # Текущее время
         )
-
     except Exception as error:
         logger.exception(f"Ошибка обработки выхода участника: {error}")
 
