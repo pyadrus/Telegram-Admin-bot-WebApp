@@ -1,6 +1,4 @@
 import asyncio
-import logging
-import sys
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
@@ -22,6 +20,7 @@ async def main():
     Здесь инициализируются обработчики команд и запускается polling.
     """
     try:
+        logger.info("Бот watchman_admin_bot запущен")
         # Удаление ссылок и стикеров
         register_message_handlers()
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
@@ -41,8 +40,5 @@ async def main():
 
 # Точка входа в программу
 if __name__ == "__main__":
-    # Настройка базового логирования для вывода сообщений в консоль
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-
     # Запуск асинхронной главной функции
     asyncio.run(main())
