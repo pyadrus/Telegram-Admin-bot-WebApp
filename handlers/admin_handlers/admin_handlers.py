@@ -3,10 +3,8 @@ import datetime
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from loguru import logger
 
 from states.states import AddAndDelBadWords, AddUserStates
-from system.dispatcher import bot
 from system.dispatcher import router
 from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_allowed_users
 
