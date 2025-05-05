@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import sqlite3
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.filters import Command
@@ -12,7 +11,8 @@ from loguru import logger
 from states.states import AddAndDelBadWords, AddUserStates
 from system.dispatcher import bot
 from system.dispatcher import router
-from system.sqlite import path_database
+from system.sqlite import (set_group_restriction, get_required_channel_for_group,
+                           get_required_channel_username_for_group, get_groups_by_channel_id)
 from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_allowed_users
 
 
@@ -78,9 +78,7 @@ async def process_user_id(message: Message, state: FSMContext):
             chat_title=message.chat.title  # Получаем название чата
         )  # Записываем данные
         # Отправляем сообщение об успешной записи в чат
-        await message.answer(
-            f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} "
-            f"даны особые права в группе</code>", parse_mode="HTML")
+        await message.answer(f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} даны особые права в группе</code>", parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с введенным ID пользователя
         await state.clear()  # Сбрасываем состояние FSM
     except ValueError:
@@ -152,15 +150,7 @@ async def set_channel(message: Message):
         chat = await bot.get_chat(channel_username)
         channel_id = chat.id
 
-        conn = sqlite3.connect(path_database)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                             (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-        c.execute(
-            'INSERT OR REPLACE INTO group_restrictions (group_id, required_channel_id, required_channel_username) VALUES (?, ?, ?)',
-            (message.chat.id, channel_id, channel_username))
-        conn.commit()
-        conn.close()
+        set_group_restriction(message, channel_id, channel_username)
 
         await message.reply(f"Установлен канал {channel_username} для обязательной подписки")
 
@@ -174,14 +164,7 @@ async def check_subscription(message: Message):
         return
 
     try:
-        conn = sqlite3.connect(path_database)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                                     (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-        c.execute('SELECT required_channel_id, required_channel_username FROM group_restrictions WHERE group_id = ?',
-                  (message.chat.id,))
-        result = c.fetchone()
-        conn.close()
+        result = get_required_channel_for_group(message)
 
         if not result:
             return
@@ -203,13 +186,7 @@ async def check_subscription(message: Message):
         await message.delete()
         user_mention = message.from_user.mention_html() if message.from_user.username else f"User {message.from_user.id}"
         # Используем username из базы или ID, если username недоступен
-        conn = sqlite3.connect(path_database)
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                                     (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-        c.execute('SELECT required_channel_username FROM group_restrictions WHERE group_id = ?', (message.chat.id,))
-        result = c.fetchone()
-        conn.close()
+        result = get_required_channel_username_for_group(message)
         channel_username = result[0] if result else "неизвестный канал"
         # Отправляем сообщение и сохраняем его объект
         bot_message = await message.answer(
@@ -223,29 +200,19 @@ async def check_subscription(message: Message):
 @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=JOIN_TRANSITION))
 async def on_chat_member_update(update: ChatMemberUpdated):
     if update.new_chat_member.status in [ChatMemberStatus.MEMBER, ChatMemberStatus.ADMINISTRATOR]:
-        try:
-            conn = sqlite3.connect(path_database)
-            c = conn.cursor()
-            c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                                         (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-            c.execute('SELECT group_id FROM group_restrictions WHERE required_channel_id = ?', (update.chat.id,))
-            groups = c.fetchall()
-            conn.close()
-
-            for group in groups:
-                try:
-                    member = await bot.get_chat_member(group[0], update.user.id)
-                    if member.status == ChatMemberStatus.RESTRICTED:
-                        await bot.restrict_chat_member(
-                            group[0],
-                            update.user.id,
-                            can_send_messages=True
-                        )
-                except Exception as e:
-                    logger.error(f"Ошибка при снятии ограничений для группы {group[0]}: {e}")
-                    continue
-        except sqlite3.Error as e:
-            logger.error(f"Ошибка базы данных при обработке подписки: {e}")
+        groups = get_groups_by_channel_id(update)
+        for group in groups:
+            try:
+                member = await bot.get_chat_member(group[0], update.user.id)
+                if member.status == ChatMemberStatus.RESTRICTED:
+                    await bot.restrict_chat_member(
+                        group[0],
+                        update.user.id,
+                        can_send_messages=True
+                    )
+            except Exception as e:
+                logger.error(f"Ошибка при снятии ограничений для группы {group[0]}: {e}")
+                continue
 
 
 def register_admin_handlers():
