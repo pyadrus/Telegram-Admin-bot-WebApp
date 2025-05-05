@@ -2,7 +2,7 @@ import asyncio
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
-from handlers.bot_handlers.messages_handlers import register_message_handlers
+from handlers.bot.messages_handlers import register_message_handlers
 # Импортируем обработчики команд
 from system.dispatcher import bot  # Экземпляр бота
 from system.dispatcher import dp  # Диспетчер событий (Dispatcher)
