@@ -10,9 +10,16 @@ from system.dispatcher import router, bot
 @router.message(Command("start"))
 async def start_command(message: Message, state: FSMContext) -> None:
     await state.clear()  # Сбрасываем состояние FSM
-    await bot.send_message(message.chat.id, translations["ru"]["menu"]["user"],
-                           reply_markup=create_admin_panel_keyboard(),
-                           parse_mode="HTML")
+
+    user_id = message.from_user.id
+    keyboard = create_admin_panel_keyboard(user_id)
+
+    await bot.send_message(
+        message.chat.id,
+        translations["ru"]["menu"]["user"],
+        reply_markup=keyboard,
+        parse_mode="HTML"
+    )
 
 
 @router.message(Command("admin"))
