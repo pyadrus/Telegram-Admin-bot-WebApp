@@ -1,11 +1,18 @@
+import asyncio
 import datetime
+import sqlite3
 
+from aiogram.enums import ChatMemberStatus
 from aiogram.filters import Command
+from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, JOIN_TRANSITION
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, ChatMemberUpdated
+from loguru import logger
 
 from states.states import AddAndDelBadWords, AddUserStates
+from system.dispatcher import bot
 from system.dispatcher import router
+from system.sqlite import path_database
 from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_allowed_users
 
 
@@ -110,19 +117,6 @@ async def process_bad_word(message: Message, state: FSMContext):
     # Выводим сообщение об успешном добавлении слова
     await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
     await state.clear()  # Сбрасываем состояние
-
-
-import sqlite3
-import asyncio
-from aiogram.enums import ChatMemberStatus
-from aiogram.filters import Command
-from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, JOIN_TRANSITION
-from aiogram.types import Message, ChatMemberUpdated
-from loguru import logger
-
-from system.dispatcher import bot
-from system.dispatcher import router
-from system.sqlite import path_database
 
 
 async def delete_message_after_delay(message: Message, delay: int):

@@ -728,3 +728,4 @@ chat_id.str
   Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
     For further information visit https://errors.pydantic.dev/2.10/v/string_type
 2025-05-05 19:05:54.363 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:14:14.728 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
