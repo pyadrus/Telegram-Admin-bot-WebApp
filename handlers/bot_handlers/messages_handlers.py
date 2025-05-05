@@ -3,10 +3,10 @@ import asyncio
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ContentType
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types import Message
 from loguru import logger
 
+from keyboard.keyboard import create_group_participants_button
 from system.dispatcher import time_del, router
 from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidden_words,
                            recording_actions_in_the_database)
@@ -32,12 +32,8 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
     try:
         if message.text == "/start":
             await state.clear()  # Сбрасываем состояние FSM
-            rows = [
-                [InlineKeyboardButton(text='Получить количество участников в группе',
-                                      callback_data='get_number_participants_group')],
-            ]
-            inline_keyboard_markup = InlineKeyboardMarkup(inline_keyboard=rows)
-            await message.answer(read_json_file("messages/start_messages.json"), reply_markup=inline_keyboard_markup,
+            await message.answer(read_json_file("messages/start_messages.json"),
+                                 reply_markup=create_group_participants_button(),
                                  parse_mode="HTML")
     except Exception as e:
         logger.error(f"Ошибка в обработчике /start: {e}")
