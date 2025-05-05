@@ -729,3 +729,18 @@ chat_id.str
     For further information visit https://errors.pydantic.dev/2.10/v/string_type
 2025-05-05 19:05:54.363 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
 2025-05-05 19:14:14.728 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:37:07.617 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:37:31.257 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:39:49.253 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:41:52.963 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:41:53.221 | INFO     | handlers.admin_handlers.admin_handlers:send_id:22 - Пользователь 535185511 вызвал команду '/id' в чате 535185511
+2025-05-05 19:48:11.456 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:51:02.079 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:51:44.434 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:54:34.100 | INFO     | __main__:main:23 - Бот watchman_admin_bot запущен
+2025-05-05 19:57:05.305 | INFO     | __main__:main:20 - Бот watchman_admin_bot запущен
+2025-05-05 19:57:21.874 | INFO     | __main__:main:20 - Бот watchman_admin_bot запущен
+2025-05-05 20:03:10.305 | INFO     | __main__:main:20 - Бот watchman_admin_bot запущен
+2025-05-05 20:04:39.242 | INFO     | __main__:main:20 - Бот watchman_admin_bot запущен
+2025-05-05 20:07:24.212 | INFO     | __main__:main:20 - Бот watchman_admin_bot запущен
+2025-05-05 20:08:21.093 | INFO     | __main__:main:20 - Бот watchman_admin_bot запущен
