@@ -72,7 +72,7 @@ async def process_user_id(message: Message, state: FSMContext):
         )  # Записываем данные
         # Отправляем сообщение об успешной записи в чат
         await message.answer(
-            f"<code>✅ Участнику {chat_member.user.first_name if chat_member.user.first_name else ""} {chat_member.user.last_name if chat_member.user.last_name else ""} "
+            f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} "
             f"даны особые права в группе</code>", parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с введенным ID пользователя
         await state.clear()  # Сбрасываем состояние FSM
@@ -111,6 +111,7 @@ async def process_bad_word(message: Message, state: FSMContext):
     await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
     await state.clear()  # Сбрасываем состояние
 
+
 import sqlite3
 import asyncio
 from aiogram.enums import ChatMemberStatus
@@ -123,6 +124,7 @@ from system.dispatcher import bot
 from system.dispatcher import router
 from system.sqlite import path_database
 
+
 async def delete_message_after_delay(message: Message, delay: int):
     """Удаляет сообщение через заданное количество секунд"""
     await asyncio.sleep(delay)
@@ -130,6 +132,7 @@ async def delete_message_after_delay(message: Message, delay: int):
         await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
     except Exception as e:
         logger.error(f"Ошибка при удалении сообщения: {e}")
+
 
 @router.message(Command("setchannel"))
 async def set_channel(message: Message):
@@ -159,8 +162,9 @@ async def set_channel(message: Message):
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
                              (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-        c.execute('INSERT OR REPLACE INTO group_restrictions (group_id, required_channel_id, required_channel_username) VALUES (?, ?, ?)',
-                  (message.chat.id, channel_id, channel_username))
+        c.execute(
+            'INSERT OR REPLACE INTO group_restrictions (group_id, required_channel_id, required_channel_username) VALUES (?, ?, ?)',
+            (message.chat.id, channel_id, channel_username))
         conn.commit()
         conn.close()
 
@@ -168,6 +172,7 @@ async def set_channel(message: Message):
 
     except Exception as e:
         await message.reply(f"Ошибка: {str(e)}. Убедитесь, что username канала верный и бот имеет к нему доступ")
+
 
 @router.message()
 async def check_subscription(message: Message):
@@ -179,7 +184,8 @@ async def check_subscription(message: Message):
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
                                      (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-        c.execute('SELECT required_channel_id, required_channel_username FROM group_restrictions WHERE group_id = ?', (message.chat.id,))
+        c.execute('SELECT required_channel_id, required_channel_username FROM group_restrictions WHERE group_id = ?',
+                  (message.chat.id,))
         result = c.fetchone()
         conn.close()
 
@@ -218,6 +224,7 @@ async def check_subscription(message: Message):
         )
         # Запускаем задачу удаления сообщения через 60 секунд
         asyncio.create_task(delete_message_after_delay(bot_message, 60))
+
 
 @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=JOIN_TRANSITION))
 async def on_chat_member_update(update: ChatMemberUpdated):

@@ -19,6 +19,7 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
     Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения, упоминания, запрещенные слова и ссылки.
 
     :param message: Сообщение Telegram.
+    :param state: Состояние FSM.
     """
     await state.clear()
     chat_id = message.chat.id
