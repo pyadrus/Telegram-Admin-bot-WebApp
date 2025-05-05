@@ -23,6 +23,14 @@ async def admin_command(message: Message, state: FSMContext) -> None:
                            parse_mode="HTML")
 
 
+@router.message(Command("help"))
+async def help_command(message: Message, state: FSMContext) -> None:
+    await state.clear()  # Сбрасываем состояние FSM
+    await bot.send_message(message.chat.id, translations["ru"]["menu"]["help"],
+                           reply_markup=create_group_participants_button(),
+                           parse_mode="HTML")
+
+
 # @router.message(F.content_type == ContentType.TEXT)
 # async def handle_text_messages(message: Message, state: FSMContext) -> None:
 #     """
@@ -119,3 +127,4 @@ def register_message_handlers() -> None:
     # router.message.register(handle_sticker_messages)
     router.message.register(start_command, Command("start"))
     router.message.register(admin_command, Command("admin"))
+    router.message.register(help_command, Command("help"))
