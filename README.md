@@ -90,7 +90,7 @@
 
 3. Запустите бота:
    ```bash
-   python main.py
+   python bot.py
    ```
 
 ---
