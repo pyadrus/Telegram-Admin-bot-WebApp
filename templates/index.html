@@ -27,7 +27,7 @@
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         label {
@@ -35,6 +35,13 @@
             margin-bottom: 8px;
             font-weight: bold;
         }
+
+        input[type="text"],
+textarea,
+button {
+    width: 100%;
+    box-sizing: border-box;
+}
 
         input[type="text"],
         textarea,
@@ -47,12 +54,14 @@
         }
 
         button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            background-color: #007bff; /* Цвет кнопки */
+            color: white; /* Цвет текста */
+            padding: 10px 20px; /* Размеры */
+            border: none; /* Параметры границы */
+            border-radius: 5px; /* Радиус скругления */
+            cursor: pointer; /* Курсор при наведении */
+            box-sizing: border-box; /* Чтобы padding не влиял на общую ширину */
+            width: 100%;
         }
 
         button:hover {
