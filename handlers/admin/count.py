@@ -6,7 +6,7 @@
 # from system.dispatcher import bot, router
 #
 #
-# @router.callback_query(F.data == "get_number_participants_group")
+# @router.callback_query(F.db == "get_number_participants_group")
 # async def get_count_members(callback_query: CallbackQuery, state: FSMContext):
 #     """Начало процесса получения количества участников"""
 #     await callback_query.answer()
@@ -33,5 +33,5 @@
 #
 #
 # def regis_count_members():
-#     router.callback_query.register(get_count_members, F.data == "get_number_participants_group")
+#     router.callback_query.register(get_count_members, F.db == "get_number_participants_group")
 #     router.message.register(get_count_members_state, GetCountMembers.get_count_members_grup)

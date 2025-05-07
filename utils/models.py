@@ -1,13 +1,7 @@
-import os
 from peewee import SqliteDatabase, Model, CharField
 
-# Получаем абсолютный путь до текущей директории
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, 'data', 'groups.db')
-
-os.makedirs(os.path.dirname(db_path), exist_ok=True)  # Создаем папку data, если её нет
-
-db = SqliteDatabase(db_path)
+# Настройка подключения к базе данных SQLite (или другой базы данных)
+db = SqliteDatabase('db/database.db')
 
 
 class Group(Model):

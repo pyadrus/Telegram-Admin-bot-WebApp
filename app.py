@@ -6,8 +6,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from utils.get_id import getting_data
-from utils.models import Group
+from utils.get_id import get_participants_count
+from utils.models import Group, db
 
 app = FastAPI()
 
@@ -40,9 +40,14 @@ async def formation_groups(request: Request):
 async def save_group(chat_username: str = Form(...)):
     try:
 
-        await getting_data(chat_username)
+        chat_id, chat_title, chat_total, chat_link = await get_participants_count(chat_username)
 
-        Group.create(chat_id=chat_username)
+        # Создаем таблицу, если она не создана ранее
+        db.create_tables([Group], safe=True)
+        with db.atomic():
+            # Вставляем новую
+            Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link).execute()
+
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)
