@@ -10,15 +10,18 @@ os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
 db = SqliteDatabase(db_path)
 
+
 class Group(Model):
     chat_id = CharField(unique=True)  # ID группы
 
     class Meta:
         database = db
 
+
 def initialize_db():
     db.connect()
     db.create_tables([Group], safe=True)
     db.close()
+
 
 initialize_db()
