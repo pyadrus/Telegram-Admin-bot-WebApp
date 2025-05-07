@@ -1,4 +1,4 @@
-from peewee import SqliteDatabase, Model, CharField
+from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)
 db = SqliteDatabase('db/database.db')
@@ -6,9 +6,9 @@ db = SqliteDatabase('db/database.db')
 
 class Group(Model):
     """Запись групп в базу данных"""
-    chat_id = CharField()  # ID группы
+    chat_id = IntegerField()  # ID группы
     chat_title = CharField()  # Название группы
-    chat_total = CharField()  # Общее количество участников
+    chat_total = IntegerField()  # Общее количество участников
     chat_link = CharField()  # Ссылка на группу
 
     class Meta:

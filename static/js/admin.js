@@ -2,14 +2,14 @@
 
 // При загрузке страницы загружаем группы
 window.onload = () => {
-    fetch('/api/groups')
+    fetch('/api/chat_title')
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById('group-select');
-            data.groups.forEach(group => {
+            data.chat_title.forEach(group => {  // ← здесь была ошибка
                 const option = document.createElement('option');
-                option.value = group.chat_id;
-                option.textContent = group.chat_id;
+                option.value = group.chat_title;
+                option.textContent = group.chat_title;
                 select.appendChild(option);
             });
         })
@@ -17,14 +17,14 @@ window.onload = () => {
 };
 
 async function getParticipants() {
-    const chatId = document.getElementById("group-select").value.trim();
-    if (!chatId) {
+    const chat_title = document.getElementById("group-select").value.trim();
+    if (!chat_title) {
         alert("Выберите группу из списка");
         return;
     }
 
     try {
-        const response = await fetch(`/api/get-participants?chat_id=${encodeURIComponent(chatId)}`);
+        const response = await fetch(`/api/update-participants?chat_title=${encodeURIComponent(chat_title)}`);
         const data = await response.json();
         const statusEl = document.getElementById("participants-count");
 

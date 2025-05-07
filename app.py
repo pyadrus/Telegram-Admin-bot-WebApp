@@ -38,10 +38,15 @@ async def formation_groups(request: Request):
 
 @app.post("/save-group")
 async def save_group(chat_username: str = Form(...)):
+    """
+    Запись данных в базу данных по username группы.
+    chat_id - ID группы,
+    chat_title - название группы,
+    chat_total - общее количество участников,
+    chat_link - ссылка на группу.
+    """
     try:
-
         chat_id, chat_title, chat_total, chat_link = await get_participants_count(chat_username)
-
         # Создаем таблицу, если она не создана ранее
         db.create_tables([Group], safe=True)
         with db.atomic():
@@ -54,17 +59,38 @@ async def save_group(chat_username: str = Form(...)):
 
 
 # Получение списка групп для отображения на странице
-@app.get("/api/groups")
+@app.get("/api/chat_title")
 async def get_groups():
-    groups = list(Group.select().dicts())
-    return {"groups": groups}
+    chat_title = list(Group.select().dicts())
+    return {"chat_title": chat_title}
 
 
 @app.get("/api/get-participants")
-async def get_participants(chat_id: str):
-    # Здесь должен быть реальный запрос к Telegram API
-    # Пока просто заглушка:
-    return {"success": True, "participants_count": 12345}
+async def get_participants(chat_title: str):
+    try:
+        group = Group.get(Group.chat_title == chat_title)
+        # Здесь можно вызвать Telegram API для актуального числа участников
+        return {"success": True, "participants_count": group.chat_total}
+    except Group.DoesNotExist:
+        return {"success": False, "error": "Группа не найдена"}
+
+
+@app.get("/api/update-participants")
+async def update_participants(chat_title: str):
+    try:
+        group = Group.get(Group.chat_title == chat_title)
+
+        # Получаем актуальные данные через Telegram
+        chat_id, title, total, link = await get_participants_count(group.chat_link)
+
+        # Обновляем запись в базе
+        Group.update(chat_total=total).where(Group.chat_title == chat_title).execute()
+
+        return {"success": True, "participants_count": total}
+    except Group.DoesNotExist:
+        return {"success": False, "error": "Группа не найдена"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 
 if __name__ == "__main__":
