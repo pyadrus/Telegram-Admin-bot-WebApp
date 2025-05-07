@@ -25,8 +25,6 @@ async def main():
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         # register_admin_handlers()
 
-        # regis_count_members()
-
         await dp.start_polling(bot)
 
 
