@@ -9,7 +9,8 @@ class Group(Model):
     chat_id = IntegerField()  # ID группы
     chat_title = CharField()  # Название группы
     chat_total = IntegerField()  # Общее количество участников
-    chat_link = CharField()  # Ссылка на группу
+    chat_link = CharField(
+        unique=True)  # Ссылка на группу (unique=True - для уникальности. Если ссылка уже есть, то запись не будет создана)
 
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных

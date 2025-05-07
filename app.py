@@ -33,6 +33,12 @@ async def index(request: Request):
 # Новый маршрут для "Формирование групп"
 @app.get("/formation-groups")
 async def formation_groups(request: Request):
+    """
+    Отображение страницы с формой для ввода username группы.
+
+    :param request: Объект запроса.
+    :return: HTML-страница с формой для ввода username группы.
+    """
     return templates.TemplateResponse("formation_groups.html", {"request": request})
 
 
@@ -52,7 +58,6 @@ async def save_group(chat_username: str = Form(...)):
         with db.atomic():
             # Вставляем новую
             Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link).execute()
-
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)
@@ -61,12 +66,19 @@ async def save_group(chat_username: str = Form(...)):
 # Получение списка групп для отображения на странице
 @app.get("/api/chat_title")
 async def get_groups():
+    """
+    Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
+    группы с базы данных.
+    """
     chat_title = list(Group.select().dicts())
     return {"chat_title": chat_title}
 
 
 @app.get("/api/get-participants")
 async def get_participants(chat_title: str):
+    """
+    Получение количества участников в группе.
+    """
     try:
         group = Group.get(Group.chat_title == chat_title)
         # Здесь можно вызвать Telegram API для актуального числа участников
@@ -77,6 +89,10 @@ async def get_participants(chat_title: str):
 
 @app.get("/api/update-participants")
 async def update_participants(chat_title: str):
+    """
+    Обновление количества участников в группе.
+    """
+    # Получаем запись из базы данных по chat_title
     try:
         group = Group.get(Group.chat_title == chat_title)
 
