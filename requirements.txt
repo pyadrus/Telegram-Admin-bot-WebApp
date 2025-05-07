@@ -1,0 +1,6 @@
+aiogram
+loguru
+configparser
+PyYAML
+uvicorn
+fastapi

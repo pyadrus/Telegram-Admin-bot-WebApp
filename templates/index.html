@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Админ-панель</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea,
+        button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #007bff; /* Цвет кнопки */
+            color: white; /* Цвет текста */
+            padding: 10px 20px; /* Размеры */
+            border: none; /* Параметры границы */
+            border-radius: 5px; /* Радиус скругления */
+            cursor: pointer; /* Курсор при наведении */
+            box-sizing: border-box; /* Чтобы padding не влиял на общую ширину */
+            width: 100%;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Админ-панель</h1>
+
+    <!-- Получение количества участников -->
+    <div class="section">
+        <h2>Количество участников</h2>
+        <label for="chat-id">Введите ID группы или канала:</label>
+        <input type="text" id="chat-id" placeholder="Например: -1001234567890"/>
+        <button onclick="getParticipants()">Получить количество участников</button>
+        <p id="participants-count" class="status"></p>
+    </div>
+
+    <!-- Ограничение на отправку сообщений -->
+    <div class="section">
+        <h2>Ограничения на сообщения</h2>
+        <label>
+            <input type="checkbox" id="restrict-messages"/>
+            Ограничивать отправку сообщений
+        </label>
+        <button onclick="toggleRestrictMessages()">Сохранить</button>
+    </div>
+
+    <!-- Ограничение по подписке на канал -->
+    <div class="section">
+        <h2>Ограничение по подписке на канал</h2>
+        <label for="required-channel">Введите ID канала (например: @mychannel):</label>
+        <input type="text" id="required-channel"/>
+        <label>
+            <input type="checkbox" id="require-subscription"/>
+            Требовать подписку на канал для отправки сообщений
+        </label>
+        <button onclick="toggleSubscriptionRequirement()">Сохранить</button>
+    </div>
+
+    <!-- Фильтр запрещённых слов -->
+    <div class="section">
+        <h2>Фильтр запрещённых слов</h2>
+        <label for="bad-words">Введите запрещённые слова через запятую:</label>
+        <textarea id="bad-words" rows="4" placeholder="Пример: слово1, слово2, плохое_слово"></textarea>
+        <button onclick="saveBadWords()">Сохранить</button>
+    </div>
+
+    <!-- Контроль контента -->
+    <div class="section">
+        <h2>Контроль содержимого сообщений</h2>
+        <label>
+            <input type="checkbox" id="block-links"/>
+            Заблокировать сообщения со ссылками
+        </label>
+        <label>
+            <input type="checkbox" id="block-stickers"/>
+            Заблокировать стикеры
+        </label>
+        <label>
+            <input type="checkbox" id="block-forwards"/>
+            Заблокировать пересылаемые сообщения
+        </label>
+        <button onclick="toggleContentControls()">Сохранить</button>
+    </div>
+</div>
+
+<script>
+    // Пример функции получения количества участников
+    async function getParticipants() {
+        const chatId = document.getElementById("chat-id").value.trim();
+        if (!chatId) {
+            alert("Введите ID группы или канала");
+            return;
+        }
+
+        try {
+            // Здесь должен быть ваш API-запрос к боту (например, через Telegram Bot API)
+            const response = await fetch(`/api/get-participants?chat_id=${encodeURIComponent(chatId)}`);
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById("participants-count").innerText = `Участников: ${data.participants_count}`;
+                document.getElementById("participants-count").className = "status success";
+            } else {
+                throw new Error("Ошибка получения данных");
+            }
+        } catch (error) {
+            document.getElementById("participants-count").innerText = "Не удалось получить количество участников";
+            document.getElementById("participants-count").className = "status error";
+        }
+    }
+
+    // Пример функции включения/выключения ограничений на сообщения
+    function toggleRestrictMessages() {
+        const enabled = document.getElementById("restrict-messages").checked;
+        alert(`Ограничение на сообщения: ${enabled ? 'ВКЛ' : 'ВЫКЛ'}`);
+        // Здесь должен быть ваш API-запрос
+    }
+
+    // Пример функции включения/выключения подписки
+    function toggleSubscriptionRequirement() {
+        const enabled = document.getElementById("require-subscription").checked;
+        const channel = document.getElementById("required-channel").value.trim();
+        if (enabled && !channel) {
+            alert("Укажите ID канала");
+            return;
+        }
+        alert(`Требование подписки: ${enabled ? 'ВКЛ' : 'ВЫКЛ'} | Канал: ${channel}`);
+        // Здесь должен быть ваш API-запрос
+    }
+
+    // Пример функции сохранения запрещённых слов
+    function saveBadWords() {
+        const words = document.getElementById("bad-words").value.trim();
+        if (!words) {
+            alert("Введите хотя бы одно слово");
+            return;
+        }
+        alert(`Запрещённые слова сохранены: ${words}`);
+        // Здесь должен быть ваш API-запрос
+    }
+
+    // Пример функции управления контентом
+    function toggleContentControls() {
+        const blockLinks = document.getElementById("block-links").checked;
+        const blockStickers = document.getElementById("block-stickers").checked;
+        const blockForwards = document.getElementById("block-forwards").checked;
+
+        alert(`Настройки сохранены:
+Ссылки: ${blockLinks ? 'заблокированы' : 'разрешены'}
+Стикер: ${blockStickers ? 'заблокированы' : 'разрешены'}
+Пересылка: ${blockForwards ? 'заблокирована' : 'разрешена'}`);
+        // Здесь должен быть ваш API-запрос
+    }
+</script>
+</body>
+</html>
