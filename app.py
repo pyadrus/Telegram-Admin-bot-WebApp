@@ -109,5 +109,27 @@ async def update_participants(chat_title: str):
         return {"success": False, "error": str(e)}
 
 
+# Получение списка групп для отображения на странице
+@app.get("/api/chat_title_groups_select")
+async def get_groups():
+    """
+    Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
+    группы с базы данных.
+    """
+    chat_title = list(Group.select().dicts())
+    return {"chat_title": chat_title}
+
+
+@app.get("/api/update-restrict-messages")
+async def update_restrict_messages(chat_title: str, restricted: bool = True):
+    try:
+        group = Group.get(Group.chat_title == chat_title)
+        group.is_restricted = restricted
+        group.save()
+        return {"success": True, "is_restricted": group.is_restricted}
+    except Group.DoesNotExist:
+        return {"success": False, "error": "Группа не найдена"}
+
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8080, reload=True)
