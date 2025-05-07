@@ -6,7 +6,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from models import Group
+from utils.get_id import getting_data
+from utils.models import Group
 
 app = FastAPI()
 
@@ -36,9 +37,12 @@ async def formation_groups(request: Request):
 
 
 @app.post("/save-group")
-async def save_group(chat_id: str = Form(...)):
+async def save_group(chat_username: str = Form(...)):
     try:
-        Group.create(chat_id=chat_id)
+
+        await getting_data(chat_username)
+
+        Group.create(chat_id=chat_username)
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)

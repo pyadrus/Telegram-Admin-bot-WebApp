@@ -18,18 +18,22 @@
     <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
     {% endif %}
 
-
     <p>
         Это страница для формирования пользовательских групп. <br><br>
 
-        Для дальнейшего взаимодействия с группами, нужна задать ID группы, так как в дальнейшем, username может быть
-        изменен, но ID группы останется неизменным.
+        Для дальнейшего взаимодействия с группами, нужно задать @username группы.
     </p><br>
 
-    <!-- Форма для ввода ID группы -->
+    <!--
+    Форма для ввода ID группы. Форма отправляет POST-запрос на /save-group
+    Поле <input> имеет атрибут name="chat_id"
+    Значение этого поля будет передано как chat_id=... в теле запроса
+    FastAPI ожидает поле с именем "chat_id" из формы (name="chat_id")
+    -->
+
     <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
-        <label for="chat-id">Введите ID группы или канала:</label>
-        <input type="text" id="chat-id" name="chat_id" placeholder="Например: -1001234567890"/>
+        <label for="chat-username">Введите username группы или канала в виде @username:</label>
+        <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
 
         <button type="submit">Сохранить группу</button>
     </form>

@@ -9,6 +9,9 @@ config.read("setting/config.ini")
 bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')
 time_del = config.get('TIME_DEL', 'TIME_DEL')
 
+api_id = config.get('telegram_settings', 'id')
+api_hash = config.get('telegram_settings', 'hash')
+
 # Инициализация бота и диспетчера
 bot = Bot(token=bot_token)
 storage = MemoryStorage()  # Хранилище
