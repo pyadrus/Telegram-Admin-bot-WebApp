@@ -23,5 +23,11 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# Новый маршрут для "Формирование групп"
+@app.get("/formation-groups")
+async def formation_groups(request: Request):
+    return templates.TemplateResponse("formation_groups.html", {"request": request})
+
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8080, reload=True)
