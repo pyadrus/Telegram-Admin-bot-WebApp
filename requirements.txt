@@ -1,6 +1,7 @@
-aiogram
-loguru
-configparser
-PyYAML
-uvicorn
-fastapi
+aiogram~=3.20.0.post0
+loguru~=0.7.3
+configparser~=7.2.0
+PyYAML~=6.0.2
+uvicorn~=0.34.2
+fastapi~=0.115.12
+peewee~=3.17.9

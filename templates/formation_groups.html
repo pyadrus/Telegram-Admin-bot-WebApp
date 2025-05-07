@@ -8,7 +8,31 @@
 <body>
 <div class="container">
     <h1>Формирование групп</h1>
-    <p>Это страница для формирования пользовательских групп.</p>
+
+    <!-- Сообщение об успехе или ошибке -->
+    {% if request.query_params.success %}
+    <div class="status success">Группа успешно сохранена!</div>
+    {% endif %}
+
+    {% if request.query_params.error %}
+    <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
+    {% endif %}
+
+
+    <p>
+        Это страница для формирования пользовательских групп. <br><br>
+
+        Для дальнейшего взаимодействия с группами, нужна задать ID группы, так как в дальнейшем, username может быть
+        изменен, но ID группы останется неизменным.
+    </p><br>
+
+    <!-- Форма для ввода ID группы -->
+    <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="chat-id">Введите ID группы или канала:</label>
+        <input type="text" id="chat-id" name="chat_id" placeholder="Например: -1001234567890"/>
+
+        <button type="submit">Сохранить группу</button>
+    </form>
 
     <a href="/" class="btn">Назад в админ-панель</a>
 </div>
