@@ -28,7 +28,6 @@ async def main():
 
         await dp.start_polling(bot)
 
-
     except Exception as error:
         # Логирование исключений, если что-то пошло не так
         logger.exception(error)
