@@ -6,6 +6,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
+
 from utils.get_id import get_participants_count
 from utils.models import Group, db
 
@@ -59,7 +60,8 @@ async def save_group(chat_username: str = Form(...)):
         db.create_tables([Group], safe=True)
         with db.atomic():
             # Вставляем новую
-            Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link, permission_to_write=permission_to_write).execute()
+            Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link,
+                         permission_to_write=permission_to_write).execute()
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)
@@ -127,7 +129,6 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
     Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если "True", то блокировка сообщений выключена.
     """
     try:
-
         group = Group.get(Group.chat_title == chat_title)
         permission_to_write = "False"
         # Обновляем запись в базе

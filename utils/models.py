@@ -5,11 +5,14 @@ db = SqliteDatabase('db/database.db')
 
 
 class Group(Model):
-    """Запись групп в базу данных"""
+    """
+    Запись групп в базу данных
+    (unique=True - для уникальности. Если ссылка уже есть, то запись не будет создана)
+    """
     chat_id = IntegerField()  # ID группы
     chat_title = CharField()  # Название группы
     chat_total = IntegerField()  # Общее количество участников
-    chat_link = CharField(unique=True)  # Ссылка на группу (unique=True - для уникальности. Если ссылка уже есть, то запись не будет создана)
+    chat_link = CharField(unique=True)  # Ссылка на группу
     permission_to_write = IntegerField()  # Права на запись в группу
 
     class Meta:
