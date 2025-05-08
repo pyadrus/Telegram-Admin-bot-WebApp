@@ -22,13 +22,14 @@ class Group(Model):
 
 
 class GroupMembers(Model):
-    """Запись в базу данных участников группы, которые подписались или отписались от группы."""
+    """Запись в базу данных участников группы, которые подписались или отписались от группы.
+    null=True - поле может быть пустым."""
     chat_id = IntegerField()  # Получаем ID чата
     chat_title = CharField()  # Получаем название чата
     user_id = IntegerField()  # Получаем ID пользователя
     username = CharField()  # Получаем username пользователя
-    first_name = CharField()  # Получаем first_name пользователя
-    last_name = CharField()  # Получаем last_name пользователя
+    first_name = CharField(null=True)  # Получаем first_name пользователя
+    last_name = CharField(null=True)  # Получаем last_name пользователя
     date_now = CharField()  # Получаем текущую дату
 
     class Meta:
