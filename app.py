@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
+from loguru import logger
 from utils.get_id import get_participants_count
 from utils.models import Group, db
 
@@ -54,11 +54,12 @@ async def save_group(chat_username: str = Form(...)):
     """
     try:
         chat_id, chat_title, chat_total, chat_link = await get_participants_count(chat_username)
+        permission_to_write = "True"
         # Создаем таблицу, если она не создана ранее
         db.create_tables([Group], safe=True)
         with db.atomic():
             # Вставляем новую
-            Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link).execute()
+            Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link, permission_to_write=permission_to_write).execute()
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)
@@ -99,7 +100,6 @@ async def update_participants(chat_title: str):
 
         # Получаем актуальные данные через Telegram
         chat_id, title, total, link = await get_participants_count(group.chat_link)
-
         # Обновляем запись в базе
         Group.update(chat_total=total).where(Group.chat_title == chat_title).execute()
 
@@ -124,15 +124,19 @@ async def get_groups():
 @app.get("/api/update-restrict-messages")
 async def update_restrict_messages(chat_title: str, restricted: bool = True):
     """
-    Обновление статуса блокировки сообщений в группе.
+    Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если "True", то блокировка сообщений выключена.
     """
     try:
+
         group = Group.get(Group.chat_title == chat_title)
-        group.is_restricted = restricted
-        group.save()
-        return {"success": True, "is_restricted": group.is_restricted}
+        permission_to_write = "False"
+        # Обновляем запись в базе
+        Group.update(permission_to_write=permission_to_write).where(Group.chat_title == chat_title).execute()
+        return {"success": True, "permission_to_write": permission_to_write}
     except Group.DoesNotExist:
         return {"success": False, "error": "Группа не найдена"}
+    except Exception as e:
+        logger.exception(e)
 
 
 if __name__ == "__main__":

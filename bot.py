@@ -2,6 +2,7 @@ import asyncio
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
+from handlers.bot.bot import register_bot_handlers
 from handlers.bot.messages import register_message_handlers
 # Импортируем обработчики команд
 from system.dispatcher import bot  # Экземпляр бота
@@ -21,7 +22,7 @@ async def main():
         # Удаление ссылок и стикеров
         register_message_handlers()
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
-        # register_bot_handlers()
+        register_bot_handlers()
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         # register_admin_handlers()
 
