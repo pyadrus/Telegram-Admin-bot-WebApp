@@ -2,7 +2,6 @@ import asyncio
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
-from handlers.admin.group_restrictions import get_group_restrictions
 from handlers.bot.bot import register_bot_handlers
 from handlers.bot.messages import register_message_handlers
 # Импортируем обработчики команд
@@ -24,8 +23,6 @@ async def main():
         register_message_handlers()
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
         register_bot_handlers()
-        # Включение ограничений по группам
-        get_group_restrictions()
 
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         # register_admin_handlers()
