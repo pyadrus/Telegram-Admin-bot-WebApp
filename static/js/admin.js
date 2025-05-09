@@ -74,3 +74,33 @@ async function toggleRestrictMessages() {
         document.getElementById("participants-count").className = "status error";
     }
 }
+
+async function setReadOnly() {
+    const chat_title = document.getElementById("groups-select").value.trim();  // ← важно: groups-select
+    if (!chat_title) return alert("Выберите группу");
+
+    const res = await fetch(`/api/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+    const data = await res.json();
+
+    if (!data.success) return alert("Не найден ID группы");
+
+    const response = await fetch(`/api/chat/readonly?chat_id=${data.chat_id}`);
+    const result = await response.json();
+
+    alert(result.message || "Ошибка при установке ограничений");
+}
+
+async function setFullAccess() {
+    const chat_title = document.getElementById("groups-select").value.trim();
+    if (!chat_title) return alert("Выберите группу");
+
+    const res = await fetch(`/api/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+    const data = await res.json();
+
+    if (!data.success) return alert("Не найден ID группы");
+
+    const response = await fetch(`/api/chat/writeable?chat_id=${data.chat_id}`);
+    const result = await response.json();
+
+    alert(result.message || "Ошибка при снятии ограничений");
+}

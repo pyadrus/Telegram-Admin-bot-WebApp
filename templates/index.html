@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Админ-панель</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
@@ -30,7 +31,9 @@
         <select id="groups-select">
             <option value="">-- Выберите группу --</option>
         </select>
-        <button onclick="toggleRestrictMessages()">Сохранить</button>
+        <!-- Исправленные кнопки -->
+        <button onclick="setReadOnly()">🔒 Заблокировать написание</button>
+        <button onclick="setFullAccess()">🔓 Разрешить писать</button>
     </div>
 
     <!-- Ограничение по подписке на канал -->
