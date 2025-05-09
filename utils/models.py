@@ -4,6 +4,27 @@ from peewee import SqliteDatabase, Model, CharField, IntegerField
 db = SqliteDatabase('db/database.db')
 
 
+class PrivilegedUsers(Model):
+    """
+    Записывает в базу данных идентификатор пользователя, которому будет разрешено выполнение определенных действий в чате,
+    в базу данных. Будут сохранены идентификаторы чата и участника чата:
+    """
+
+    chat_id = IntegerField()  # Получаем ID чата
+    user_id = IntegerField()  # Получаем ID пользователя
+    username = CharField()  # Получаем username пользователя
+    first_name = CharField(null=True)  # Получаем first_name пользователя
+    last_name = CharField(null=True)  # Получаем last_name пользователя
+    date_add = CharField()  # Получаем текущую дату
+    admin_id = IntegerField()  # Получаем ID администратора, который добавил пользователя в базу данных
+    chat_title = CharField()  # Получаем название чата
+
+    class Meta:
+        database = db  # Указываем, что данная модель будет использовать базу данных
+        table_name = "privileged_users"  # Имя таблицы
+        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+
+
 class Group(Model):
     """
     Запись групп в базу данных
@@ -44,6 +65,7 @@ def initialize_db():
     db.connect()
     db.create_tables([Group], safe=True)
     db.create_tables([GroupMembers], safe=True)
+    db.create_tables([PrivilegedUsers], safe=True)
     db.close()
 
 

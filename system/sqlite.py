@@ -50,36 +50,6 @@ def set_group_restriction(message, channel_id, channel_username):
     conn.close()
 
 
-def record_the_id_of_allowed_users(chat_id, user_id, username, first_name, last_name, date_add, admin_id, chat_title):
-    """
-    Мы записываем идентификатор пользователя, которому будет разрешено выполнение определенных действий в чате,
-    в базу данных. Будут сохранены идентификаторы чата и участника чата:
-
-    Аргументы:
-    :param chat_id: Идентификатор чата, в котором пользователю будут предоставлены права;
-    :param user_id: Идентификатор пользователя, которому будут предоставлены определенные права;
-    :param username: username пользователя
-    :param first_name: имя пользователя
-    :param last_name: фамилия пользователя
-    :param date_add: дата добавления идентификатора пользователя в базу данных;
-    :param admin_id: идентификатор администратора, который добавил пользователя в базу данных;
-    :param chat_title: название чата
-    :return: None
-    """
-    with sqlite3.connect(path_database) as conn:
-        # Инициализация соединения с базой данных SQLite
-        cursor = conn.cursor()
-        # Создание таблицы пользователей, если ее еще нет
-        cursor.execute("""CREATE TABLE IF NOT EXISTS privileged_users
-                       (chat_id, user_id,username, first_name,last_name, date_add, admin_id, chat_title)""")
-        # Записываем ID пользователя в базу данных
-        cursor.execute("INSERT INTO privileged_users "
-                       "(chat_id, user_id, username, first_name, last_name, date_add, admin_id, chat_title) "
-                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (chat_id, user_id, username, first_name,
-                                                           last_name, date_add, admin_id, chat_title))
-        conn.commit()
-
-
 def fetch_user_data():
     with sqlite3.connect(path_database) as conn:
         # Инициализация соединения с базой данных SQLite

@@ -13,7 +13,8 @@ from system.dispatcher import bot
 from system.dispatcher import router
 from system.sqlite import (set_group_restriction, get_required_channel_for_group,
                            get_required_channel_username_for_group, get_groups_by_channel_id)
-from system.sqlite import writing_bad_words_to_the_database, record_the_id_of_allowed_users
+from system.sqlite import writing_bad_words_to_the_database
+from utils.models import PrivilegedUsers
 
 
 @router.message(Command("id"))
@@ -67,7 +68,7 @@ async def process_user_id(message: Message, state: FSMContext):
     """Обработчик ввода ID пользователя"""
     try:
         chat_member = await bot.get_chat_member(message.chat.id, int(message.text))
-        record_the_id_of_allowed_users(
+        chat_member_write = PrivilegedUsers(
             chat_id=message.chat.id,  # Получаем ID чата
             user_id=int(message.text),  # Получаем введенный админом ID
             username=chat_member.user.username if chat_member.user.username else "",
@@ -76,11 +77,11 @@ async def process_user_id(message: Message, state: FSMContext):
             date_add=datetime.datetime.now(),
             admin_id=message.from_user.id,  # Получаем ID админа, который отправил сообщение с ID боту
             chat_title=message.chat.title  # Получаем название чата
-        )  # Записываем данные
+        )
+        chat_member_write.save()
+
         # Отправляем сообщение об успешной записи в чат
-        await message.answer(
-            f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} даны особые права в группе</code>",
-            parse_mode="HTML")
+        await message.answer(f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} даны особые права в группе</code>", parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с введенным ID пользователя
         await state.clear()  # Сбрасываем состояние FSM
     except ValueError:
