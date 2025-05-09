@@ -82,6 +82,7 @@ async def handle_text_messages(message: Message) -> None:
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
                 return  # После удаления сообщения больше ничего не проверяем
+
         # Проверка на ссылки
         for entity in message.entities or []:
             if entity.type in ["url", "text_link", "mention"]:
