@@ -39,12 +39,14 @@
     <!-- Ограничение по подписке на канал -->
     <div class="section">
         <h2>Ограничение по подписке на канал</h2>
-        <label for="required-channel">Введите ID канала (например: @mychannel):</label>
-        <input type="text" id="required-channel"/>
-        <label>
-            <input type="checkbox" id="require-subscription"/>
-            Требовать подписку на канал для отправки сообщений
-        </label>
+        <label for="groups-selected">Выберите группу, которую хотите ограничить:</label>
+        <select id="groups-selected">
+            <option value="">-- Выберите группу --</option>
+        </select>
+        <label for="groups-selecteds">Выберите группу / канал, на которую нужно подписаться:</label>
+        <select id="groups-selecteds">
+            <option value="">-- Выберите группу --</option>
+        </select>
         <button onclick="toggleSubscriptionRequirement()">Сохранить</button>
     </div>
 

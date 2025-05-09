@@ -1,5 +1,4 @@
 import uvicorn
-from aiogram.types import ChatPermissions
 from fastapi import FastAPI, Request
 from fastapi import Form
 from fastapi.responses import HTMLResponse
@@ -8,56 +7,18 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
-from system.dispatcher import bot
+from api.chat_routes import router as chat_router  # ← Правильный импорт роутера
 from utils.get_id import get_participants_count
 from utils.models import Group, db
 
 app = FastAPI()
 
-# === Указываем директорию с шаблонами и статикой ===
+# === Подключаем шаблоны и статику ===
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# === Права для чата ===
-READ_ONLY = ChatPermissions(can_send_messages=False)  # Запрещено писать в чат
-FULL_ACCESS = ChatPermissions(can_send_messages=True)  # Разрешено писать в чат
-
-
-@app.get("/api/get-chat-id")
-async def get_chat_id(title: str):
-    try:
-        group = Group.get(Group.chat_title == title)
-        return {"success": True, "chat_id": group.chat_id}
-    except Group.DoesNotExist:
-        return {"success": False, "error": "Группа не найдена"}
-
-
-@app.get("/api/chat/readonly")
-async def chat_readonly(chat_id: int):
-    """
-    Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться
-    числовым значением.
-    """
-    try:
-        chat_id = str(f"-100{chat_id}")
-        await bot.set_chat_permissions(chat_id=int(chat_id), permissions=READ_ONLY)
-        return {"success": True, "message": "Чат переведён в режим «только чтение»"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
-@app.get("/api/chat/writeable")
-async def chat_writeable(chat_id: int):
-    """
-    Переводит чат в режим «все могут писать». Передаваемый chat_id, должен быть в формате -1001234567890, и являться
-    числовым значением.
-    """
-    try:
-        chat_id = str(f"-100{chat_id}")
-        await bot.set_chat_permissions(chat_id=chat_id, permissions=FULL_ACCESS)
-        return {"success": True, "message": "Чат переведён в режим «все могут писать»"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
+# === Регистрируем роуты ===
+app.include_router(chat_router)  # ← Регистрация роутера
 
 
 # === Маршруты ===
