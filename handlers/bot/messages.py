@@ -46,14 +46,12 @@ async def help_command(message: Message, state: FSMContext) -> None:
 
 
 @router.message(F.content_type == ContentType.TEXT)
-async def handle_text_messages(message: Message, state: FSMContext) -> None:
+async def handle_text_messages(message: Message) -> None:
     """
     Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения, упоминания, запрещенные слова и ссылки.
 
     :param message: Сообщение Telegram.
-    :param state: Состояние FSM.
     """
-    await state.clear()
     chat_id = message.chat.id
     user_id = message.from_user.id
 
@@ -101,39 +99,11 @@ async def handle_text_messages(message: Message, state: FSMContext) -> None:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
 
 
-# Функция-обработчик стикеров
-@router.message(F.content_type == ContentType.STICKER)
-async def handle_sticker_messages(message: Message) -> None:
-    """
-    Обработчик сообщений со стикерами. Удаляет стикеры, если пользователь не имеет разрешения.
-
-    :param message: Сообщение Telegram.
-    """
-    if not message.from_user:
-        logger.warning("Сообщение без отправителя (from_user отсутствует).")
-        return
-    logger.info(f"Обработка стикера от {message.from_user.full_name}.")
-    # Проверяем, есть ли пользователь в списке разрешенных
-    if (message.chat.id, message.from_user.id) in fetch_user_data():
-        logger.info(f"{message.from_user.full_name} отправил стикер в группу.")
-    else:
-        # Удаляем сообщение
-        await message.delete()
-        warning = await message.answer(
-            f"<code>✅ {message.from_user.full_name}</code>\n"
-            f"<code>В чате запрещено отправлять стикеры.</code>",
-            parse_mode="HTML",
-        )
-        await asyncio.sleep(int(time_del))
-        await warning.delete()
-
-
 def register_message_handlers() -> None:
     """
     Регистрирует обработчики событий для бота.
     """
     router.message.register(handle_text_messages)
-    router.message.register(handle_sticker_messages)
     router.message.register(start_command, Command("start"))
     router.message.register(admin_command, Command("admin"))
     router.message.register(help_command, Command("help"))

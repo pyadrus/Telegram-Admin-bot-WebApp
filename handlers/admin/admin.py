@@ -81,7 +81,9 @@ async def process_user_id(message: Message, state: FSMContext):
         chat_member_write.save()
 
         # Отправляем сообщение об успешной записи в чат
-        await message.answer(f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} даны особые права в группе</code>", parse_mode="HTML")
+        await message.answer(
+            f"<code>✅ Участнику {chat_member.user.first_name} {chat_member.user.last_name} даны особые права в группе</code>",
+            parse_mode="HTML")
         await message.delete()  # Удаляем сообщение с введенным ID пользователя
         await state.clear()  # Сбрасываем состояние FSM
     except ValueError:
@@ -223,7 +225,3 @@ def register_admin_handlers():
     router.message.register(cmd_add_bad)
     router.message.register(cmd_user_add)
     router.message.register(set_channel)
-
-
-if __name__ == '__main__':
-    register_admin_handlers()
