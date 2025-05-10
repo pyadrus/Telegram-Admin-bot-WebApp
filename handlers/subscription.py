@@ -17,9 +17,9 @@ async def check_subscription(message: Message):
         return
     try:
         clean_id = str(message.chat.id)[4:]  # Преобразуем в строку и убираем первые 4 символа (-100)
-        restriction = GroupRestrictions.get(GroupRestrictions.group_id == clean_id)
+        restriction = GroupRestrictions.get_or_none(GroupRestrictions.group_id == clean_id)
         if not restriction:
-            return
+            return  # или обработать случай, когда ограничений нет
         required_channel_id = restriction.required_channel_id
         required_channel_username = restriction.required_channel_username
         chat_id = str(f"-100{required_channel_id}")
@@ -34,7 +34,7 @@ async def check_subscription(message: Message):
             # Запускаем задачу удаления сообщения через 60 секунд
             asyncio.create_task(delete_message_after_delay(bot_message, 60))
     except Exception as e:
-        logger.error(f"Ошибка при проверке подписки: {e}")
+        logger.exception(f"Ошибка при проверке подписки: {e}")
         await message.delete()
         user_mention = message.from_user.mention_html() if message.from_user.username else f"User {message.from_user.id}"
         # Используем username из базы или ID, если username недоступен

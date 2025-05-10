@@ -2,7 +2,6 @@ import asyncio
 
 from aiogram import F
 from aiogram.enums import ContentType
-from aiogram.filters import Command
 from aiogram.types import Message
 from loguru import logger
 
@@ -11,7 +10,7 @@ from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidd
                            recording_actions_in_the_database)
 
 
-@router.message(F.content_type == ContentType.TEXT)
+@router.message(F.content_type == ContentType.ANY)
 async def handle_text_messages(message: Message) -> None:
     """
     Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения, упоминания, запрещенные слова и ссылки.
@@ -19,7 +18,9 @@ async def handle_text_messages(message: Message) -> None:
     :param message: Сообщение Telegram.
     """
     chat_id = message.chat.id
+    logger.debug(f"Получено сообщение от пользователя {message.from_user.id}")
     user_id = message.from_user.id
+    logger.debug(f"Пользователь {user_id}")
 
     try:
         # Проверка на пересылку сообщений

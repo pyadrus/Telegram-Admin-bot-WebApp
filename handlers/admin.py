@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 
 from aiogram.filters import Command
