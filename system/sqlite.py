@@ -1,53 +1,64 @@
 import sqlite3
 from datetime import datetime
 
+from peewee import SqliteDatabase, Model, CharField, IntegerField
+
+# Настройка подключения к базе данных SQLite (или другой базы данных)
+db = SqliteDatabase('setting/database.db')
 path_database = 'setting/database.db'
 
 
+class GroupRestrictions(Model):
+    """
+    Записывает в базу данных идентификатор чата, для проверки подписки.
+    """
+
+    group_id = IntegerField()  # Получаем ID чата
+    required_channel_id = IntegerField()  # Получаем ID чата
+    required_channel_username = CharField()  # Получаем username чата
+
+    class Meta:
+        database = db  # Указываем, что данная модель будет использовать базу данных
+        table_name = "group_restrictions"  # Имя таблицы
+        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+
+
 def get_groups_by_channel_id(update):
-    conn = sqlite3.connect(path_database)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                                             (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-    c.execute('SELECT group_id FROM group_restrictions WHERE required_channel_id = ?', (update.chat.id,))
-    groups = c.fetchall()
-    conn.close()
+    # Выполняем запрос: выбираем все group_id, где required_channel_id совпадает с update.chat.id
+    query = GroupRestrictions.select(GroupRestrictions.group_id).where(
+        GroupRestrictions.required_channel_id == update.chat.id)
+
+    # Извлекаем результаты как список значений group_id
+    groups = [row.group_id for row in query]
+
     return groups
 
 
 def get_required_channel_username_for_group(message):
-    conn = sqlite3.connect(path_database)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                 (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-    c.execute('SELECT required_channel_username FROM group_restrictions WHERE group_id = ?', (message.chat.id,))
-    result = c.fetchone()
-    conn.close()
-    return result
+    try:
+        # Получаем запись по group_id (message.chat.id)
+        restriction = GroupRestrictions.get(GroupRestrictions.group_id == message.chat.id)
+        return (restriction.required_channel_username,)
+    except GroupRestrictions.DoesNotExist:
+        return None
 
 
 def get_required_channel_for_group(message):
-    conn = sqlite3.connect(path_database)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS group_restrictions
-                 (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-    c.execute('SELECT required_channel_id, required_channel_username FROM group_restrictions WHERE group_id = ?',
-              (message.chat.id,))
-    result = c.fetchone()
-    conn.close()
-    return result  # Возвращает кортеж (channel_id, username) или None
+    try:
+        # Получаем запись по group_id (message.chat.id)
+        restriction = GroupRestrictions.get(GroupRestrictions.group_id == message.chat.id)
+        return (restriction.required_channel_id, restriction.required_channel_username)
+    except GroupRestrictions.DoesNotExist:
+        return None
 
 
 def set_group_restriction(message, channel_id, channel_username):
-    conn = sqlite3.connect(path_database)
-    c = conn.cursor()
-    c.execute(
-        '''CREATE TABLE IF NOT EXISTS group_restrictions (group_id INTEGER PRIMARY KEY, required_channel_id INTEGER, required_channel_username TEXT)''')
-    c.execute(
-        'INSERT OR REPLACE INTO group_restrictions (group_id, required_channel_id, required_channel_username) VALUES (?, ?, ?)',
-        (message.chat.id, channel_id, channel_username))
-    conn.commit()
-    conn.close()
+    # Создаем или заменяем запись в таблице
+    GroupRestrictions.insert(
+        group_id=message.chat.id,
+        required_channel_id=channel_id,
+        required_channel_username=channel_username
+    ).on_conflict_replace().execute()
 
 
 def fetch_user_data():

@@ -1,5 +1,7 @@
 from peewee import SqliteDatabase, Model, CharField, IntegerField
 
+from system.sqlite import GroupRestrictions
+
 # Настройка подключения к базе данных SQLite (или другой базы данных)
 db = SqliteDatabase('db/database.db')
 
@@ -66,6 +68,7 @@ def initialize_db():
     db.create_tables([Group], safe=True)
     db.create_tables([GroupMembers], safe=True)
     db.create_tables([PrivilegedUsers], safe=True)
+    db.create_tables([GroupRestrictions], safe=True)
     db.close()
 
 

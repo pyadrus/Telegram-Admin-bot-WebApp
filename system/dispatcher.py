@@ -17,7 +17,6 @@ api_hash = config.get('telegram_settings', 'hash')
 READ_ONLY = ChatPermissions(can_send_messages=False)  # Запрещено писать в чат
 FULL_ACCESS = ChatPermissions(can_send_messages=True)  # Разрешено писать в чат
 
-
 # Инициализация бота и диспетчера
 bot = Bot(token=bot_token)
 storage = MemoryStorage()  # Хранилище
