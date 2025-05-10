@@ -7,7 +7,11 @@ function populateSelect(url, selectId) {
         .then(data => {
             const select = document.getElementById(selectId);
             select.innerHTML = '<option value="">-- Выберите группу --</option>';
-            data.chat_title.forEach(group => {
+
+            // Проверяем, есть ли нужный ключ
+            const groups = data.chat_title || data.groups || [];
+
+            groups.forEach(group => {
                 const option = document.createElement('option');
                 option.value = group.chat_title;
                 option.textContent = group.chat_title;
@@ -21,6 +25,8 @@ function populateSelect(url, selectId) {
 window.onload = () => {
     populateSelect('/api/chat_title', 'group-select');
     populateSelect('/api/chat_title', 'groups-select');
+    populateSelect('/api/chat_title', 'groups-selected');
+    populateSelect('/api/chat_title', 'groups-selecteds');
 };
 
 // Получение участников
@@ -103,4 +109,24 @@ async function setFullAccess() {
     const result = await response.json();
 
     alert(result.message || "Ошибка при снятии ограничений");
+}
+
+// Ограничение на подписку
+async function toggleSubscriptionRequirement() {
+    const chat_title = document.getElementById("groups-selected").value.trim(); // Первое поле выбора
+    const required_chat_title = document.getElementById("groups-selecteds").value.trim(); // Второе поле выбора
+
+    if (!chat_title || !required_chat_title) {
+        alert("Выберите обе группы");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/chat/require-subscription?chat_title=${encodeURIComponent(chat_title)}&required_chat_title=${encodeURIComponent(required_chat_title)}`);
+        const result = await response.json();
+
+        alert(result.message || "Ошибка");
+    } catch (error) {
+        alert("Не удалось сохранить настройки");
+    }
 }

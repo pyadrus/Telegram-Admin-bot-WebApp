@@ -3,6 +3,7 @@ import asyncio
 from loguru import logger  # https://github.com/Delgan/loguru
 
 from handlers.admin.admin import register_admin_handlers
+from handlers.admin.subscription import register_subscription_handlers
 from handlers.bot.bot import register_bot_handlers
 from handlers.bot.messages import register_message_handlers
 # Импортируем обработчики команд
@@ -26,6 +27,9 @@ async def main():
         register_bot_handlers()
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         register_admin_handlers()
+        # Проверка на подписку
+        register_subscription_handlers()
+
         await dp.start_polling(bot)
 
     except Exception as error:

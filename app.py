@@ -129,7 +129,8 @@ async def get_groups():
 @app.get("/api/update-restrict-messages")
 async def update_restrict_messages(chat_title: str, restricted: bool = True):
     """
-    Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если "True", то блокировка сообщений выключена.
+    Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если
+    "True", то блокировка сообщений выключена.
     """
     try:
         group = Group.get(Group.chat_title == chat_title)
