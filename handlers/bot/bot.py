@@ -15,7 +15,7 @@ from utils.models import GroupMembers
 async def handle_new_member(event: ChatMemberUpdated):
     """
     Обработчик события добавления нового участника в группу.
-    Записывает информацию о новом участнике в базу данных.
+    Записывает информацию с новом участнике в базу данных.
 
     IS_NOT_MEMBER >> IS_MEMBER - Участник только что присоединился к группе.
     (https://docs.aiogram.dev/en/latest/dispatcher/filters/chat_member_updated.html#usage)
