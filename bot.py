@@ -24,10 +24,8 @@ async def main():
         register_message_handlers()
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
         register_bot_handlers()
-
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         register_admin_handlers()
-
         await dp.start_polling(bot)
 
     except Exception as error:

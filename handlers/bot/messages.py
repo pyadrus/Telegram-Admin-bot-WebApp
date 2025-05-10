@@ -10,8 +10,8 @@ from loguru import logger
 from keyboard.keyboard import create_group_participants_button, create_admin_panel_keyboard
 from messages.translations_loader import translations
 from system.dispatcher import router, bot, time_del
-from system.sqlite import fetch_user_data, reading_from_the_database_of_forbidden_words, \
-    recording_actions_in_the_database
+from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidden_words,
+                           recording_actions_in_the_database)
 
 
 @router.message(Command("start"))
