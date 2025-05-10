@@ -30,8 +30,7 @@ async def chat_subscribe(chat_title: str, required_chat_title: str):
         # Получаем информацию о канале/группе, на который нужно подписаться
         required_group = Group.get(Group.chat_title == required_chat_title)
         channel_id = required_group.chat_id  # id канала или группы
-        channel_username = required_group.chat_link # username канала или группы
-
+        channel_username = required_group.chat_link  # username канала или группы
         logger.info(f"Вторая группа {channel_id}. Username {channel_username}")
 
         # Обновляем запись в базе
@@ -42,7 +41,6 @@ async def chat_subscribe(chat_title: str, required_chat_title: str):
                 'required_channel_username': channel_username
             }
         )
-
         if not created:
             # Если запись уже существует — обновляем её
             GroupRestrictions.update(
@@ -50,7 +48,8 @@ async def chat_subscribe(chat_title: str, required_chat_title: str):
                 required_channel_username=channel_username
             ).where(GroupRestrictions.group_id == group_id).execute()
 
-        return {"success": True, "message": f"Теперь для группы '{chat_title}' требуется подписка на '{required_chat_title}'"}
+        return {"success": True,
+                "message": f"Теперь для группы '{chat_title}' требуется подписка на '{required_chat_title}'"}
 
     except Group.DoesNotExist as e:
         return {"success": False, "error": "Группа не найдена: " + str(e)}

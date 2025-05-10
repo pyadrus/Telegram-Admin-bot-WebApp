@@ -21,34 +21,6 @@ class GroupRestrictions(Model):
         primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
 
 
-def get_groups_by_channel_id(update):
-    # Выполняем запрос: выбираем все group_id, где required_channel_id совпадает с update.chat.id
-    query = GroupRestrictions.select(GroupRestrictions.group_id).where(
-        GroupRestrictions.required_channel_id == update.chat.id)
-    # Извлекаем результаты как список значений group_id
-    groups = [row.group_id for row in query]
-    return groups
-
-
-def get_required_channel_username_for_group(message):
-    restriction = GroupRestrictions.get(GroupRestrictions.group_id == message.chat.id)
-    return (restriction.required_channel_username,)
-
-
-def get_required_channel_for_group(message):
-    restriction = GroupRestrictions.get(GroupRestrictions.group_id == message.chat.id)
-    return restriction.required_channel_id, restriction.required_channel_username
-
-
-# def set_group_restriction(message, channel_id, channel_username):
-#     # Создаем или заменяем запись в таблице
-#     GroupRestrictions.insert(
-#         group_id=message.chat.id,
-#         required_channel_id=channel_id,
-#         required_channel_username=channel_username
-#     ).on_conflict_replace().execute()
-
-
 class PrivilegedUsers(Model):
     """
     Записывает в базу данных идентификатор пользователя, которому будет разрешено выполнение определенных действий в чате,
