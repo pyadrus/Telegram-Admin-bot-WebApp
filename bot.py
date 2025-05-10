@@ -4,8 +4,9 @@ from aiogram.filters import Command
 from loguru import logger  # https://github.com/Delgan/loguru
 
 from handlers.admin import register_admin_handlers
-from handlers.bot import register_bot_handlers
-from handlers.messages import register_message_handlers
+from handlers.bot import handle_new_member, handle_member_left, delete_system_message_new_member, \
+    delete_system_message_member_left
+from handlers.messages import handle_text_messages
 from handlers.start import start_command
 from handlers.subscription import register_subscription_handlers
 # Импортируем обработчики команд
@@ -25,9 +26,12 @@ async def main():
         logger.info("Бот watchman_admin_bot запущен")
         router.message.register(start_command, Command("start"))
         # Удаление ссылок и стикеров
-        register_message_handlers()
+        router.message.register(handle_text_messages)
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
-        register_bot_handlers()
+        router.chat_member.register(handle_new_member)
+        router.chat_member.register(handle_member_left)
+        router.message.register(delete_system_message_new_member)
+        router.message.register(delete_system_message_member_left)
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         register_admin_handlers()
         # Проверка на подписку

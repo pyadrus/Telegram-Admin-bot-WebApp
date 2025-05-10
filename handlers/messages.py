@@ -1,7 +1,5 @@
 import asyncio
 
-from aiogram import F
-from aiogram.enums import ContentType
 from aiogram.types import Message
 from loguru import logger
 
@@ -10,13 +8,14 @@ from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidd
                            recording_actions_in_the_database)
 
 
-@router.message(F.content_type == ContentType.ANY)
+@router.message()
 async def handle_text_messages(message: Message) -> None:
     """
     Основной обработчик текстовых сообщений. Обрабатывает пересылаемые сообщения, упоминания, запрещенные слова и ссылки.
 
     :param message: Сообщение Telegram.
     """
+    logger.debug("Хендлер сработал")
     chat_id = message.chat.id
     logger.debug(f"Получено сообщение от пользователя {message.from_user.id}")
     user_id = message.from_user.id
@@ -65,10 +64,3 @@ async def handle_text_messages(message: Message) -> None:
                     return  # После удаления сообщения больше ничего не проверяем
     except Exception as e:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
-
-
-def register_message_handlers() -> None:
-    """
-    Регистрирует обработчики событий для бота.
-    """
-    router.message.register(handle_text_messages)

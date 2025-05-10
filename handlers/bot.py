@@ -83,12 +83,3 @@ async def delete_system_message_member_left(message: Message):
     logger.info("Удаляем системное сообщение")
 
 
-def register_bot_handlers():
-    """
-    Регистрация обработчиков событий для бота.
-    Добавляет обработчики событий на добавление и выход участников, а также на удаление системных сообщений.
-    """
-    router.chat_member.register(handle_new_member)
-    router.chat_member.register(handle_member_left)
-    router.message.register(delete_system_message_new_member)
-    router.message.register(delete_system_message_member_left)
