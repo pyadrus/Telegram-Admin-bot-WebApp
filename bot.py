@@ -3,6 +3,7 @@ import asyncio
 from loguru import logger  # https://github.com/Delgan/loguru
 
 from handlers.admin import register_admin_handlers
+from handlers.start import register_start_handlers
 from handlers.subscription import register_subscription_handlers
 from handlers.bot import register_bot_handlers
 from handlers.messages import register_message_handlers
@@ -21,6 +22,7 @@ async def main():
     """
     try:
         logger.info("Бот watchman_admin_bot запущен")
+        register_start_handlers()
         # Удаление ссылок и стикеров
         register_message_handlers()
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
