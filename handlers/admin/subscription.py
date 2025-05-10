@@ -1,7 +1,6 @@
 import asyncio
 
 from aiogram.enums import ChatMemberStatus
-from aiogram.filters import Command
 from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, JOIN_TRANSITION
 from aiogram.types import Message, ChatMemberUpdated
 from loguru import logger
@@ -9,55 +8,20 @@ from loguru import logger
 from handlers.admin.admin import delete_message_after_delay
 from system.dispatcher import bot
 from system.dispatcher import router
-from system.sqlite import (set_group_restriction, get_required_channel_for_group,
-                           get_required_channel_username_for_group, get_groups_by_channel_id)
-
-
-@router.message(Command("setchannel"))
-async def set_channel(message: Message):
-    """Обработчик команды /setchannel"""
-    logger.info(f"Пользователь {message.from_user.id} вызвал команду '/setchannel' в чате {message.chat.id}")
-    if message.chat.type not in ['group', 'supergroup']:
-        await message.reply("Эта команда работает только в группах!")
-        return
-
-    chat_member = await bot.get_chat_member(message.chat.id, message.from_user.id)
-    if chat_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR]:
-        await message.reply("Только администраторы могут использовать эту команду!")
-        return
-
-    try:
-        args = message.text.split()
-        if len(args) != 2 or not args[1].startswith('@'):
-            await message.reply("Используйте: /setchannel @username (например, @vkysno_i_prossto)")
-            return
-
-        channel_username = args[1]
-        # Получаем информацию о канале по username
-        chat = await bot.get_chat(channel_username)
-        channel_id = chat.id
-
-        set_group_restriction(message, channel_id, channel_username)
-
-        await message.reply(f"Установлен канал {channel_username} для обязательной подписки")
-
-    except Exception as e:
-        await message.reply(f"Ошибка: {str(e)}. Убедитесь, что username канала верный и бот имеет к нему доступ")
+from utils.models import get_required_channel_for_group, get_required_channel_username_for_group, \
+    get_groups_by_channel_id
 
 
 @router.message()
 async def check_subscription(message: Message):
+    """Проверки подписки на группу / канал"""
     if message.chat.type not in ['group', 'supergroup']:
         return
-
     try:
         result = get_required_channel_for_group(message)
-
         if not result:
             return
-
         required_channel_id, required_channel_username = result
-
         member = await bot.get_chat_member(required_channel_id, message.from_user.id)
         if member.status not in [ChatMemberStatus.MEMBER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR]:
             await message.delete()
@@ -100,5 +64,7 @@ async def on_chat_member_update(update: ChatMemberUpdated):
                 logger.error(f"Ошибка при снятии ограничений для группы {group[0]}: {e}")
                 continue
 
+
 def register_subscription_handlers():
-    router.message.register(set_channel)
+    router.message.register(check_subscription)
+    router.message.register(on_chat_member_update)

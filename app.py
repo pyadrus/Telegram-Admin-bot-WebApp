@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 from loguru import logger
 
 from api.chat_routes import router as chat_router  # ← Правильный импорт роутера
+from api.subscribe_channel import router as subscribe_channel  # ← Правильный импорт роутера
 from utils.get_id import get_participants_count
 from utils.models import Group, db
 
@@ -19,6 +20,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # === Регистрируем роуты ===
 app.include_router(chat_router)  # ← Регистрация роутера
+app.include_router(subscribe_channel)  # ← Регистрация роутера
 
 
 # === Маршруты ===

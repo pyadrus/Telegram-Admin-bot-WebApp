@@ -111,10 +111,10 @@ async function setFullAccess() {
     alert(result.message || "Ошибка при снятии ограничений");
 }
 
-// Ограничение на подписку
+// Установка ограничения по подписке между двумя группами
 async function toggleSubscriptionRequirement() {
-    const chat_title = document.getElementById("groups-selected").value.trim(); // Первое поле выбора
-    const required_chat_title = document.getElementById("groups-selecteds").value.trim(); // Второе поле выбора
+    const chat_title = document.getElementById("groups-selected").value.trim(); // группа, которую будем ограничивать
+    const required_chat_title = document.getElementById("groups-selecteds").value.trim(); // группа, на которую нужно подписаться
 
     if (!chat_title || !required_chat_title) {
         alert("Выберите обе группы");
@@ -122,11 +122,17 @@ async function toggleSubscriptionRequirement() {
     }
 
     try {
+        // Отправляем два параметра: chat_title и required_chat_title
         const response = await fetch(`/api/chat/require-subscription?chat_title=${encodeURIComponent(chat_title)}&required_chat_title=${encodeURIComponent(required_chat_title)}`);
         const result = await response.json();
 
-        alert(result.message || "Ошибка");
+        if (result.success) {
+            alert(result.message);
+        } else {
+            throw new Error(result.error || "Неизвестная ошибка");
+        }
     } catch (error) {
-        alert("Не удалось сохранить настройки");
+        console.error("Ошибка:", error);
+        alert("Не удалось сохранить настройки ограничений.");
     }
 }
