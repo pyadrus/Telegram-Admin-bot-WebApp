@@ -5,7 +5,6 @@ from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, JOIN_TR
 from aiogram.types import Message, ChatMemberUpdated, ChatPermissions
 from loguru import logger
 
-from handlers.admin.admin import delete_message_after_delay
 from system.dispatcher import bot
 from system.dispatcher import router
 from utils.models import GroupRestrictions
@@ -80,6 +79,15 @@ async def on_chat_member_update(update: ChatMemberUpdated):
                 continue
     except Exception as e:
         logger.error(f"Ошибка при обработке события JOIN_TRANSITION: {e}")
+
+
+async def delete_message_after_delay(message: Message, delay: int):
+    """Удаляет сообщение через заданное количество секунд"""
+    await asyncio.sleep(delay)
+    try:
+        await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
+    except Exception as e:
+        logger.error(f"Ошибка при удалении сообщения: {e}")
 
 
 def register_subscription_handlers():

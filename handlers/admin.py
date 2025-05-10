@@ -118,13 +118,7 @@ async def process_bad_word(message: Message, state: FSMContext):
     await state.clear()  # Сбрасываем состояние
 
 
-async def delete_message_after_delay(message: Message, delay: int):
-    """Удаляет сообщение через заданное количество секунд"""
-    await asyncio.sleep(delay)
-    try:
-        await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
-    except Exception as e:
-        logger.error(f"Ошибка при удалении сообщения: {e}")
+
 
 
 def register_admin_handlers():

@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from loguru import logger
 
-from keyboard.keyboard import create_group_participants_button, create_admin_panel_keyboard
+from keyboard.keyboard import create_admin_panel_keyboard
 from messages.translations_loader import translations
 from system.dispatcher import router, bot, time_del
 from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidden_words,
@@ -27,22 +27,6 @@ async def start_command(message: Message, state: FSMContext) -> None:
         reply_markup=keyboard,
         parse_mode="HTML"
     )
-
-
-@router.message(Command("admin"))
-async def admin_command(message: Message, state: FSMContext) -> None:
-    await state.clear()  # Сбрасываем состояние FSM
-    await bot.send_message(message.chat.id, translations["ru"]["menu"]["admin"],
-                           reply_markup=create_group_participants_button(),
-                           parse_mode="HTML")
-
-
-@router.message(Command("help"))
-async def help_command(message: Message, state: FSMContext) -> None:
-    await state.clear()  # Сбрасываем состояние FSM
-    await bot.send_message(message.chat.id, translations["ru"]["menu"]["help"],
-                           reply_markup=create_group_participants_button(),
-                           parse_mode="HTML")
 
 
 @router.message(F.content_type == ContentType.TEXT)
@@ -104,7 +88,5 @@ def register_message_handlers() -> None:
     """
     Регистрирует обработчики событий для бота.
     """
-    router.message.register(handle_text_messages)
     router.message.register(start_command, Command("start"))
-    router.message.register(admin_command, Command("admin"))
-    router.message.register(help_command, Command("help"))
+    # router.message.register(handle_text_messages)
