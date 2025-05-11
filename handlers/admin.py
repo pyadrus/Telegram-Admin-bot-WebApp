@@ -8,7 +8,7 @@ from loguru import logger
 from states.states import AddAndDelBadWords, AddUserStates
 from system.dispatcher import bot
 from system.dispatcher import router
-from system.sqlite import writing_bad_words_to_the_database
+
 from utils.models import PrivilegedUsers
 
 
@@ -86,6 +86,7 @@ async def process_user_id(message: Message, state: FSMContext):
         await message.answer('Введите целое число')
         await message.delete()  # Удаляем сообщение с неправильным вводом
 
+# Запись в базу данных запрещенных слов
 
 @router.message(Command("add_bad"))
 async def cmd_add_bad(message: Message, state: FSMContext):

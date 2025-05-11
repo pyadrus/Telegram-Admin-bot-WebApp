@@ -20,9 +20,3 @@ async def start_command(message: Message, state: FSMContext) -> None:
         reply_markup=keyboard,
         parse_mode="HTML"
     )
-
-# def register_start_handlers() -> None:
-#     """
-#     Регистрирует обработчики событий для бота.
-#     """
-#     router.message.register(start_command, Command("start"))

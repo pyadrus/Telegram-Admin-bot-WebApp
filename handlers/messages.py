@@ -4,8 +4,9 @@ from aiogram.types import Message
 from loguru import logger
 
 from system.dispatcher import router, time_del
-from system.sqlite import (fetch_user_data, reading_from_the_database_of_forbidden_words,
+from system.sqlite import (fetch_user_data,
                            recording_actions_in_the_database)
+from utils.models import reading_from_the_database_of_forbidden_words
 
 
 @router.message()

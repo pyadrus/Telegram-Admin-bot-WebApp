@@ -15,29 +15,6 @@ def fetch_user_data():
         return data_dict
 
 
-def writing_bad_words_to_the_database(bad_word, user_id, username, user_full_name, chat_id, chat_title):
-    """
-    Запись запрещенных слов в базу данных setting/bad_words.db, при добавлении нового слова функция ищет дубликаты слов,
-    и при нахождении оставляет одно слово без повтора
-    """
-    # Инициализируем базу данных sqlite
-    with sqlite3.connect(path_database) as conn:
-        cursor = conn.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS bad_words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, '
-                       'user_id INTEGER, username TEXT, user_full_name TEXT, chat_id INTEGER, chat_title TEXT)')
-        # Получаем список всех слов в базе данных sqlite
-        cursor.execute('SELECT word FROM bad_words')
-        existing_words = [row[0] for row in cursor.fetchall()]
-        # Проверяем, есть ли новое слово уже в списке существующих слов
-        if bad_word in existing_words:
-            # Если новое слово уже есть в базе данных, то удаляем его
-            cursor.execute('DELETE FROM bad_words WHERE word = ?', (bad_word,))
-        # Добавляем слово в базу данных sqlite
-        cursor.execute('INSERT INTO bad_words (word, user_id, username, user_full_name, chat_id, chat_title) '
-                       'VALUES (?, ?, ?, ?, ?, ?)',
-                       (bad_word, user_id, username, user_full_name, chat_id, chat_title))
-        conn.commit()
-
 
 def recording_actions_in_the_database(word, message):
     """
@@ -63,14 +40,4 @@ def recording_actions_in_the_database(word, message):
         conn.commit()
 
 
-def reading_from_the_database_of_forbidden_words():
-    """
-    Чтение с базы данных запрещенных слов
-    """
-    # Инициализируем базу данных sqlite
-    with sqlite3.connect(path_database) as conn:
-        cursor = conn.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS bad_words (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT)')
-        conn.commit()
-        bad_words = cursor.execute('SELECT word FROM bad_words').fetchall()
-    return bad_words
+

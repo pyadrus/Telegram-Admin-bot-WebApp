@@ -1,9 +1,31 @@
+import sqlite3
+
 from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)
 db = SqliteDatabase('db/database.db')
 # Настройка подключения к базе данных SQLite (или другой базы данных)
 path_database = 'db/database.db'
+
+
+def reading_from_the_database_of_forbidden_words():
+    """
+    Чтение с базы данных запрещенных слов
+    """
+    # Инициализируем базу данных sqlite
+    with sqlite3.connect(path_database) as conn:
+        cursor = conn.cursor()
+        conn.commit()
+        bad_words = cursor.execute('SELECT word FROM bad_words').fetchall()
+    return bad_words
+
+class BadWords(Model):
+    bad_word = CharField()  # Получаем ID
+
+    class Meta:
+        database = db  # Указываем, что данная модель будет использовать базу данных
+        table_name = "bad_words"  # Имя таблицы
+        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
 
 
 class GroupRestrictions(Model):
@@ -84,6 +106,7 @@ def initialize_db():
     db.create_tables([GroupMembers], safe=True)
     db.create_tables([PrivilegedUsers], safe=True)
     db.create_tables([GroupRestrictions], safe=True)
+    db.create_tables([BadWords], safe=True)
     db.close()
 
 
