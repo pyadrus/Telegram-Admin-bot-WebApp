@@ -5,10 +5,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from loguru import logger
 
-from states.states import AddAndDelBadWords, AddUserStates
+from states.states import AddUserStates
 from system.dispatcher import bot
 from system.dispatcher import router
-
 from utils.models import PrivilegedUsers
 
 
@@ -86,42 +85,7 @@ async def process_user_id(message: Message, state: FSMContext):
         await message.answer('Введите целое число')
         await message.delete()  # Удаляем сообщение с неправильным вводом
 
-# Запись в базу данных запрещенных слов
-
-@router.message(Command("add_bad"))
-async def cmd_add_bad(message: Message, state: FSMContext):
-    """Обработчик команды /add_bad"""
-    # Проверяем, вызвал ли команду админ чата
-    if message.from_user.id == 535185511:  # ID администратора
-        await message.answer(
-            '✒️ Введите слово, которое нужно добавить ➕ в список 📝 плохих слов 🤬: ',
-            parse_mode="HTML"
-        )
-        await state.set_state(AddAndDelBadWords.waiting_for_bad_word)  # Переходим в состояние ожидания плохого слова
-    else:
-        await message.reply('Эту команду может использовать только администратор бота.')
-
-
-@router.message(AddAndDelBadWords.waiting_for_bad_word)
-async def process_bad_word(message: Message, state: FSMContext):
-    """Обработчик текстовых сообщений в состоянии ожидания плохого слова"""
-    writing_bad_words_to_the_database(
-        bad_word=message.text.strip().lower(),  # Получаем слово от пользователя
-        user_id=message.from_user.id,  # Получаем ID пользователя
-        username=message.from_user.username,  # Получаем username пользователя
-        user_full_name=message.from_user.full_name,  # Получаем Ф.И. пользователя
-        chat_id=message.chat.id,  # Получаем ID чата / канала
-        chat_title=message.chat.title  # Получаем название чата / канала
-    )  # Запись запрещенных слов в базу данных
-    # Выводим сообщение об успешном добавлении слова
-    await message.reply('✅ Слово успешно добавлено ➕ в список плохих слов 🤬.', parse_mode="HTML")
-    await state.clear()  # Сбрасываем состояние
-
-
-
-
 
 def register_admin_handlers():
     """Регистрируем handlers для всех пользователей"""
-    router.message.register(cmd_add_bad)
     router.message.register(cmd_user_add)

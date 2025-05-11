@@ -137,15 +137,22 @@ async function toggleSubscriptionRequirement() {
     }
 }
 
-// Получение и запись запрещенных слов
 async function saveBadWords() {
-    const bad_word = document.getElementById("bad-words").value.trim();
+    const inputField = document.getElementById("bad-words");
+    const bad_word = inputField.value.trim();
+
     try {
         const response = await fetch(`/api/chat/set-bad-words?bad_word=${encodeURIComponent(bad_word)}`);
         const result = await response.json();
+
+        // Очистить поле ввода
+        inputField.value = "";
+
+        // Показать сообщение пользователю
+        alert("Запрещённое слово успешно сохранено!");
+
     } catch (error) {
         console.error("Ошибка:", error);
-        alert("Не удалось сохранить запрещенные слова.")
+        alert("Не удалось сохранить запрещенные слова.");
     }
-
 }
