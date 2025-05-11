@@ -8,11 +8,11 @@ router = APIRouter()
 
 @router.get("/api/get-chat-id")
 async def get_chat_id(title: str):
-    try:
-        group = Group.get(Group.chat_title == title)
-        return {"success": True, "chat_id": group.chat_id}
-    except Group.DoesNotExist:
-        return {"success": False, "error": "Группа не найдена"}
+    """
+    Получение названия группы
+    """
+    group = Group.get(Group.chat_title == title)
+    return {"success": True, "chat_id": group.chat_id}
 
 
 @router.get("/api/chat/require-subscription")
@@ -50,8 +50,5 @@ async def chat_subscribe(chat_title: str, required_chat_title: str):
 
         return {"success": True,
                 "message": f"Теперь для группы '{chat_title}' требуется подписка на '{required_chat_title}'"}
-
-    except Group.DoesNotExist as e:
-        return {"success": False, "error": "Группа не найдена: " + str(e)}
     except Exception as e:
         return {"success": False, "error": str(e)}

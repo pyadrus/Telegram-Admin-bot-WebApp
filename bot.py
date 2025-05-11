@@ -8,7 +8,7 @@ from handlers.bot import handle_new_member, handle_member_left, delete_system_me
     delete_system_message_member_left
 from handlers.messages import handle_text_messages
 from handlers.start import start_command
-from handlers.subscription import register_subscription_handlers
+from handlers.subscription import check_subscription, on_chat_member_update
 # Импортируем обработчики команд
 from system.dispatcher import bot, router  # Экземпляр бота
 from system.dispatcher import dp  # Диспетчер событий (Dispatcher)
@@ -35,7 +35,8 @@ async def main():
         # Добавление обработчиков команд (добавление плохих слов в базу данных, выдача особенных привилегий пользователям и т.д.)
         register_admin_handlers()
         # Проверка на подписку
-        register_subscription_handlers()
+        router.message.register(check_subscription)
+        router.message.register(on_chat_member_update)
 
         await dp.start_polling(bot)
 

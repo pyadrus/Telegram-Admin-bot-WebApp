@@ -87,9 +87,4 @@ async def delete_message_after_delay(message: Message, delay: int):
     try:
         await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
     except Exception as e:
-        logger.error(f"Ошибка при удалении сообщения: {e}")
-
-
-def register_subscription_handlers():
-    router.message.register(check_subscription)
-    router.message.register(on_chat_member_update)
+        logger.error(f"Ошибка при удалении сообщения: {e}")    
