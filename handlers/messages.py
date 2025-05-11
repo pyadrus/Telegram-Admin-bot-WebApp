@@ -4,9 +4,8 @@ from aiogram.types import Message
 from loguru import logger
 
 from system.dispatcher import router, time_del
-from system.sqlite import (fetch_user_data,
-                           recording_actions_in_the_database)
-from utils.models import reading_from_the_database_of_forbidden_words
+from system.sqlite import fetch_user_data
+from utils.models import BadWords
 
 
 @router.message()
@@ -36,10 +35,13 @@ async def handle_text_messages(message: Message) -> None:
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
             return
+        # Вывод запрещенных слов с чисткой дублей
+        bad_words = list(set(word.bad_word for word in BadWords.select()))
+        print(bad_words)
         # Проверка на запрещенные слова
-        for word in reading_from_the_database_of_forbidden_words():
+        for word in bad_words:
             if word[0].lower() in message.text.lower():
-                recording_actions_in_the_database(word[0], message)
+                # recording_actions_in_the_database(word[0], message)
                 await message.delete()
                 warning = await message.answer(
                     f"⚠ В вашем сообщении обнаружено запрещенное слово: <code>{word[0]}</code>. "

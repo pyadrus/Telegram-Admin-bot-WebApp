@@ -81,5 +81,3 @@ async def delete_system_message_member_left(message: Message):
     """
     await message.delete()  # Удаляем системное сообщение
     logger.info("Удаляем системное сообщение")
-
-

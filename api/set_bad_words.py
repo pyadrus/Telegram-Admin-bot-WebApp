@@ -13,7 +13,7 @@ async def write_bad_words(bad_word: str):
     try:
         # Получаем информацию о целевой группе (ту, которую хотим ограничить)
         bad_words = BadWords(
-        bad_word=bad_word.strip().lower(),  # Получаем слово от пользователя
+            bad_word=bad_word.strip().lower(),  # Получаем слово от пользователя
         )
         bad_words.save()
     except Exception as e:
