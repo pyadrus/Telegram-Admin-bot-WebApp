@@ -3,7 +3,9 @@ import asyncio
 from aiogram.types import Message
 from loguru import logger
 
-from system.dispatcher import router, time_del
+from keyboard.keyboard import create_admin_panel_keyboard
+from messages.translations_loader import translations
+from system.dispatcher import router, bot, time_del
 from system.sqlite import fetch_user_data
 from utils.models import BadWords
 
@@ -20,6 +22,18 @@ async def handle_text_messages(message: Message) -> None:
     logger.debug(f"Получено сообщение от пользователя {message.from_user.id}")
     user_id = message.from_user.id
     logger.debug(f"Пользователь {user_id}")
+
+    if message.text == "/start":
+        logger.info(f"Пользователь {user_id} прислал команду /start")
+        user_id = message.from_user.id
+        keyboard = create_admin_panel_keyboard(user_id)
+
+        await bot.send_message(
+            message.chat.id,
+            translations["ru"]["menu"]["user"],
+            reply_markup=keyboard,
+            parse_mode="HTML"
+        )
 
     try:
         # Проверка на пересылку сообщений

@@ -1,13 +1,11 @@
 import asyncio
 
-from aiogram.filters import Command
 from loguru import logger  # https://github.com/Delgan/loguru
 
 from handlers.admin import cmd_user_add
-from handlers.bot import handle_new_member, handle_member_left, delete_system_message_new_member, \
-    delete_system_message_member_left
+from handlers.bot import (handle_new_member, handle_member_left,
+                          delete_system_message_new_member, delete_system_message_member_left)
 from handlers.messages import handle_text_messages
-from handlers.start import start_command
 from handlers.subscription import check_subscription, on_chat_member_update
 # Импортируем обработчики команд
 from system.dispatcher import bot, router  # Экземпляр бота
@@ -24,7 +22,6 @@ async def main():
     """
     try:
         logger.info("Бот watchman_admin_bot запущен")
-        router.message.register(start_command, Command("start"))
         # Удаление ссылок и стикеров
         router.message.register(handle_text_messages)
         # Удаление системных сообщений об присоединении новых участников в группу Telegram
