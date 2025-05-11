@@ -9,6 +9,12 @@ from system.dispatcher import router, bot
 
 @router.message(Command("start"))
 async def start_command(message: Message, state: FSMContext) -> None:
+    """ Функция-обработчик команды /start
+
+    Args:
+        message (Message): Сообщения, содержащий информацию о сообщении, отправленном пользователем
+        state (FSMContext): Состояние, содержащий информацию о состоянии машины состояний
+    """
     await state.clear()  # Сбрасываем состояние FSM
 
     user_id = message.from_user.id

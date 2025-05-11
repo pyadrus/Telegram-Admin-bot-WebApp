@@ -18,8 +18,11 @@ async def get_chat_id(title: str):
 @router.get("/api/chat/readonly")
 async def chat_readonly(chat_id: int):
     """
-    Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
-    """
+   Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
+
+   :param chat_id: ID чата, в формате -1001234567890
+   :return: Словарь с ключами "success" и "message" или "error"
+   """
     try:
         chat_id = str(f"-100{chat_id}")
         await bot.set_chat_permissions(chat_id=int(chat_id), permissions=READ_ONLY)
@@ -33,6 +36,8 @@ async def chat_writeable(chat_id: int):
     """
     Переводит чат в режим «все могут писать». Передаваемый chat_id, должен быть в формате -1001234567890, и являться
     числовым значением.
+    
+    :param chat_id: ID чата, в формате -1001234567890
     """
     try:
         chat_id = str(f"-100{chat_id}")

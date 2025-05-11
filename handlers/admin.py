@@ -84,8 +84,3 @@ async def process_user_id(message: Message, state: FSMContext):
         # Если введенный пользователем текст не может быть преобразован в число отправляем сообщение об ошибке
         await message.answer('Введите целое число')
         await message.delete()  # Удаляем сообщение с неправильным вводом
-
-
-def register_admin_handlers():
-    """Регистрируем handlers для всех пользователей"""
-    router.message.register(cmd_user_add)
