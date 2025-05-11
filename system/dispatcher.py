@@ -4,7 +4,8 @@ from aiogram import Bot, Dispatcher, Router
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import ChatPermissions
 
-config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
+config = configparser.ConfigParser(
+    empty_lines_in_values=False, allow_no_value=True)
 # Считываем токен бота с файла config.ini
 config.read("setting/config.ini")
 bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')

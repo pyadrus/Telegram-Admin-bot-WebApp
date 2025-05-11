@@ -35,7 +35,7 @@ async def main():
         # Проверка на подписку
         router.message.register(check_subscription)
         router.message.register(on_chat_member_update)
-        
+
         router.message.register(cmd_user_add)
 
         await dp.start_polling(bot)

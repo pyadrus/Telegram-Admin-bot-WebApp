@@ -8,7 +8,8 @@ from fastapi.templating import Jinja2Templates
 from loguru import logger
 
 from api.chat_routes import router as chat_router  # ← Правильный импорт роутера
-from api.subscribe_channel import router as subscribe_channel  # ← Правильный импорт роутера
+# ← Правильный импорт роутера
+from api.subscribe_channel import router as subscribe_channel
 from api.set_bad_words import router as set_bad_words  # ← Правильный импорт роутера
 from utils.get_id import get_participants_count
 from utils.models import Group, db
@@ -22,7 +23,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # === Регистрируем роуты ===
 app.include_router(chat_router)  # ← Регистрация роутера
 app.include_router(subscribe_channel)  # ← Регистрация роутера
-app.include_router(set_bad_words) # ← Регистрация роутера
+app.include_router(set_bad_words)  # ← Регистрация роутера
 
 
 # === Маршруты ===
@@ -110,7 +111,8 @@ async def update_participants(chat_title: str):
         # Получаем актуальные данные через Telegram
         chat_id, title, total, link = await get_participants_count(group.chat_link)
         # Обновляем запись в базе
-        Group.update(chat_total=total).where(Group.chat_title == chat_title).execute()
+        Group.update(chat_total=total).where(
+            Group.chat_title == chat_title).execute()
 
         return {"success": True, "participants_count": total}
     except Group.DoesNotExist:
@@ -140,7 +142,8 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
         group = Group.get(Group.chat_title == chat_title)
         permission_to_write = "False"
         # Обновляем запись в базе
-        Group.update(permission_to_write=permission_to_write).where(Group.chat_title == chat_title).execute()
+        Group.update(permission_to_write=permission_to_write).where(
+            Group.chat_title == chat_title).execute()
         return {"success": True, "permission_to_write": permission_to_write}
     except Group.DoesNotExist:
         return {"success": False, "error": "Группа не найдена"}

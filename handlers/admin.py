@@ -14,7 +14,8 @@ from utils.models import PrivilegedUsers
 @router.message(Command("id"))
 async def send_id(message: Message):
     """Обработчик команды /id"""
-    logger.info(f"Пользователь {message.from_user.id} вызвал команду '/id' в чате {message.chat.id}")
+    logger.info(
+        f"Пользователь {message.from_user.id} вызвал команду '/id' в чате {message.chat.id}")
     # Проверяем, является ли пользователь админом в текущем чате
     chat_member = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     if chat_member.status not in ["administrator", "creator"]:
@@ -42,7 +43,8 @@ async def cmd_user_add(message: Message, state: FSMContext):
     Обработчик команды /user_add. Команда /user_add используется для добавления новых пользователей в базу данных
     с определенными правами в группе
     """
-    logger.info(f"Пользователь {message.from_user.id} вызвал команду '/user_add' в чате {message.chat.id}")
+    logger.info(
+        f"Пользователь {message.from_user.id} вызвал команду '/user_add' в чате {message.chat.id}")
     # Проверяем, является ли пользователь админом в текущем чате
     chat_member = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     if chat_member.status not in ["administrator", "creator"]:
@@ -53,7 +55,8 @@ async def cmd_user_add(message: Message, state: FSMContext):
         return
     # Если пользователь является админом, отправляем запрос на ввод ID пользователя
     await message.answer('Введите ID пользователя, для назначения особых прав в группе')
-    await state.set_state(AddUserStates.WAITING_FOR_USER_ID)  # Переводим бота в состояние WAITING_FOR_USER_ID
+    # Переводим бота в состояние WAITING_FOR_USER_ID
+    await state.set_state(AddUserStates.WAITING_FOR_USER_ID)
     await message.delete()  # Удаляем сообщение с командой /user_add
 
 
@@ -69,7 +72,8 @@ async def process_user_id(message: Message, state: FSMContext):
             first_name=chat_member.user.first_name if chat_member.user.first_name else "",
             last_name=chat_member.user.last_name if chat_member.user.last_name else "",
             date_add=datetime.datetime.now(),
-            admin_id=message.from_user.id,  # Получаем ID админа, который отправил сообщение с ID боту
+            # Получаем ID админа, который отправил сообщение с ID боту
+            admin_id=message.from_user.id,
             chat_title=message.chat.title  # Получаем название чата
         )
         chat_member_write.save()

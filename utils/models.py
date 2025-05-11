@@ -27,7 +27,8 @@ class GroupRestrictions(Model):
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "group_restrictions"  # Имя таблицы
-        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        # Для запрета автоматически создающегося поля id (как первичный ключ)
+        primary_key = False
 
 
 class PrivilegedUsers(Model):
@@ -42,13 +43,15 @@ class PrivilegedUsers(Model):
     first_name = CharField(null=True)  # Получаем first_name пользователя
     last_name = CharField(null=True)  # Получаем last_name пользователя
     date_add = CharField()  # Получаем текущую дату
-    admin_id = IntegerField()  # Получаем ID администратора, который добавил пользователя в базу данных
+    # Получаем ID администратора, который добавил пользователя в базу данных
+    admin_id = IntegerField()
     chat_title = CharField()  # Получаем название чата
 
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "privileged_users"  # Имя таблицы
-        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        # Для запрета автоматически создающегося поля id (как первичный ключ)
+        primary_key = False
 
 
 class Group(Model):
@@ -65,7 +68,8 @@ class Group(Model):
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "groups_administration"  # Имя таблицы
-        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        # Для запрета автоматически создающегося поля id (как первичный ключ)
+        primary_key = False
 
 
 class GroupMembers(Model):
@@ -84,7 +88,8 @@ class GroupMembers(Model):
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "group_members_add"  # Имя таблицы
-        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        # Для запрета автоматически создающегося поля id (как первичный ключ)
+        primary_key = False
 
 
 def initialize_db():

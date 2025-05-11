@@ -16,8 +16,10 @@ async def check_subscription(message: Message):
     if message.chat.type not in ['group', 'supergroup']:
         return
     try:
-        clean_id = str(message.chat.id)[4:]  # Преобразуем в строку и убираем первые 4 символа (-100)
-        restriction = GroupRestrictions.get_or_none(GroupRestrictions.group_id == clean_id)
+        # Преобразуем в строку и убираем первые 4 символа (-100)
+        clean_id = str(message.chat.id)[4:]
+        restriction = GroupRestrictions.get_or_none(
+            GroupRestrictions.group_id == clean_id)
         if not restriction:
             return  # или обработать случай, когда ограничений нет
         required_channel_id = restriction.required_channel_id
@@ -36,10 +38,13 @@ async def check_subscription(message: Message):
     except Exception as e:
         logger.exception(f"Ошибка при проверке подписки: {e}")
         await message.delete()
-        user_mention = message.from_user.mention_html() if message.from_user.username else f"User {message.from_user.id}"
+        user_mention = message.from_user.mention_html(
+        ) if message.from_user.username else f"User {message.from_user.id}"
         # Используем username из базы или ID, если username недоступен
-        clean_id = str(message.chat.id)[4:]  # Преобразуем в строку и убираем первые 4 символа (-100)
-        restriction = GroupRestrictions.get(GroupRestrictions.group_id == clean_id)
+        # Преобразуем в строку и убираем первые 4 символа (-100)
+        clean_id = str(message.chat.id)[4:]
+        restriction = GroupRestrictions.get(
+            GroupRestrictions.group_id == clean_id)
         channel_username = restriction.required_channel_username
         # Отправляем сообщение и сохраняем его объект
         bot_message = await message.answer(
@@ -64,7 +69,8 @@ async def on_chat_member_update(update: ChatMemberUpdated):
         # Получаем список ID групп
         groups = list(query.tuples())
         for group_tuple in groups:
-            group_id = group_tuple[0]  # Получаем group_id из кортежа (предполагается, что select вернул один столбец)
+            # Получаем group_id из кортежа (предполагается, что select вернул один столбец)
+            group_id = group_tuple[0]
             try:
                 member = await bot.get_chat_member(chat_id=group_id, user_id=update.user.id)
                 if member.status == ChatMemberStatus.RESTRICTED:
@@ -73,9 +79,11 @@ async def on_chat_member_update(update: ChatMemberUpdated):
                         user_id=update.user.id,
                         permissions=ChatPermissions(can_send_messages=True)
                     )
-                    logger.info(f"Пользователь {update.user.id} разблокирован в группе {group_id}")
+                    logger.info(
+                        f"Пользователь {update.user.id} разблокирован в группе {group_id}")
             except Exception as e:
-                logger.error(f"Ошибка при снятии ограничений для группы {group_id}: {e}")
+                logger.error(
+                    f"Ошибка при снятии ограничений для группы {group_id}: {e}")
                 continue
     except Exception as e:
         logger.error(f"Ошибка при обработке события JOIN_TRANSITION: {e}")
@@ -87,4 +95,4 @@ async def delete_message_after_delay(message: Message, delay: int):
     try:
         await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
     except Exception as e:
-        logger.error(f"Ошибка при удалении сообщения: {e}")    
+        logger.error(f"Ошибка при удалении сообщения: {e}")

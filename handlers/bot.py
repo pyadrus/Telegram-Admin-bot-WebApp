@@ -26,14 +26,18 @@ async def handle_new_member(event: ChatMemberUpdated):
             chat_id=event.chat.id,  # Получаем ID чата
             chat_title=event.chat.title,  # Получаем название чата
             user_id=event.from_user.id,  # Получаем ID пользователя, который зашел в группу
-            username=event.from_user.username,  # Получаем username пользователя, который вступил в группу
-            first_name=event.from_user.first_name,  # Получаем имя пользователя который вступил в группу
-            last_name=event.from_user.last_name,  # Получаем фамилию пользователя который вступил в группу
+            # Получаем username пользователя, который вступил в группу
+            username=event.from_user.username,
+            # Получаем имя пользователя который вступил в группу
+            first_name=event.from_user.first_name,
+            # Получаем фамилию пользователя который вступил в группу
+            last_name=event.from_user.last_name,
             date_now=datetime.datetime.now()  # Текущее время
         )
         group.save()
     except Exception as error:
-        logger.exception(f"Ошибка обработки добавления нового участника: {error}")
+        logger.exception(
+            f"Ошибка обработки добавления нового участника: {error}")
 
 
 @router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
@@ -51,9 +55,12 @@ async def handle_member_left(event: ChatMemberUpdated):
             chat_id=event.chat.id,  # Получаем ID чата
             chat_title=event.chat.title,  # Получаем название чата
             user_id=event.from_user.id,  # Получаем ID пользователя, который зашел в группу
-            username=event.from_user.username,  # Получаем username пользователя, который вступил в группу
-            first_name=event.from_user.first_name,  # Получаем имя пользователя который вступил в группу
-            last_name=event.from_user.last_name,  # Получаем фамилию пользователя который вступил в группу
+            # Получаем username пользователя, который вступил в группу
+            username=event.from_user.username,
+            # Получаем имя пользователя который вступил в группу
+            first_name=event.from_user.first_name,
+            # Получаем фамилию пользователя который вступил в группу
+            last_name=event.from_user.last_name,
             date_now=datetime.datetime.now()  # Текущее время
         )
         group.save()
