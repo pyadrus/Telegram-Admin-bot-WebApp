@@ -13,12 +13,16 @@ from utils.get_id import get_participants_count
 from utils.models import BadWords
 from utils.models import Group, db
 from utils.models import GroupRestrictions
+from pathlib import Path
 
 app = FastAPI()
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR.parent / "miniapp" / "static"
+TEMPLATES_DIR = BASE_DIR.parent / "miniapp" / "templates"
 
 # === Подключаем шаблоны и статику ===
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/miniapp/static", StaticFiles(directory=STATIC_DIR), name="static")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 # === Маршруты ===

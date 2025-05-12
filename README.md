@@ -95,7 +95,7 @@
 3. Запустите бота:
 
    ```bash
-   python bot.py
+   python member.py
    ```
 
 ---

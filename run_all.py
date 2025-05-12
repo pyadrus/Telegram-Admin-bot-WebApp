@@ -3,8 +3,8 @@ import sys
 
 # Пути к вашим скриптам и командам
 commands = [
-    [sys.executable, "app.py"],
-    [sys.executable, "bot.py"],
+    [sys.executable, "app/app.py"],
+    [sys.executable, "bot/member.py"],
     ["tuna", "http", "8080", "--subdomain=adminbot"]
 ]
 

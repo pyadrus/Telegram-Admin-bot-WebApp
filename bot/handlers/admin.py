@@ -2,7 +2,6 @@ from aiogram.filters import Command
 from aiogram.types import Message
 from loguru import logger
 
-# from states.states import AddUserStates
 from system.dispatcher import bot
 from system.dispatcher import router
 

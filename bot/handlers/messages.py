@@ -3,8 +3,8 @@ import asyncio
 from aiogram.types import Message
 from loguru import logger
 
-from keyboard.keyboard import create_admin_panel_keyboard
-from messages.translations_loader import translations
+from member.keyboard.keyboard import create_admin_panel_keyboard
+from member.messages.translations_loader import translations
 from system.dispatcher import router, bot, time_del
 from utils.models import BadWords, PrivilegedUsers
 

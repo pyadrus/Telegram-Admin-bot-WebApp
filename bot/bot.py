@@ -2,8 +2,8 @@ import asyncio
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
-from handlers.bot import (handle_new_member, handle_member_left,
-                          delete_system_message_new_member, delete_system_message_member_left)
+from handlers.member import (handle_new_member, handle_member_left,
+                             delete_system_message_new_member, delete_system_message_member_left)
 from handlers.messages import handle_text_messages
 from handlers.subscription import check_subscription, on_chat_member_update
 # Импортируем обработчики команд
@@ -11,7 +11,7 @@ from system.dispatcher import bot, router  # Экземпляр бота
 from system.dispatcher import dp  # Диспетчер событий (Dispatcher)
 
 # Настройка логирования: указываем файл, размер ротации и сжатие
-logger.add("setting/log/log.log", rotation="1 MB", compression="zip")
+logger.add("../setting/log/log.log", rotation="1 MB", compression="zip")
 
 
 async def main():
