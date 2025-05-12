@@ -4,7 +4,7 @@ from loguru import logger  # https://github.com/Delgan/loguru
 
 from scr.bot.handlers.admin import register_send_id_handler
 from scr.bot.handlers.member import register_member_handlers
-from scr.bot.handlers.messages import register_text_messages_handlers
+from scr.bot.handlers.message_moderation_handler import register_text_messages_handlers
 from scr.bot.handlers.subscription import register_subscription_handlers
 from scr.bot.system.dispatcher import bot, dp
 

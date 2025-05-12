@@ -3,7 +3,7 @@ import yaml
 
 def load_translations():
     """Загрузка текста для бота"""
-    with open("messages/translations.yaml", "r", encoding="utf-8") as file:
+    with open("scr/bot/messages/translations.yaml", "r", encoding="utf-8") as file:
         return yaml.safe_load(file)
 
 
