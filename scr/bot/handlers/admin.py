@@ -31,5 +31,6 @@ async def send_id(message: Message):
         # если произошла ошибка AttributeError, то сообщаем об этом пользователю
         await bot.send_message(chat_id=message.chat.id, text='Ответьте на сообщение пользователя, чтобы узнать его ID')
 
-def register_send_id_handler():
+
+def register_send_id_handler() -> None:
     router.message.register(send_id, Command("id"))

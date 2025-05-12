@@ -82,3 +82,7 @@ async def handle_text_messages(message: Message) -> None:
 
     except Exception as e:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
+
+
+def register_text_messages_handlers() -> None:
+    router.message.register(handle_text_messages)

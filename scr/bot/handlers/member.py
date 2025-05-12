@@ -88,3 +88,10 @@ async def delete_system_message_member_left(message: Message):
     """
     await message.delete()  # Удаляем системное сообщение
     logger.info("Удаляем системное сообщение")
+
+
+def register_member_handlers() -> None:
+    router.event.register(handle_new_member)
+    router.event.register(handle_member_left)
+    router.message.register(delete_system_message_new_member)
+    router.message.register(delete_system_message_member_left)

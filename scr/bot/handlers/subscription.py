@@ -34,7 +34,7 @@ async def check_subscription(message: Message):
                 parse_mode="HTML"
             )
             # Запускаем задачу удаления сообщения через 60 секунд
-            asyncio.create_task(delete_message_after_delay(bot_message, 60))
+            await asyncio.create_task(delete_message_after_delay(bot_message, 60))
     except Exception as e:
         logger.exception(f"Ошибка при проверке подписки: {e}")
         await message.delete()
@@ -51,7 +51,7 @@ async def check_subscription(message: Message):
             f"{user_mention}, привет! 👋 Чтобы наша группа оставалась уютной и свободной от спама, пожалуйста, подпишись на канал {channel_username} — это поможет нам убедиться, что ты не бот. 🤖 Подписка нужна только для того, чтобы писать здесь, и это временная мера. Спасибо, за понимание! 🌟",
             parse_mode="HTML")
         # Запускаем задачу удаления сообщения через 60 секунд
-        asyncio.create_task(delete_message_after_delay(bot_message, 60))
+        await asyncio.create_task(delete_message_after_delay(bot_message, 60))
 
 
 @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=JOIN_TRANSITION))
@@ -96,3 +96,8 @@ async def delete_message_after_delay(message: Message, delay: int):
         await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
     except Exception as e:
         logger.error(f"Ошибка при удалении сообщения: {e}")
+
+
+def register_subscription_handlers() -> None:
+    router.message.register(check_subscription)
+    router.chat_member.register(on_chat_member_update)
