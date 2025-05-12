@@ -5,9 +5,9 @@ from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter, JOIN_TR
 from aiogram.types import Message, ChatMemberUpdated, ChatPermissions
 from loguru import logger
 
-from system.dispatcher import bot
-from system.dispatcher import router
-from utils.models import GroupRestrictions
+from scr.bot.system.dispatcher import bot
+from scr.bot.system.dispatcher import router
+from scr.utils.models import GroupRestrictions
 
 
 @router.message()

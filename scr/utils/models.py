@@ -1,7 +1,7 @@
 from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)
-db = SqliteDatabase('db/database.db')
+db = SqliteDatabase('scr/db/database.db')
 
 
 def get_privileged_users():

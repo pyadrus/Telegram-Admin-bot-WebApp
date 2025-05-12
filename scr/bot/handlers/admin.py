@@ -2,8 +2,8 @@ from aiogram.filters import Command
 from aiogram.types import Message
 from loguru import logger
 
-from system.dispatcher import bot
-from system.dispatcher import router
+from scr.bot.system.dispatcher import bot
+from scr.bot.system.dispatcher import router
 
 
 @router.message(Command("id"))
@@ -30,3 +30,6 @@ async def send_id(message: Message):
     except AttributeError:
         # если произошла ошибка AttributeError, то сообщаем об этом пользователю
         await bot.send_message(chat_id=message.chat.id, text='Ответьте на сообщение пользователя, чтобы узнать его ID')
+
+def register_send_id_handler():
+    router.message.register(send_id, Command("id"))

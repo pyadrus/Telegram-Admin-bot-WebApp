@@ -7,8 +7,8 @@ from aiogram.types import Message
 from loguru import logger
 
 # Импорты из системы
-from system.dispatcher import router  # Экземпляр диспетчера (бота и роутера)
-from utils.models import GroupMembers
+from scr.bot.system.dispatcher import router  # Экземпляр диспетчера (бота и роутера)
+from scr.utils.models import GroupMembers
 
 
 @router.chat_member(ChatMemberUpdatedFilter(IS_NOT_MEMBER >> IS_MEMBER))

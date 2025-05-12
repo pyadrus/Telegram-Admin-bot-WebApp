@@ -3,7 +3,7 @@ from telethon.sync import TelegramClient
 from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.tl.types import PeerChat
 
-from system.dispatcher import api_id, api_hash
+from scr.bot.system.dispatcher import api_id, api_hash
 
 
 async def get_participants_count(chat_link):

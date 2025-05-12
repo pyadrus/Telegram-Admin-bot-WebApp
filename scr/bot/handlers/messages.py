@@ -3,10 +3,10 @@ import asyncio
 from aiogram.types import Message
 from loguru import logger
 
-from bot.keyboard.keyboard import create_admin_panel_keyboard
-from bot.messages.translations_loader import translations
-from system.dispatcher import router, bot, time_del
-from utils.models import BadWords, get_privileged_users
+from scr.bot.keyboard.keyboard import create_admin_panel_keyboard
+from scr.bot.messages.translations_loader import translations
+from scr.bot.system.dispatcher import router, bot, time_del
+from scr.utils.models import BadWords, get_privileged_users
 
 
 @router.message()

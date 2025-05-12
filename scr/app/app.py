@@ -10,19 +10,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
-from system.dispatcher import bot, READ_ONLY, FULL_ACCESS
-from utils.get_id import get_participants_count
-from utils.models import BadWords, PrivilegedUsers
-from utils.models import Group, db
-from utils.models import GroupRestrictions
+from scr.bot.system.dispatcher import bot, READ_ONLY, FULL_ACCESS
+from scr.utils.get_id import get_participants_count
+from scr.utils.models import BadWords, PrivilegedUsers
+from scr.utils.models import Group, db
+from scr.utils.models import GroupRestrictions
 
 app = FastAPI()
 BASE_DIR = Path(__file__).resolve().parent
-STATIC_DIR = BASE_DIR.parent / "miniapp" / "static"
-TEMPLATES_DIR = BASE_DIR.parent / "miniapp" / "templates"
+STATIC_DIR = BASE_DIR / "static"
+TEMPLATES_DIR = BASE_DIR / "templates"
 
 # === Подключаем шаблоны и статику ===
-app.mount("/miniapp/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/scr/app/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
