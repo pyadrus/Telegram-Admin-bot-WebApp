@@ -24,14 +24,14 @@ class BadWords(Model):
 
 
 class PrivilegedUsers(Model):
-    chat_id = IntegerField()
-    user_id = IntegerField()
-    chat_title = CharField()
+    chat_id = IntegerField() # Получаем ID
+    user_id = IntegerField() # Получаем ID пользователя
+    chat_title = CharField() # Получаем название группы
 
     class Meta:
-        database = db
-        table_name = 'privileged_users'
-        primary_key = False
+        database = db # Указываем, что данная модель будет использовать базу данных
+        table_name = 'privileged_users' # Имя таблицы
+        primary_key = False # Для запрета автоматически создающегося поля id (как первичный ключ)
 
 
 class GroupRestrictions(Model):

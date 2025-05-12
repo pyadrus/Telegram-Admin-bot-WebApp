@@ -10,7 +10,7 @@ from loguru import logger
 
 from system.dispatcher import bot, READ_ONLY, FULL_ACCESS
 from utils.get_id import get_participants_count
-from utils.models import BadWords
+from utils.models import BadWords, PrivilegedUsers
 from utils.models import Group, db
 from utils.models import GroupRestrictions
 from pathlib import Path
@@ -199,13 +199,26 @@ async def write_bad_words(bad_word: str):
 
 @app.post("/give-privileges")
 async def chat_give_privilege(chat_title: str, user_id: int):
+    """
+    Запись в базу данных пользователей, которым разрешено писать в чате без ограничений
+
+    :param chat_title: название чата
+    :param user_id: id пользователя
+    """
     try:
+        logger.info(f"Выдача привилегий для пользователя {user_id} в чате '{chat_title}'")
         # Получаем информацию о целевой группе (ту, которую хотим ограничить)
         group = Group.get(Group.chat_title == chat_title)
         group_id = group.chat_id
-        logger.info(f"Первая группа {group_id}")
 
-        logger.info(f'{user_id}')
+        existing = PrivilegedUsers.select().where(
+            (PrivilegedUsers.chat_id == group_id) &
+            (PrivilegedUsers.user_id == user_id)
+        ).first()
+
+        if not existing:
+            privileges = PrivilegedUsers(chat_id=group_id, user_id=user_id, chat_title=chat_title)
+            privileges.save()
 
         return {
             "success": True,

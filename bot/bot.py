@@ -20,15 +20,12 @@ async def main():
     Здесь инициализируются обработчики команд и запускается polling.
     """
     try:
-        logger.info("Бот watchman_admin_bot запущен")
-        # Удаление ссылок и стикеров
+        logger.info("Бот запущен")
         router.message.register(handle_text_messages)
-        # Удаление системных сообщений об присоединении новых участников в группу Telegram
         router.chat_member.register(handle_new_member)
         router.chat_member.register(handle_member_left)
         router.message.register(delete_system_message_new_member)
         router.message.register(delete_system_message_member_left)
-        # Проверка на подписку
         router.message.register(check_subscription)
         router.message.register(on_chat_member_update)
 

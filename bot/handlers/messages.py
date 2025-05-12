@@ -81,7 +81,8 @@ async def handle_text_messages(message: Message) -> None:
         # Проверка на ссылки
         for entity in message.entities or []:
             if entity.type in ["url", "text_link", "mention"]:
-                if (chat_id, user_id) not in fetch_user_data():
+                privileged_users = get_privileged_users()
+                if (chat_id, user_id) not in privileged_users:
                     await message.delete()
                     warning = await message.answer(
                         f"<code>✅ {message.from_user.full_name}</code>\n"
