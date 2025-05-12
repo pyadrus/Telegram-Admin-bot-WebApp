@@ -101,7 +101,7 @@ class GroupMembers(Model):
     chat_id = IntegerField()  # Получаем ID чата
     chat_title = CharField()  # Получаем название чата
     user_id = IntegerField()  # Получаем ID пользователя
-    username = CharField()  # Получаем username пользователя
+    username = CharField(null=True)  # Получаем username пользователя
     first_name = CharField(null=True)  # Получаем first_name пользователя
     last_name = CharField(null=True)  # Получаем last_name пользователя
     date_now = CharField()  # Получаем текущую дату

@@ -151,7 +151,8 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
         logger.exception(e)
 
 
-@app.get("/chat/readonly")
+# 🔒 Установить только чтение
+@app.get("/readonly")
 async def chat_readonly(chat_id: int):
     """
    Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.

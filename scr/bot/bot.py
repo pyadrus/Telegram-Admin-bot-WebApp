@@ -4,8 +4,7 @@ from loguru import logger  # https://github.com/Delgan/loguru
 
 from scr.bot.handlers.admin import register_send_id_handler
 from scr.bot.handlers.member import register_member_handlers
-from scr.bot.handlers.message_moderation_handler import register_text_messages_handlers
-from scr.bot.handlers.subscription import register_subscription_handlers
+from scr.bot.handlers.message_moderation_handler import register_subscription_handlers
 from scr.bot.system.dispatcher import bot, dp
 
 # Настройка логирования: указываем файл, размер ротации и сжатие
@@ -19,10 +18,12 @@ async def main():
     """
     try:
         logger.info("Бот запущен")
+        # Регистрация обработчиков для подписки
+        register_subscription_handlers()
+
         register_send_id_handler()  # Регистрация обработчика для отправки ID
         register_member_handlers()  # Регистрация обработчиков для членов
-        register_text_messages_handlers()  # Регистрация обработчиков для текстовых сообщений
-        register_subscription_handlers()  # Регистрация обработчиков для подписки
+
         await dp.start_polling(bot)
     except Exception as error:
         # Логирование исключений, если что-то пошло не так

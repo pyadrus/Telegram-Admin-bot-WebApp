@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Админ-панель</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="/scr/app/static/css/styles.css">
 </head>
 
 <body>
@@ -66,7 +66,8 @@
         <select id="groups-select-privilage">
             <option value="">-- Выберите группу --</option>
         </select>
-        <label for="user-id-privilege">Введите id пользователя:</label>
+        <label for="user-id-privilege">Введите id пользователя. Что бы получить id пользователя, можете ответить на
+            сообщение в группе / чате с ботом, командой /id. Бот отправит id в личное сообщение бота:</label>
         <textarea id="user-id-privilege" rows="4" placeholder="Пример: 123456789"></textarea>
         <button onclick="givePrivilege()">Дать особые права</button>
     </div>
