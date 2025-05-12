@@ -19,43 +19,50 @@ async def message_moderation_handler(message: Message) -> None:
     """
     logger.debug("Хендлер сработал")
     chat_id = message.chat.id
-    logger.debug(f"Получено сообщение от пользователя {message.from_user.id}")
     user_id = message.from_user.id
-    logger.debug(f"Пользователь {user_id}")
+    logger.debug(f"Получено сообщение от пользователя {user_id}")
+    logger.debug(f"chat_id: {chat_id}, user_id: {user_id}")
+
+    # Нормализуем chat_id и получаем список привилегированных пользователей
+    normalized_chat_id = int(str(chat_id).replace("-100", ""))
+    privileged_users = get_privileged_users()
+    logger.debug(f"privileged_users: {privileged_users}")
 
     if message.text == "/start":
         logger.info(f"Пользователь {user_id} прислал команду /start")
-        user_id = message.from_user.id
         keyboard = create_admin_panel_keyboard(user_id)
-
         await bot.send_message(
-            message.chat.id,
+            chat_id,
             translations["ru"]["menu"]["user"],
             reply_markup=keyboard,
             parse_mode="HTML"
         )
+        return
 
     try:
+        # Пропускаем проверки для привилегированных пользователей
+        if (normalized_chat_id, user_id) in privileged_users:
+            return
+
         # Проверка на пересылку сообщений
         if message.forward_from or message.forward_from_chat:
-            privileged_users = get_privileged_users()
-            if (chat_id, user_id) not in privileged_users:
-                await message.delete()
-                warning = await message.answer(
-                    text=translations["ru"]["message_moderation"]["moderation_forward_message"],
-                    parse_mode="HTML",
-                )
-                await asyncio.sleep(int(time_del))
-                await warning.delete()
+            await message.delete()
+            warning = await message.answer(
+                text=translations["ru"]["message_moderation"]["moderation_forward_message"],
+                parse_mode="HTML",
+            )
+            await asyncio.sleep(int(time_del))
+            await warning.delete()
             return
 
         if message.text:
-            # Вывод запрещенных слов с чисткой дублей
+            # Получаем запрещённые слова
             bad_words = list(set(word.bad_word for word in BadWords.select()))
-            print(bad_words)
-            # Проверка на запрещенные слова
+            logger.debug(f"Запрещенные слова: {bad_words}")
+
+            # Проверка на запрещённые слова
             for word in bad_words:
-                if word[0].lower() in message.text.lower():
+                if word.lower() in message.text.lower():
                     try:
                         await message.delete()
                     except TelegramBadRequest:
@@ -66,22 +73,20 @@ async def message_moderation_handler(message: Message) -> None:
                     )
                     await asyncio.sleep(int(time_del))
                     await warning.delete()
-                    return  # После удаления сообщения больше ничего не проверяем
+                    return
 
         # Проверка на ссылки
         if message.text and message.entities:
             for entity in message.entities:
                 if entity.type in ["url", "text_link", "mention"]:
-                    privileged_users = get_privileged_users()
-                    if (chat_id, user_id) not in privileged_users:
-                        await message.delete()
-                        warning = await message.answer(
-                            text=translations["ru"]["message_moderation"]["moderation_url_message"],
-                            parse_mode="HTML",
-                        )
-                        await asyncio.sleep(int(time_del))
-                        await warning.delete()
-                        return  # После удаления сообщения больше ничего не проверяем
+                    await message.delete()
+                    warning = await message.answer(
+                        text=translations["ru"]["message_moderation"]["moderation_url_message"],
+                        parse_mode="HTML",
+                    )
+                    await asyncio.sleep(int(time_del))
+                    await warning.delete()
+                    return
 
     except Exception as e:
         logger.exception(f"{e}")
