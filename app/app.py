@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi import Form
@@ -13,7 +15,6 @@ from utils.get_id import get_participants_count
 from utils.models import BadWords, PrivilegedUsers
 from utils.models import Group, db
 from utils.models import GroupRestrictions
-from pathlib import Path
 
 app = FastAPI()
 BASE_DIR = Path(__file__).resolve().parent

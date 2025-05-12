@@ -4,6 +4,19 @@ from peewee import SqliteDatabase, Model, CharField, IntegerField
 db = SqliteDatabase('db/database.db')
 
 
+def get_privileged_users():
+    """
+    Получает список привилегированных пользователей (chat_id, user_id)
+    """
+    try:
+        query = PrivilegedUsers.select(
+            PrivilegedUsers.chat_id, PrivilegedUsers.user_id)
+        return {(row.chat_id, row.user_id) for row in query}
+    except Exception as e:
+        print(f"Ошибка при получении привилегированных пользователей: {e}")
+        return set()
+
+
 class BadWords(Model):
     """
     Модель для хранения запрещенных слов.
@@ -24,14 +37,14 @@ class BadWords(Model):
 
 
 class PrivilegedUsers(Model):
-    chat_id = IntegerField() # Получаем ID
-    user_id = IntegerField() # Получаем ID пользователя
-    chat_title = CharField() # Получаем название группы
+    chat_id = IntegerField()  # Получаем ID
+    user_id = IntegerField()  # Получаем ID пользователя
+    chat_title = CharField()  # Получаем название группы
 
     class Meta:
-        database = db # Указываем, что данная модель будет использовать базу данных
-        table_name = 'privileged_users' # Имя таблицы
-        primary_key = False # Для запрета автоматически создающегося поля id (как первичный ключ)
+        database = db  # Указываем, что данная модель будет использовать базу данных
+        table_name = 'privileged_users'  # Имя таблицы
+        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
 
 
 class GroupRestrictions(Model):

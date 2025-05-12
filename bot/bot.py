@@ -4,7 +4,6 @@ from loguru import logger  # https://github.com/Delgan/loguru
 
 from handlers.member import (handle_new_member, handle_member_left,
                              delete_system_message_new_member, delete_system_message_member_left)
-from handlers.messages import handle_text_messages
 from handlers.subscription import check_subscription, on_chat_member_update
 # Импортируем обработчики команд
 from system.dispatcher import bot, router  # Экземпляр бота
@@ -21,7 +20,7 @@ async def main():
     """
     try:
         logger.info("Бот запущен")
-        router.message.register(handle_text_messages)
+        # router.message.register(handle_text_messages)
         router.chat_member.register(handle_new_member)
         router.chat_member.register(handle_member_left)
         router.message.register(delete_system_message_new_member)

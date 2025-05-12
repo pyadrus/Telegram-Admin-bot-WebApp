@@ -4,7 +4,7 @@ import sys
 # Пути к вашим скриптам и командам
 commands = [
     [sys.executable, "app/app.py"],
-    [sys.executable, "bot/member.py"],
+    [sys.executable, "bot/bot.py"],
     ["tuna", "http", "8080", "--subdomain=adminbot"]
 ]
 

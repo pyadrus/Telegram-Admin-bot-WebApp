@@ -71,8 +71,8 @@ async function toggleRestrictMessages() {
 
         if (data.success) {
             statusEl.innerText = data.is_restricted
-                ? `Сообщения заблокированы для "${chat_title}"`
-                : `Сообщения разрешены для "${chat_title}"`;
+            ? `Сообщения заблокированы для "${chat_title}"`
+            : `Сообщения разрешены для "${chat_title}"`;
             statusEl.className = "status success";
         } else {
             throw new Error("Ошибка установки ограничений");

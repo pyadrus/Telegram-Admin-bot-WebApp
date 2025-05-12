@@ -6,20 +6,7 @@ from loguru import logger
 from bot.keyboard.keyboard import create_admin_panel_keyboard
 from bot.messages.translations_loader import translations
 from system.dispatcher import router, bot, time_del
-from utils.models import BadWords, PrivilegedUsers
-
-
-def get_privileged_users():
-    """
-    Получает список привилегированных пользователей (chat_id, user_id)
-    """
-    try:
-        query = PrivilegedUsers.select(
-            PrivilegedUsers.chat_id, PrivilegedUsers.user_id)
-        return {(row.chat_id, row.user_id) for row in query}
-    except Exception as e:
-        print(f"Ошибка при получении привилегированных пользователей: {e}")
-        return set()
+from utils.models import BadWords, get_privileged_users
 
 
 @router.message()
