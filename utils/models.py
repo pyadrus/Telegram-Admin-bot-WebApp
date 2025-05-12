@@ -2,17 +2,36 @@ from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)
 db = SqliteDatabase('db/database.db')
-# Настройка подключения к базе данных SQLite (или другой базы данных)
-path_database = 'db/database.db'
 
 
 class BadWords(Model):
+    """
+    Модель для хранения запрещенных слов.
+
+    :cvar bad_word: Поле для хранения запрещенного слова.
+    """
     bad_word = CharField()  # Получаем ID
 
     class Meta:
+        """
+        Метакласс для настройки модели.
+
+        :cvar database: База данных, используемая моделью.
+        :cvar table_name: Имя таблицы в базе данных.
+        """
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "bad_words"  # Имя таблицы
-        # primary_key = True  # Для запрета автоматически создающегося поля id (как первичный ключ)
+
+
+class PrivilegedUsers(Model):
+    chat_id = IntegerField()
+    user_id = IntegerField()
+    chat_title = CharField()
+
+    class Meta:
+        database = db
+        table_name = 'privileged_users'
+        primary_key = False
 
 
 class GroupRestrictions(Model):
@@ -25,31 +44,14 @@ class GroupRestrictions(Model):
     required_channel_username = CharField()  # Получаем username чата
 
     class Meta:
+        """
+        Метакласс для настройки модели.
+
+        :cvar database: База данных, используемая моделью.
+        :cvar table_name: Имя таблицы в базе данных.
+        """
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "group_restrictions"  # Имя таблицы
-        # Для запрета автоматически создающегося поля id (как первичный ключ)
-        primary_key = False
-
-
-class PrivilegedUsers(Model):
-    """
-    Записывает в базу данных идентификатор пользователя, которому будет разрешено выполнение определенных действий в чате,
-    в базу данных. Будут сохранены идентификаторы чата и участника чата:
-    """
-
-    chat_id = IntegerField()  # Получаем ID чата
-    user_id = IntegerField()  # Получаем ID пользователя
-    username = CharField()  # Получаем username пользователя
-    first_name = CharField(null=True)  # Получаем first_name пользователя
-    last_name = CharField(null=True)  # Получаем last_name пользователя
-    date_add = CharField()  # Получаем текущую дату
-    # Получаем ID администратора, который добавил пользователя в базу данных
-    admin_id = IntegerField()
-    chat_title = CharField()  # Получаем название чата
-
-    class Meta:
-        database = db  # Указываем, что данная модель будет использовать базу данных
-        table_name = "privileged_users"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)
         primary_key = False
 
@@ -66,6 +68,12 @@ class Group(Model):
     permission_to_write = IntegerField()  # Права на запись в группу
 
     class Meta:
+        """
+        Метакласс для настройки модели.
+
+        :cvar database: База данных, используемая моделью.
+        :cvar table_name: Имя таблицы в базе данных.
+        """
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "groups_administration"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)
@@ -86,6 +94,12 @@ class GroupMembers(Model):
     date_now = CharField()  # Получаем текущую дату
 
     class Meta:
+        """
+        Метакласс для настройки модели.
+
+        :cvar database: База данных, используемая моделью.
+        :cvar table_name: Имя таблицы в базе данных.
+        """
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "group_members_add"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)
@@ -93,6 +107,11 @@ class GroupMembers(Model):
 
 
 def initialize_db():
+    """
+    Инициализирует базу данных, создавая необходимые таблицы.
+
+    :return: None
+    """
     db.connect()
     db.create_tables([Group], safe=True)
     db.create_tables([GroupMembers], safe=True)

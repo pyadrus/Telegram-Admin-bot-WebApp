@@ -1,29 +1,24 @@
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi import Form
+from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
-from api.chat_routes import router as chat_router  # ← Правильный импорт роутера
-# ← Правильный импорт роутера
-from api.subscribe_channel import router as subscribe_channel
-from api.set_bad_words import router as set_bad_words  # ← Правильный импорт роутера
+from system.dispatcher import bot, READ_ONLY, FULL_ACCESS
 from utils.get_id import get_participants_count
+from utils.models import BadWords
 from utils.models import Group, db
+from utils.models import GroupRestrictions
 
 app = FastAPI()
 
 # === Подключаем шаблоны и статику ===
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# === Регистрируем роуты ===
-app.include_router(chat_router)  # ← Регистрация роутера
-app.include_router(subscribe_channel)  # ← Регистрация роутера
-app.include_router(set_bad_words)  # ← Регистрация роутера
 
 
 # === Маршруты ===
@@ -76,7 +71,7 @@ async def save_group(chat_username: str = Form(...)):
 
 
 # Получение списка групп для отображения на странице
-@app.get("/api/chat_title")
+@app.get("/chat_title")
 async def get_groups():
     """
     Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
@@ -86,7 +81,7 @@ async def get_groups():
     return {"chat_title": chat_title}
 
 
-@app.get("/api/get-participants")
+@app.get("/get-participants")
 async def get_participants(chat_title: str):
     """
     Получение количества участников в группе.
@@ -99,7 +94,7 @@ async def get_participants(chat_title: str):
         return {"success": False, "error": "Группа не найдена"}
 
 
-@app.get("/api/update-participants")
+@app.get("/update-participants")
 async def update_participants(chat_title: str):
     """
     Обновление количества участников в группе.
@@ -122,7 +117,7 @@ async def update_participants(chat_title: str):
 
 
 # Получение списка групп для отображения на странице
-@app.get("/api/chat_title_groups_select")
+@app.get("/chat_title_groups_select")
 async def get_groups():
     """
     Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
@@ -132,7 +127,7 @@ async def get_groups():
     return {"chat_title": chat_title}
 
 
-@app.get("/api/update-restrict-messages")
+@app.get("/update-restrict-messages")
 async def update_restrict_messages(chat_title: str, restricted: bool = True):
     """
     Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если
@@ -149,6 +144,121 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
         return {"success": False, "error": "Группа не найдена"}
     except Exception as e:
         logger.exception(e)
+
+
+@app.get("/chat/readonly")
+async def chat_readonly(chat_id: int):
+    """
+   Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
+
+   :param chat_id: ID чата, в формате -1001234567890
+   :return: Словарь с ключами "success" и "message" или "error"
+   """
+    try:
+        chat_id = str(f"-100{chat_id}")
+        await bot.set_chat_permissions(chat_id=int(chat_id), permissions=READ_ONLY)
+        return {"success": True, "message": "Чат переведён в режим «только чтение»"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.get("/writeable")
+async def chat_writeable(chat_id: int):
+    """
+    Переводит чат в режим «все могут писать». Передаваемый chat_id, должен быть в формате -1001234567890, и являться
+    числовым значением.
+
+    :param chat_id: ID чата, в формате -1001234567890
+    """
+    try:
+        chat_id = str(f"-100{chat_id}")
+        await bot.set_chat_permissions(chat_id=chat_id, permissions=FULL_ACCESS)
+        return {"success": True, "message": "Чат переведён в режим «все могут писать»"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.get("/set-bad-words")
+async def write_bad_words(bad_word: str):
+    """
+    Записываем плохое слово в базу данных
+    """
+    try:
+        # Получаем информацию о целевой группе (ту, которую хотим ограничить)
+        bad_words = BadWords(
+            bad_word=bad_word.strip().lower(),  # Получаем слово от пользователя
+        )
+        bad_words.save()
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@app.post("/give-privileges")
+async def chat_give_privilege(chat_title: str, user_id: int):
+    try:
+        # Получаем информацию о целевой группе (ту, которую хотим ограничить)
+        group = Group.get(Group.chat_title == chat_title)
+        group_id = group.chat_id
+        logger.info(f"Первая группа {group_id}")
+
+        logger.info(f'{user_id}')
+
+        return {
+            "success": True,
+            "message": f"Пользователь {user_id} теперь имеет привилегии в чате '{chat_title}'"
+        }
+
+    except Exception as e:
+        logger.exception(f"Ошибка при выдаче привилегий: {e}")
+        return {"success": False, "error": "Внутренняя ошибка сервера"}
+
+
+@app.get("/get-chat-id")
+async def get_chat_id(title: str):
+    """
+    Получение названия группы
+    """
+    group = Group.get(Group.chat_title == title)
+    return {"success": True, "chat_id": group.chat_id}
+
+
+@app.get("/require-subscription")
+async def chat_subscribe(chat_title: str, required_chat_title: str):
+    """
+    Устанавливает ограничение на подписку для группы chat_title.
+    Пользователи смогут писать только если подписаны на канал/группу required_chat_title.
+    """
+    try:
+        # Получаем информацию о целевой группе (ту, которую хотим ограничить)
+        group = Group.get(Group.chat_title == chat_title)
+        group_id = group.chat_id
+        logger.info(f"Первая группа {group_id}")
+
+        # Получаем информацию о канале/группе, на который нужно подписаться
+        required_group = Group.get(Group.chat_title == required_chat_title)
+        channel_id = required_group.chat_id  # id канала или группы
+        channel_username = required_group.chat_link  # username канала или группы
+        logger.info(f"Вторая группа {channel_id}. Username {channel_username}")
+
+        # Обновляем запись в базе
+        restriction, created = GroupRestrictions.get_or_create(
+            group_id=group_id,
+            defaults={
+                'required_channel_id': channel_id,
+                'required_channel_username': channel_username
+            }
+        )
+        if not created:
+            # Если запись уже существует — обновляем её
+            GroupRestrictions.update(
+                required_channel_id=channel_id,
+                required_channel_username=channel_username
+            ).where(GroupRestrictions.group_id == group_id).execute()
+
+        return {"success": True,
+                "message": f"Теперь для группы '{chat_title}' требуется подписка на '{required_chat_title}'"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@ import asyncio
 
 from loguru import logger  # https://github.com/Delgan/loguru
 
-from handlers.admin import cmd_user_add
 from handlers.bot import (handle_new_member, handle_member_left,
                           delete_system_message_new_member, delete_system_message_member_left)
 from handlers.messages import handle_text_messages
@@ -32,8 +31,6 @@ async def main():
         # Проверка на подписку
         router.message.register(check_subscription)
         router.message.register(on_chat_member_update)
-
-        router.message.register(cmd_user_add)
 
         await dp.start_polling(bot)
 

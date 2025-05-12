@@ -8,40 +8,40 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Формирование групп</h1>
+<div class="container">
+    <h1>Формирование групп</h1>
 
-        <!-- Сообщение об успехе или ошибке -->
-        {% if request.query_params.success %}
-        <div class="status success">Группа успешно сохранена!</div>
-        {% endif %}
+    <!-- Сообщение об успехе или ошибке -->
+    {% if request.query_params.success %}
+    <div class="status success">Группа успешно сохранена!</div>
+    {% endif %}
 
-        {% if request.query_params.error %}
-        <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
-        {% endif %}
+    {% if request.query_params.error %}
+    <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
+    {% endif %}
 
-        <p>
-            Это страница для формирования пользовательских групп. <br><br>
+    <p>
+        Это страница для формирования пользовательских групп. <br><br>
 
-            Для дальнейшего взаимодействия с группами, нужно задать @username группы.
-        </p><br>
+        Для дальнейшего взаимодействия с группами, нужно задать @username группы.
+    </p><br>
 
-        <!--
-    Форма для ввода ID группы. Форма отправляет POST-запрос на /save-group
-    Поле <input> имеет атрибут name="chat_id"
-    Значение этого поля будет передано как chat_id=... в теле запроса
-    FastAPI ожидает поле с именем "chat_id" из формы (name="chat_id")
-    -->
+    <!--
+Форма для ввода ID группы. Форма отправляет POST-запрос на /save-group
+Поле <input> имеет атрибут name="chat_id"
+Значение этого поля будет передано как chat_id=... в теле запроса
+FastAPI ожидает поле с именем "chat_id" из формы (name="chat_id")
+-->
 
-        <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
-            <label for="chat-username">Введите username группы или канала в виде @username:</label>
-            <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username" />
+    <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="chat-username">Введите username группы или канала в виде @username:</label>
+        <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
 
-            <button type="submit">Сохранить группу</button>
-        </form>
+        <button type="submit">Сохранить группу</button>
+    </form>
 
-        <a href="/" class="btn">Назад в админ-панель</a>
-    </div>
+    <a href="/" class="btn">Назад в админ-панель</a>
+</div>
 </body>
 
 </html>

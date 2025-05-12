@@ -5,28 +5,30 @@ function populateSelect(url, selectId) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            const select = document.getElementById(selectId);
-            select.innerHTML = '<option value="">-- Выберите группу --</option>';
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">-- Выберите группу --</option>';
 
-            // Проверяем, есть ли нужный ключ
-            const groups = data.chat_title || data.groups || [];
+        // Проверяем, есть ли нужный ключ
+        const groups = data.chat_title || data.groups || [];
 
-            groups.forEach(group => {
-                const option = document.createElement('option');
-                option.value = group.chat_title;
-                option.textContent = group.chat_title;
-                select.appendChild(option);
-            });
-        })
+        groups.forEach(group => {
+            const option = document.createElement('option');
+            option.value = group.chat_title;
+            option.textContent = group.chat_title;
+            select.appendChild(option);
+        });
+    })
         .catch(err => console.error(`Ошибка загрузки ${selectId}:`, err));
 }
 
+
 // При загрузке страницы
 window.onload = () => {
-    populateSelect('/api/chat_title', 'group-select');
-    populateSelect('/api/chat_title', 'groups-select');
-    populateSelect('/api/chat_title', 'groups-selected');
-    populateSelect('/api/chat_title', 'groups-selecteds');
+    populateSelect('/chat_title', 'group-select');
+    populateSelect('/chat_title', 'groups-select');
+    populateSelect('/chat_title', 'groups-selected');
+    populateSelect('/chat_title', 'groups-selecteds');
+    populateSelect('/chat_title', 'groups-select-privilage');
 };
 
 // Получение участников
@@ -38,7 +40,7 @@ async function getParticipants() {
     }
 
     try {
-        const response = await fetch(`/api/update-participants?chat_title=${encodeURIComponent(chat_title)}`);
+        const response = await fetch(`/update-participants?chat_title=${encodeURIComponent(chat_title)}`);
         const data = await response.json();
         const statusEl = document.getElementById("participants-count");
 
@@ -63,7 +65,7 @@ async function toggleRestrictMessages() {
     }
 
     try {
-        const response = await fetch(`/api/update-restrict-messages?chat_title=${encodeURIComponent(chat_title)}&restricted=true`);
+        const response = await fetch(`/update-restrict-messages?chat_title=${encodeURIComponent(chat_title)}&restricted=true`);
         const data = await response.json();
         const statusEl = document.getElementById("participants-count");
 
@@ -85,12 +87,12 @@ async function setReadOnly() {
     const chat_title = document.getElementById("groups-select").value.trim();  // ← важно: groups-select
     if (!chat_title) return alert("Выберите группу");
 
-    const res = await fetch(`/api/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+    const res = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
     const data = await res.json();
 
     if (!data.success) return alert("Не найден ID группы");
 
-    const response = await fetch(`/api/chat/readonly?chat_id=${data.chat_id}`);
+    const response = await fetch(`/readonly?chat_id=${data.chat_id}`);
     const result = await response.json();
 
     alert(result.message || "Ошибка при установке ограничений");
@@ -100,12 +102,12 @@ async function setFullAccess() {
     const chat_title = document.getElementById("groups-select").value.trim();
     if (!chat_title) return alert("Выберите группу");
 
-    const res = await fetch(`/api/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+    const res = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
     const data = await res.json();
 
     if (!data.success) return alert("Не найден ID группы");
 
-    const response = await fetch(`/api/chat/writeable?chat_id=${data.chat_id}`);
+    const response = await fetch(`/writeable?chat_id=${data.chat_id}`);
     const result = await response.json();
 
     alert(result.message || "Ошибка при снятии ограничений");
@@ -123,7 +125,7 @@ async function toggleSubscriptionRequirement() {
 
     try {
         // Отправляем два параметра: chat_title и required_chat_title
-        const response = await fetch(`/api/chat/require-subscription?chat_title=${encodeURIComponent(chat_title)}&required_chat_title=${encodeURIComponent(required_chat_title)}`);
+        const response = await fetch(`/require-subscription?chat_title=${encodeURIComponent(chat_title)}&required_chat_title=${encodeURIComponent(required_chat_title)}`);
         const result = await response.json();
 
         if (result.success) {
@@ -142,7 +144,7 @@ async function saveBadWords() {
     const bad_word = inputField.value.trim();
 
     try {
-        const response = await fetch(`/api/chat/set-bad-words?bad_word=${encodeURIComponent(bad_word)}`);
+        const response = await fetch(`/set-bad-words?bad_word=${encodeURIComponent(bad_word)}`);
         const result = await response.json();
 
         // Очистить поле ввода
@@ -154,5 +156,42 @@ async function saveBadWords() {
     } catch (error) {
         console.error("Ошибка:", error);
         alert("Не удалось сохранить запрещенные слова.");
+    }
+}
+
+
+
+// Функция вызова API
+async function givePrivilege() {
+    const chat_title = document.getElementById("groups-select-privilage").value.trim();
+    const user_id = document.getElementById("user-id-privilege").value.trim();
+
+    if (!chat_title || !user_id) {
+        alert("Заполните все поля");
+        return;
+    }
+
+    try {
+        const response = await fetch(`give-privileges?chat_title=${encodeURIComponent(chat_title)}&user_id=${encodeURIComponent(user_id)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                chat_title: chat_title,
+                user_id: user_id
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert(result.message);
+        } else {
+            alert("Ошибка: " + (result.error || "Неизвестная ошибка"));
+        }
+    } catch (err) {
+        console.error("Ошибка сети:", err);
+        alert("Не удалось выполнить запрос");
     }
 }

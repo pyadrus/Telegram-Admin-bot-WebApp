@@ -6,8 +6,20 @@ from loguru import logger
 from keyboard.keyboard import create_admin_panel_keyboard
 from messages.translations_loader import translations
 from system.dispatcher import router, bot, time_del
-from system.sqlite import fetch_user_data
-from utils.models import BadWords
+from utils.models import BadWords, PrivilegedUsers
+
+
+def get_privileged_users():
+    """
+    Получает список привилегированных пользователей (chat_id, user_id)
+    """
+    try:
+        query = PrivilegedUsers.select(
+            PrivilegedUsers.chat_id, PrivilegedUsers.user_id)
+        return {(row.chat_id, row.user_id) for row in query}
+    except Exception as e:
+        print(f"Ошибка при получении привилегированных пользователей: {e}")
+        return set()
 
 
 @router.message()
@@ -38,8 +50,8 @@ async def handle_text_messages(message: Message) -> None:
     try:
         # Проверка на пересылку сообщений
         if message.forward_from or message.forward_from_chat:
-            data_dict = fetch_user_data()
-            if (chat_id, user_id) not in data_dict:
+            privileged_users = get_privileged_users()
+            if (chat_id, user_id) not in privileged_users:
                 await message.delete()
                 warning = await message.answer(
                     f"<code>✅ {message.from_user.full_name}</code>\n"
@@ -79,5 +91,6 @@ async def handle_text_messages(message: Message) -> None:
                     await asyncio.sleep(int(time_del))
                     await warning.delete()
                     return  # После удаления сообщения больше ничего не проверяем
+
     except Exception as e:
         logger.error(f"Ошибка при обработке текстового сообщения: {e}")
