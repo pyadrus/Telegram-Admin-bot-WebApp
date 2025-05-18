@@ -40,6 +40,12 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# Новый маршрут для "Ограничение по подписке на канал"
+@app.get("/channel_subscription_limit")
+async def channel_subscription_limit(request: Request):
+    return templates.TemplateResponse("channel_subscription_limit.html", {"request": request})
+
+
 # Новый маршрут для "Фильтр запрещённых слов"
 @app.get("/filter_words")
 async def filter_words(request: Request):
