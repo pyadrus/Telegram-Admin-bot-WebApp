@@ -40,6 +40,12 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# Новый маршрут для "Фильтр запрещённых слов"
+@app.get("/filter_words")
+async def filter_words(request: Request):
+    return templates.TemplateResponse("filter_words.html", {"request": request})
+
+
 # Новый маршрут для "Выдать пользователю особые права в группе"
 @app.get("/grant_user_special_rights_group")
 async def grant_user_special_rights_group(request: Request):
