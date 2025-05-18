@@ -40,6 +40,18 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# Новый маршрут для "Выдать пользователю особые права в группе"
+@app.get("/grant_user_special_rights_group")
+async def grant_user_special_rights_group(request: Request):
+    """
+    Отображение страницы с формой для ввода данных о пользователе и группе.
+
+    :param request: Объект запроса.
+    :return: HTML-страница с формой для ввода данных о пользователе и группе.
+    """
+    return templates.TemplateResponse("grant_user_special_rights_group.html", {"request": request})
+
+
 # Новый маршрут для "Формирование групп"
 @app.get("/formation-groups")
 async def formation_groups(request: Request):

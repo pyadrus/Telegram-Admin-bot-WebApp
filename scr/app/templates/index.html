@@ -14,6 +14,7 @@
     <h1>Админ-панель</h1>
 
     <a href="/formation-groups" class="btn">Формирование групп</a>
+    <a href="/grant_user_special_rights_group" class="btn">Выдать пользователю особые права в группе</a>
 
     <!-- Получение количества участников -->
     <div class="section">
@@ -58,18 +59,6 @@
         <label for="bad-words">Введите запрещённое слово или словосочетание:</label>
         <textarea id="bad-words" rows="4" placeholder="Пример: плохое слово"></textarea>
         <button onclick="saveBadWords()">Сохранить</button>
-    </div>
-
-    <div class="section">
-        <h2>Выдать пользователю особые права в группе</h2>
-        <label for="groups-select-privilage">Выберите группу в которой нужнодать особые права:</label>
-        <select id="groups-select-privilage">
-            <option value="">-- Выберите группу --</option>
-        </select>
-        <label for="user-id-privilege">Введите id пользователя. Что бы получить id пользователя, можете ответить на
-            сообщение в группе / чате с ботом, командой /id. Бот отправит id в личное сообщение бота:</label>
-        <textarea id="user-id-privilege" rows="4" placeholder="Пример: 123456789"></textarea>
-        <button onclick="givePrivilege()">Дать особые права</button>
     </div>
 
 </div>
