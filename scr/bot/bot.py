@@ -18,12 +18,9 @@ async def main():
     """
     try:
         logger.info("Бот запущен")
-        # Регистрация обработчиков для подписки
-        register_subscription_handlers()
-
+        register_subscription_handlers()  # Регистрация обработчиков для подписки
         register_send_id_handler()  # Регистрация обработчика для отправки ID
         register_member_handlers()  # Регистрация обработчиков для членов
-
         await dp.start_polling(bot)
     except Exception as error:
         # Логирование исключений, если что-то пошло не так
