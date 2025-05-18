@@ -1,22 +1,19 @@
+import os
 import subprocess
 import sys
 
-# Пути к вашим скриптам и командам
+# Путь к корню проекта (где находится scr/)
+project_root = os.path.dirname(os.path.abspath(__file__))
+
+# Команды с указанием PYTHONPATH
 commands = [
     [sys.executable, "scr/app/app.py"],
     [sys.executable, "scr/bot/bot.py"],
-    ["tuna", "http", "8080", "--subdomain=adminbot"]
+    ["tuna", "http", "8080", "--subdomain=mybotadmin"]
 ]
 
-# Запуск всех процессов
-processes = [subprocess.Popen(cmd) for cmd in commands]
+# Установить PYTHONPATH на корень проекта
+env = os.environ.copy()
+env["PYTHONPATH"] = project_root
 
-print("Все процессы запущены. Для остановки нажмите Ctrl+C")
-try:
-    # Ожидание завершения (чтобы скрипт не завершился сразу)
-    for p in processes:
-        p.wait()
-except KeyboardInterrupt:
-    print("\nОстановка всех процессов...")
-    for p in processes:
-        p.terminate()
+processes = [subprocess.Popen(cmd, env=env) for cmd in commands]

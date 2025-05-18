@@ -10,7 +10,7 @@ def create_admin_panel_keyboard(user_id: int) -> InlineKeyboardMarkup:
         buttons.append([
             InlineKeyboardButton(
                 text='Панель администратора',
-                web_app=WebAppInfo(url="https://adminbot.ru.tuna.am")
+                web_app=WebAppInfo(url="https://mybotadmin.ru.tuna.am")
             )
         ])
 
