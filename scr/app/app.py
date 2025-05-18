@@ -40,6 +40,12 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+# Новый маршрут для "Количество участников"
+@app.get("/restrictions_on_messages")
+async def restrictions_on_messages(request: Request):
+    return templates.TemplateResponse("restrictions_on_messages.html", {"request": request})
+
+
 # Новый маршрут для "Ограничения на сообщения"
 @app.get("/restrictions_messages")
 async def restrictions_messages(request: Request):
