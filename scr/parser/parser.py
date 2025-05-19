@@ -10,9 +10,16 @@ from scr.bot.system.dispatcher import api_id, api_hash
 
 # ⚙️ Конфигурация
 CONFIG = {
-    "source_channels": ["@tehnik_shanel", "@hdgdhsvsvs"],
+    "source_channels": [
+        "@nedvizhimost_donetsk_dnr", "@nedvijdon", "@arendanedvijimostidoneck", "@arenda_prodaja_lnr",
+        "@nedvizhimost_dnr_donetsk", "@Real_Estate_DNR", "@nedvizimost_mrpl", "@nedvizimost_mrpl",
+        "@Donetsk_Nedvizhimost", "@nedvizhimost_v_DNR", "@nedvizhimost_donetsk_ldnr", "@donetsk_nedvizhimosti",
+        "@Donetsk_Arenda0", "@arendadonetsk", "@arendazhilyadonetsk", "@kvartiradon", "@donbox101",
+        "@nedvizhimost_donetsk_arenda", "@qfIAatJmGE5NDli", "@sniat_kvartiry_v_donecke", "@kvartirasytkidn",
+        "@apartments_in_donetsk", "@sutochnoDonetsk", "@rent_donetsk"
+    ],
     "target_channel_id": -1001918436153,
-    "keywords": ["киевский район"],
+    "keywords": ["киевский район", "донецк сити", "шахтерская площадь"],
     "session_name": "scr/setting/session_name"
 }
 
@@ -36,7 +43,7 @@ async def process_message(client, message: Message, chat_id: int):
             await client.forward_messages(CONFIG["target_channel_id"], message)
             forwarded_messages.add(msg_key)
         except Exception as e:
-            logger.error(f"❌ Ошибка при пересылке: {e}")
+            logger.exception(f"❌ Ошибка при пересылке: {e}")
 
 
 async def join_required_channels(client: TelegramClient):
@@ -48,7 +55,7 @@ async def join_required_channels(client: TelegramClient):
         except UserAlreadyParticipantError:
             logger.info(f"ℹ️ Уже подписан на {channel}")
         except Exception as e:
-            logger.error(f"❌ Не удалось подписаться на {channel}: {e}")
+            logger.exception(f"❌ Не удалось подписаться на {channel}: {e}")
 
 
 async def filter_messages():
