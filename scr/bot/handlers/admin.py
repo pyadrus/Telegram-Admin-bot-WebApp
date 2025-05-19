@@ -9,8 +9,7 @@ from scr.bot.system.dispatcher import router
 @router.message(Command("id"))
 async def send_id(message: Message):
     """Обработчик команды /id"""
-    logger.info(
-        f"Пользователь {message.from_user.id} вызвал команду '/id' в чате {message.chat.id}")
+    logger.info(f"Пользователь {message.from_user.id} вызвал команду '/id' в чате {message.chat.id}")
     # Проверяем, является ли пользователь админом в текущем чате
     chat_member = await bot.get_chat_member(chat_id=message.chat.id, user_id=message.from_user.id)
     if chat_member.status not in ["administrator", "creator"]:

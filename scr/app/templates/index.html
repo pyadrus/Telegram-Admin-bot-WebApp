@@ -9,9 +9,24 @@
     <link rel="stylesheet" href="/scr/app/static/css/styles.css">
 </head>
 
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.BackButton.show();
+
+    tg.BackButton.onClick(() => {
+        tg.expand(); // Убедимся, что expand() сработает
+        setTimeout(() => {
+            window.history.back();
+        }, 0);
+    });
+</script>
+
 <body>
 <div class="container">
     <h1>Админ-панель</h1>
+    <!-- Это был недостающий элемент -->
+    <div id="usercard" class="user-info"></div>
+
 
     <a href="/formation-groups" class="btn">Формирование групп</a>
     <a href="/restrictions_on_messages" class="btn">Количество участников</a>
@@ -20,17 +35,47 @@
     <a href="/filter_words" class="btn">Фильтр запрещённых слов</a>
     <a href="/grant_user_special_rights_group" class="btn">Выдать пользователю особые права в группе</a>
 
-<!--    &lt;!&ndash; Получение количества участников &ndash;&gt;-->
-<!--    <div class="section">-->
-<!--        <h2>Количество участников</h2>-->
-<!--        <label for="group-select">Выберите группу:</label>-->
-<!--        <select id="group-select">-->
-<!--            <option value="">&#45;&#45; Выберите группу &#45;&#45;</option>-->
-<!--        </select>-->
-<!--        <button onclick="getParticipants()">Получить количество участников</button>-->
-<!--        <p id="participants-count" class="status"></p>-->
-<!--    </div>-->
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const tg = window.Telegram?.WebApp;
+          if (!tg) {
+            console.error('Это не WebApp Telegram');
+            return;
+          }
+
+          tg.expand();
+          tg.BackButton.show();
+          tg.BackButton.onClick(() => {
+            tg.expand();
+            setTimeout(() => window.history.back(), 0);
+          });
+
+          console.log('initDataUnsafe:', tg.initDataUnsafe);
+
+          const user = tg.initDataUnsafe?.user || {};
+          const card = document.getElementById('usercard');
+
+          // Проверка наличия полей
+          console.log('user object:', user);
+
+          const parts = [];
+          if (user.first_name) parts.push(user.first_name);
+          if (user.last_name)  parts.push(user.last_name);
+          if (user.username)   parts.push(`@${user.username}`);
+
+          const profPara = document.createElement('p');
+          profPara.innerText = parts.length
+            ? parts.join(' ') + (user.language_code ? ` (${user.language_code})` : '')
+            : 'Имя пользователя недоступно';
+          card.appendChild(profPara);
+
+          const idPara = document.createElement('p');
+          idPara.innerText = `ID: ${user.id ?? 'неизвестен'}`;
+          card.appendChild(idPara);
+        });
+    </script>
 
 </div>
 

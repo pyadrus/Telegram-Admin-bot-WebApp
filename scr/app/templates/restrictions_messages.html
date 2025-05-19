@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="/scr/app/static/css/styles.css">
 </head>
 
+<script>
+const tg = window.Telegram.WebApp;
+tg.BackButton.show();
+
+tg.BackButton.onClick(() => {
+    tg.expand(); // Убедимся, что expand() сработает
+    setTimeout(() => {
+        window.history.back();
+    }, 0);
+});
+</script>
+
 <body>
 <div class="container">
     <h1>Ограничения на сообщения</h1>

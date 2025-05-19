@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import uvicorn
+from aiogram.types import user
 from fastapi import FastAPI
 from fastapi import Form
 from fastapi import Request
@@ -127,12 +128,9 @@ async def get_participants(chat_title: str):
     """
     Получение количества участников в группе.
     """
-    try:
-        group = Group.get(Group.chat_title == chat_title)
-        # Здесь можно вызвать Telegram API для актуального числа участников
-        return {"success": True, "participants_count": group.chat_total}
-    except Group.DoesNotExist:
-        return {"success": False, "error": "Группа не найдена"}
+    group = Group.get(Group.chat_title == chat_title)
+    # Здесь можно вызвать Telegram API для актуального числа участников
+    return {"success": True, "participants_count": group.chat_total}
 
 
 @app.get("/update-participants")
@@ -151,8 +149,6 @@ async def update_participants(chat_title: str):
             Group.chat_title == chat_title).execute()
 
         return {"success": True, "participants_count": total}
-    except Group.DoesNotExist:
-        return {"success": False, "error": "Группа не найдена"}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -181,8 +177,6 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
         Group.update(permission_to_write=permission_to_write).where(
             Group.chat_title == chat_title).execute()
         return {"success": True, "permission_to_write": permission_to_write}
-    except Group.DoesNotExist:
-        return {"success": False, "error": "Группа не найдена"}
     except Exception as e:
         logger.exception(e)
 
