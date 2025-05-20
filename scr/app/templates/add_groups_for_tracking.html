@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить группы / каналы для отслеживания</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="/scr/app/static/css/styles.css">
+</head>
+<script>
+    //кнопка назад
+    const tg = window.Telegram.WebApp;
+    tg.BackButton.show();
+
+    tg.BackButton.onClick(() => {
+        tg.expand(); // Убедимся, что expand() сработает
+        setTimeout(() => {
+            window.history.back();
+        }, 0);
+    });
+</script>
+<body>
+<h3>Формирование групп</h3>
+</body>
+</html>

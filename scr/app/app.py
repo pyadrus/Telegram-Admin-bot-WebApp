@@ -88,6 +88,22 @@ async def formation_groups(request: Request):
     return templates.TemplateResponse("formation_groups.html", {"request": request})
 
 
+"""Помощь пользователю"""
+
+
+@app.get("/help")
+async def help(request: Request):
+    return templates.TemplateResponse("help.html", {"request": request})
+
+
+"""Формирование групп \ каналов для отслеживания сообщений пользователей в группах и каналах"""
+
+
+@app.get("/add_groups_for_tracking")
+async def add_groups_for_tracking(request: Request):
+    return templates.TemplateResponse("add_groups_for_tracking.html", {"request": request})
+
+
 """Удаление группы по username группы"""
 
 

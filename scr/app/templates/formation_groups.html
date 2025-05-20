@@ -69,17 +69,17 @@
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                const select = document.getElementById(selectId);
-                select.innerHTML = '<option value="">-- Выберите группу --</option>';
-                // Проверяем, есть ли нужный ключ
-                const groups = data.chat_title || data.groups || [];
-                groups.forEach(group => {
-                    const option = document.createElement('option');
-                    option.value = group.chat_title;
-                    option.textContent = group.chat_title;
-                    select.appendChild(option);
-                });
-            })
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">-- Выберите группу --</option>';
+            // Проверяем, есть ли нужный ключ
+            const groups = data.chat_title || data.groups || [];
+            groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.chat_title;
+                option.textContent = group.chat_title;
+                select.appendChild(option);
+            });
+        })
             .catch(err => console.error(`Ошибка загрузки ${selectId}:`, err));
     }
 
@@ -88,51 +88,51 @@
         populateSelect('/chat_title', 'group-select-del');
     };
 
-async function delGroup() {
-    const chat_title = document.getElementById("group-select-del").value.trim();
-    if (!chat_title) {
-        alert("Выберите группу из списка");
-        return;
-    }
-
-    try {
-        // Получаем chat_id по названию группы
-        const responseGetId = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
-        const data = await responseGetId.json();
-
-        if (!data.success) {
-            throw new Error("Не удалось получить ID группы");
+    async function delGroup() {
+        const chat_title = document.getElementById("group-select-del").value.trim();
+        if (!chat_title) {
+            alert("Выберите группу из списка");
+            return;
         }
 
-        const chat_id = data.chat_id;
+        try {
+            // Получаем chat_id по названию группы
+            const responseGetId = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+            const data = await responseGetId.json();
 
-        // Отправляем POST-запрос с chat_id
-        const responseDelete = await fetch("/delete_group", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: `chat_id=${chat_id}`
-        });
+            if (!data.success) {
+                throw new Error("Не удалось получить ID группы");
+            }
 
-        const result = await responseDelete.json();
-        const statusEl = document.getElementById("delete-status");
+            const chat_id = data.chat_id;
 
-        if (result.success) {
-            statusEl.innerText = `Группа "${chat_title}" удалена`;
-            statusEl.className = "status success";
+            // Отправляем POST-запрос с chat_id
+            const responseDelete = await fetch("/delete_group", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `chat_id=${chat_id}`
+            });
 
-            // Опционально: обновляем список после удаления
-            populateSelect('/chat_title', 'group-select-del');
-        } else {
-            statusEl.innerText = result.error || "Ошибка при удалении группы";
-            statusEl.className = "status error";
+            const result = await responseDelete.json();
+            const statusEl = document.getElementById("delete-status");
+
+            if (result.success) {
+                statusEl.innerText = `Группа "${chat_title}" удалена`;
+                statusEl.className = "status success";
+
+                // Опционально: обновляем список после удаления
+                populateSelect('/chat_title', 'group-select-del');
+            } else {
+                statusEl.innerText = result.error || "Ошибка при удалении группы";
+                statusEl.className = "status error";
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            document.getElementById("delete-status").innerText = "Не удалось подключиться к серверу";
+            document.getElementById("delete-status").className = "status error";
         }
-    } catch (error) {
-        console.error("Ошибка:", error);
-        document.getElementById("delete-status").innerText = "Не удалось подключиться к серверу";
-        document.getElementById("delete-status").className = "status error";
-    }
     }
 </script>
 </body>
