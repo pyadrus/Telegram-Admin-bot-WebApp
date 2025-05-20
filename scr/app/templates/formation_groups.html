@@ -9,15 +9,16 @@
 </head>
 
 <script>
-const tg = window.Telegram.WebApp;
-tg.BackButton.show();
+    //кнопка назад
+    const tg = window.Telegram.WebApp;
+    tg.BackButton.show();
 
-tg.BackButton.onClick(() => {
-    tg.expand(); // Убедимся, что expand() сработает
-    setTimeout(() => {
-        window.history.back();
-    }, 0);
-});
+    tg.BackButton.onClick(() => {
+        tg.expand(); // Убедимся, что expand() сработает
+        setTimeout(() => {
+            window.history.back();
+        }, 0);
+    });
 </script>
 
 <body>
@@ -52,6 +53,11 @@ tg.BackButton.onClick(() => {
 
         <button type="submit">Сохранить группу</button>
     </form>
+
+    <p>
+        Удаление введенных групп<br><br>
+    </p><br>
+
 
     <a href="/" class="btn">Назад в админ-панель</a>
 </div>

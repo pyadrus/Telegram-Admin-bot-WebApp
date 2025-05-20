@@ -39,11 +39,10 @@ async def unified_message_handler(message: Message) -> None:
     if message.chat.type == "private":
         if message.text == "/start":
             logger.info(f"Пользователь {user_id} прислал команду /start")
-            keyboard = create_admin_panel_keyboard(user_id)
             await bot.send_message(
                 chat_id,
                 translations["ru"]["menu"]["user"],
-                reply_markup=keyboard,
+                reply_markup=create_admin_panel_keyboard(user_id),
                 parse_mode="HTML"
             )
         return

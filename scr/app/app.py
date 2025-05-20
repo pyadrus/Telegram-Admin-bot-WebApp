@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import uvicorn
-from aiogram.types import user
 from fastapi import FastAPI
 from fastapi import Form
 from fastapi import Request
