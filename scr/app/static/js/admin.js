@@ -5,31 +5,32 @@ function populateSelect(url, selectId) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-        const select = document.getElementById(selectId);
-        select.innerHTML = '<option value="">-- Выберите группу --</option>';
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">-- Выберите группу --</option>';
 
-        // Проверяем, есть ли нужный ключ
-        const groups = data.chat_title || data.groups || [];
+            // Проверяем, есть ли нужный ключ
+            const groups = data.chat_title || data.groups || [];
 
-        groups.forEach(group => {
-            const option = document.createElement('option');
-            option.value = group.chat_title;
-            option.textContent = group.chat_title;
-            select.appendChild(option);
-        });
-    })
+            groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.chat_title;
+                option.textContent = group.chat_title;
+                select.appendChild(option);
+            });
+        })
         .catch(err => console.error(`Ошибка загрузки ${selectId}:`, err));
 }
 
 
 // При загрузке страницы
 window.onload = () => {
-    populateSelect('/chat_title', 'group-select');
+    populateSelect('/chat_title', 'group-select'); // Выбор группы, для получения количества участников
     populateSelect('/chat_title', 'groups-select');
     populateSelect('/chat_title', 'groups-selected');
     populateSelect('/chat_title', 'groups-selecteds');
     populateSelect('/chat_title', 'groups-select-privilage');
 };
+
 
 // Получение участников
 async function getParticipants() {
@@ -71,8 +72,8 @@ async function toggleRestrictMessages() {
 
         if (data.success) {
             statusEl.innerText = data.is_restricted
-            ? `Сообщения заблокированы для "${chat_title}"`
-            : `Сообщения разрешены для "${chat_title}"`;
+                ? `Сообщения заблокированы для "${chat_title}"`
+                : `Сообщения разрешены для "${chat_title}"`;
             statusEl.className = "status success";
         } else {
             throw new Error("Ошибка установки ограничений");
@@ -158,7 +159,6 @@ async function saveBadWords() {
         alert("Не удалось сохранить запрещенные слова.");
     }
 }
-
 
 
 // Функция вызова API

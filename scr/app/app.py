@@ -88,6 +88,36 @@ async def formation_groups(request: Request):
     return templates.TemplateResponse("formation_groups.html", {"request": request})
 
 
+"""Удаление группы по username группы"""
+
+
+@app.get("/groups_del")
+async def get_groups_dell(chat_title: str):
+    group = Group.get(Group.chat_title == chat_title)
+    return {"chat_title": group.chat_title, "id_chat": group.chat_id}
+
+
+@app.post("/delete_group")
+async def delete_group(chat_id: int = Form(...)):
+    """Удаление группы по ID группы"""
+    try:
+        # Удаляем группу по chat_id
+        query = Group.delete().where(Group.chat_id == chat_id)
+        logger.debug(f"Выполняется запрос: {query}")
+        deleted_count = query.execute()  # Выполняем запрос
+
+        if deleted_count:
+            return {"success": True, "message": f"Группа с ID '{chat_id}' успешно удалена"}
+        else:
+            return {"success": False, "error": "Группа не найдена"}
+    except Exception as e:
+        logger.error(f"Ошибка при удалении группы: {e}")
+        return {"success": False, "error": "Не удалось удалить группу"}
+
+
+"""Запись данных в базу данных по username группы"""
+
+
 @app.post("/save-group")
 async def save_group(chat_username: str = Form(...)):
     """

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <title>Формирование групп</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="/scr/app/static/css/styles.css">
 </head>
-
 <script>
     //кнопка назад
     const tg = window.Telegram.WebApp;
@@ -20,47 +18,122 @@
         }, 0);
     });
 </script>
-
 <body>
 <div class="container">
-    <h1>Формирование групп</h1>
-
+    <h3>Формирование групп</h3>
     <!-- Сообщение об успехе или ошибке -->
     {% if request.query_params.success %}
     <div class="status success">Группа успешно сохранена!</div>
     {% endif %}
-
     {% if request.query_params.error %}
     <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
     {% endif %}
-
     <p>
         Это страница для формирования пользовательских групп. <br><br>
-
         Для дальнейшего взаимодействия с группами, нужно задать @username группы.
     </p><br>
-
     <!--
     Форма для ввода ID группы. Форма отправляет POST-запрос на /save-group
     Поле <input> имеет атрибут name="chat_id"
     Значение этого поля будет передано как chat_id=... в теле запроса
     FastAPI ожидает поле с именем "chat_id" из формы (name="chat_id")
     -->
-
     <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
         <label for="chat-username">Введите username группы или канала в виде @username:</label>
         <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
-
         <button type="submit">Сохранить группу</button>
     </form>
-
-    <p>
-        Удаление введенных групп<br><br>
-    </p><br>
-
-
+    <br>
+    <!-- Линия разделения -->
+    <hr class="my-8 h-px border-0 bg-gray-300"/>
+    <!-- Раздел "Удаление групп" -->
+    <div class="section">
+        <h3>Удаление группы</h3>
+        <p>Выберите группу из списка и нажмите «Удалить»</p>
+        <label for="group-select-del">Группа:</label>
+        <select id="group-select-del">
+            <option value="">-- Выберите группу --</option>
+        </select>
+        <button onclick="delGroup()">Удалить выбранную группу</button>
+        <!-- Статус операции -->
+        <p id="delete-status" class="status"></p>
+    </div>
+    <!-- Линия разделения -->
+    <hr class="my-8 h-px border-0 bg-gray-300"/>
     <a href="/" class="btn">Назад в админ-панель</a>
 </div>
-</body>
+<!-- === Встроенный JavaScript === -->
+<script>
+    // Общая функция для заполнения select
+    function populateSelect(url, selectId) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">-- Выберите группу --</option>';
+                // Проверяем, есть ли нужный ключ
+                const groups = data.chat_title || data.groups || [];
+                groups.forEach(group => {
+                    const option = document.createElement('option');
+                    option.value = group.chat_title;
+                    option.textContent = group.chat_title;
+                    select.appendChild(option);
+                });
+            })
+            .catch(err => console.error(`Ошибка загрузки ${selectId}:`, err));
+    }
 
+    // При загрузке страницы
+    window.onload = () => {
+        populateSelect('/chat_title', 'group-select-del');
+    };
+
+async function delGroup() {
+    const chat_title = document.getElementById("group-select-del").value.trim();
+    if (!chat_title) {
+        alert("Выберите группу из списка");
+        return;
+    }
+
+    try {
+        // Получаем chat_id по названию группы
+        const responseGetId = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+        const data = await responseGetId.json();
+
+        if (!data.success) {
+            throw new Error("Не удалось получить ID группы");
+        }
+
+        const chat_id = data.chat_id;
+
+        // Отправляем POST-запрос с chat_id
+        const responseDelete = await fetch("/delete_group", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `chat_id=${chat_id}`
+        });
+
+        const result = await responseDelete.json();
+        const statusEl = document.getElementById("delete-status");
+
+        if (result.success) {
+            statusEl.innerText = `Группа "${chat_title}" удалена`;
+            statusEl.className = "status success";
+
+            // Опционально: обновляем список после удаления
+            populateSelect('/chat_title', 'group-select-del');
+        } else {
+            statusEl.innerText = result.error || "Ошибка при удалении группы";
+            statusEl.className = "status error";
+        }
+    } catch (error) {
+        console.error("Ошибка:", error);
+        document.getElementById("delete-status").innerText = "Не удалось подключиться к серверу";
+        document.getElementById("delete-status").className = "status error";
+    }
+    }
+</script>
+</body>
 </html>
