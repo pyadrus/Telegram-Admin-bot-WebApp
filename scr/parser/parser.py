@@ -11,7 +11,6 @@ from scr.bot.system.dispatcher import api_id, api_hash
 # ⚙️ Конфигурация
 CONFIG = {
     "source_channels": [
-        "@nedvizhimost_donetsk_dnr", "@nedvijdon", "@arendanedvijimostidoneck", "@arenda_prodaja_lnr",
         "@nedvizhimost_dnr_donetsk", "@Real_Estate_DNR", "@nedvizimost_mrpl", "@nedvizimost_mrpl",
         "@Donetsk_Nedvizhimost", "@nedvizhimost_v_DNR", "@nedvizhimost_donetsk_ldnr", "@donetsk_nedvizhimosti",
         "@Donetsk_Arenda0", "@arendadonetsk", "@arendazhilyadonetsk", "@kvartiradon", "@donbox101",

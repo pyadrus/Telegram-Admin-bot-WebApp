@@ -9,10 +9,11 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from loguru import logger
+from starlette.responses import JSONResponse
 
 from scr.bot.system.dispatcher import bot, READ_ONLY, FULL_ACCESS
 from scr.utils.get_id import get_participants_count
-from scr.utils.models import BadWords, PrivilegedUsers
+from scr.utils.models import BadWords, PrivilegedUsers, Groups
 from scr.utils.models import Group, db
 from scr.utils.models import GroupRestrictions
 
@@ -64,6 +65,13 @@ async def filter_words(request: Request):
     return templates.TemplateResponse("filter_words.html", {"request": request})
 
 
+
+
+
+
+
+
+
 # Новый маршрут для "Выдать пользователю особые права в группе"
 @app.get("/grant_user_special_rights_group")
 async def grant_user_special_rights_group(request: Request):
@@ -102,6 +110,18 @@ async def help(request: Request):
 @app.get("/add_groups_for_tracking")
 async def add_groups_for_tracking(request: Request):
     return templates.TemplateResponse("add_groups_for_tracking.html", {"request": request})
+
+
+@app.post("/save-username")
+async def save_username(username_chat_channel: str = Form(...)):
+    try:
+        db.create_tables([Groups], safe=True)
+        with db.atomic():
+            Groups.create(username_chat_channel=username_chat_channel)
+        return JSONResponse(content={"success": True})
+    except Exception as e:
+        print("Ошибка при сохранении:", e)
+        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
 
 
 """Удаление группы по username группы"""

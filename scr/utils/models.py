@@ -17,6 +17,18 @@ def get_privileged_users():
         return set()
 
 
+class Groups(Model):
+    """
+    Модель для хранения групп / каналов для отслеживания.
+    """
+    username_chat_channel = CharField(unique=True)  # Получаем username группы
+
+    class Meta:
+        database = db  # Указываем, что данная модель будет использовать базу данных
+        table_name = "groups"  # Имя таблицы
+        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+
+
 class BadWords(Model):
     """
     Модель для хранения запрещенных слов.

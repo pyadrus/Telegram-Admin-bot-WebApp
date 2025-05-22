@@ -140,6 +140,7 @@ async function toggleSubscriptionRequirement() {
     }
 }
 
+// Сохранение запрещённых слов в базу данных
 async function saveBadWords() {
     const inputField = document.getElementById("bad-words");
     const bad_word = inputField.value.trim();

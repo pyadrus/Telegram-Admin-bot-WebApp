@@ -258,12 +258,13 @@
     <h1>Добавить группы / каналы для отслеживания</h1>
     <!-- Фильтр запрещённых слов -->
     <div class="section">
-        <label for="bad-words">Введите username группы / канала, например: @username:</label>
-        <textarea id="bad-words" rows="4" placeholder="Пример: @username"></textarea>
-        <button onclick="saveBadWords()">Сохранить</button>
+        <label for="save-username">Введите username группы / канала, например: @username:</label>
+        <textarea id="save-username" rows="4" placeholder="Пример: @username"></textarea>
+        <button onclick="saveUsername()">Сохранить</button>
     </div>
 
 </div>
+
 <footer>
     <a href="/privacy_policy">Политика конфиденциальности</a>
     <a href="/terms_of_use">Условия использования</a>
@@ -277,7 +278,6 @@
     &copy; 2025 PyAdminRU. Все права защищены.
 </footer>
 
-
 <script>
     const burgerMenuIcon = document.getElementById('burgerMenuIcon');
     const burgerMenu = document.getElementById('burgerMenu');
@@ -289,6 +289,42 @@
             burgerMenu.classList.remove('open');
         });
     });
+</script>
+
+
+<script>
+    async function saveUsername() {
+        const inputField = document.getElementById("save-username");
+        const save_username = inputField.value.trim();
+
+        if (!save_username.startsWith("@")) {
+            alert("Username должен начинаться с @");
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("username_chat_channel", save_username);
+
+            const response = await fetch("/save-username", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                inputField.value = "";
+                alert("Группа / канал успешно добавлена!");
+            } else {
+                alert("Ошибка при добавлении: " + result.error);
+            }
+
+        } catch (error) {
+            console.error("Ошибка:", error);
+            alert("Не удалось сохранить группу / канал.");
+        }
+    }
 </script>
 
 
