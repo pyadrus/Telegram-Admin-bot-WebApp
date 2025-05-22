@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="/scr/app/static/css/styles.css">
 </head>
-
 <script>
     //кнопка назад
     const tg = window.Telegram.WebApp;
@@ -21,11 +19,9 @@
         }, 0);
     });
 </script>
-
 <body>
 <div class="container">
     <h1>Фильтр запрещённых слов</h1>
-
     <!-- Фильтр запрещённых слов -->
     <div class="section">
         <h2>Фильтр запрещённых слов</h2>
@@ -33,11 +29,8 @@
         <textarea id="bad-words" rows="4" placeholder="Пример: плохое слово"></textarea>
         <button onclick="saveBadWords()">Сохранить</button>
     </div>
-
     <a href="/" class="btn">Назад в админ-панель</a>
 </div>
-
 <script src="/scr/app/static/js/admin.js"></script>
 </body>
-
 </html>

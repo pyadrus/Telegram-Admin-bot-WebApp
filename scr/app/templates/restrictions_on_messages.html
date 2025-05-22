@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,12 +7,10 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="/scr/app/static/css/styles.css">
 </head>
-
 <script>
     //кнопка назад
     const tg = window.Telegram.WebApp;
     tg.BackButton.show();
-
     tg.BackButton.onClick(() => {
         tg.expand(); // Убедимся, что expand() сработает
         setTimeout(() => {
@@ -21,12 +18,9 @@
         }, 0);
     });
 </script>
-
 <body>
 <div class="container">
     <h1>Количество участников</h1>
-
-
     <!-- Получение количества участников -->
     <div class="section">
         <h2>Количество участников</h2>
@@ -38,11 +32,7 @@
         <p id="participants-count" class="status"></p>
     </div>
     <a href="/" class="btn">Назад в админ-панель</a>
-
-
 </div>
-
 <script src="/scr/app/static/js/admin.js"></script>
 </body>
-
 </html>
