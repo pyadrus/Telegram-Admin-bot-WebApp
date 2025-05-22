@@ -7,16 +7,10 @@ from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.types import Message
 
 from scr.bot.system.dispatcher import api_id, api_hash
+from scr.utils.models import Groups
 
 # ⚙️ Конфигурация
 CONFIG = {
-    "source_channels": [
-        "@nedvizhimost_dnr_donetsk", "@Real_Estate_DNR", "@nedvizimost_mrpl", "@nedvizimost_mrpl",
-        "@Donetsk_Nedvizhimost", "@nedvizhimost_v_DNR", "@nedvizhimost_donetsk_ldnr", "@donetsk_nedvizhimosti",
-        "@Donetsk_Arenda0", "@arendadonetsk", "@arendazhilyadonetsk", "@kvartiradon", "@donbox101",
-        "@nedvizhimost_donetsk_arenda", "@qfIAatJmGE5NDli", "@sniat_kvartiry_v_donecke", "@kvartirasytkidn",
-        "@apartments_in_donetsk", "@sutochnoDonetsk", "@rent_donetsk"
-    ],
     "target_channel_id": -1001918436153,
     "keywords": ["киевский район", "донецк сити", "шахтерская площадь"],
     "session_name": "scr/setting/session_name"
@@ -46,7 +40,10 @@ async def process_message(client, message: Message, chat_id: int):
 
 
 async def join_required_channels(client: TelegramClient):
-    for channel in CONFIG["source_channels"]:
+    # Получаем все username из базы данных
+    channels = [group.username_chat_channel for group in Groups.select()]
+
+    for channel in channels:
         try:
             logger.info(f"🔗 Пробую подписаться на {channel}...")
             await client(JoinChannelRequest(channel))
@@ -65,7 +62,10 @@ async def filter_messages():
 
     await join_required_channels(client)
 
-    @client.on(events.NewMessage(chats=CONFIG["source_channels"]))
+    # Получаем список username из базы данных
+    channels = [group.username_chat_channel for group in Groups.select()]
+
+    @client.on(events.NewMessage(chats=channels))
     async def handle_new_message(event: events.NewMessage.Event):
         await process_message(client, event.message, event.chat_id)
 
