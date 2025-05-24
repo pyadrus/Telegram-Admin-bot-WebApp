@@ -272,6 +272,42 @@
     </div>
     <a href="/" class="btn">Назад в админ-панель</a>
 </div>
+
+
+<script>
+    const tg = window.Telegram.WebApp;
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!tg) {
+            console.error('Это не WebApp Telegram');
+            return;
+        }
+        tg.expand();
+        tg.BackButton.show();
+        tg.BackButton.onClick(() => {
+            tg.expand();
+            setTimeout(() => window.history.back(), 0);
+        });
+        const user = tg.initDataUnsafe?.user || {};
+        const card = document.getElementById('usercard');
+        const greeting = document.createElement('h2');
+        const userName = user.first_name || user.username || 'пользователь';
+        greeting.innerText = `👋 Приветствую, ${userName}!`;
+        greeting.style.textAlign = 'center';
+        greeting.style.marginBottom = '30px';
+        card.appendChild(greeting);
+    });
+    const burgerMenuIcon = document.getElementById('burgerMenuIcon');
+    const burgerMenu = document.getElementById('burgerMenu');
+    burgerMenuIcon.addEventListener('click', () => {
+        burgerMenu.classList.toggle('open');
+    });
+    burgerMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            burgerMenu.classList.remove('open');
+        });
+    });
+</script>
+
 <script src="/scr/app/static/js/admin.js"></script>
 </body>
 </html>
