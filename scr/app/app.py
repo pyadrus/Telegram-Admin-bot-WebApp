@@ -65,13 +65,6 @@ async def filter_words(request: Request):
     return templates.TemplateResponse("filter_words.html", {"request": request})
 
 
-
-
-
-
-
-
-
 # Новый маршрут для "Выдать пользователю особые права в группе"
 @app.get("/grant_user_special_rights_group")
 async def grant_user_special_rights_group(request: Request):
@@ -117,6 +110,9 @@ async def save_username(username_chat_channel: str = Form(...)):
     try:
         db.create_tables([Groups], safe=True)
         with db.atomic():
+            # Удаляем дубликаты (если есть)
+            Groups.delete().where(Groups.username_chat_channel == username_chat_channel).execute()
+            # Добавляем новое значение
             Groups.create(username_chat_channel=username_chat_channel)
         return JSONResponse(content={"success": True})
     except Exception as e:
