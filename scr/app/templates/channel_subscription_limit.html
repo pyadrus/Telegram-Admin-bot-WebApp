@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Ограничение по подписке на канал</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -17,38 +16,53 @@
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .container {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
             padding: 20px;
+            margin: 0;
         }
 
+        .container {
+            padding-left: 0;
+            padding-right: 0;
+        }
 
-        h1 {
+        h1, h2 {
             text-align: center;
-            margin: 30px 20px 20px 40px; /* сверху → справа → снизу → слева */
-
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            color: var(--primary-color);
         }
 
-        .features li {
-            position: relative;
-            padding-left: 25px;
-            margin-bottom: 12px;
+        .description {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .features {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 30px 0;
+            color: #555;
         }
 
         .features li::before {
             content: "✔️";
             position: absolute;
             left: 0;
-            top: 0;
             color: var(--secondary-color);
+        }
+
+        .footer-text {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 20px;
+            text-align: center;
         }
 
         .header-banner {
@@ -57,8 +71,6 @@
             left: 0;
             width: 100%;
             height: 48px;
-            max-width: 100%; /* если вдруг стояло ограничение */
-            box-sizing: border-box;
             background-color: #333;
             z-index: 999;
             display: flex;
@@ -69,20 +81,20 @@
 
         .burger-menu-icon {
             cursor: pointer;
-            font-size: 35px;
+            font-size: 30px;
             color: white;
         }
 
         .burger-menu {
             position: fixed;
-            top: 48px; /* выравниваем под хедер */
+            top: 48px;
             left: -250px;
             width: 250px;
-            height: calc(100vh - 48px); /* вся высота экрана минус высота шапки */
+            height: calc(100vh - 48px);
             background-color: #333;
             transition: left 0.3s ease;
-            z-index: 999;
-            overflow-y: auto; /* чтобы появлялся скролл, если пунктов много */
+            z-index: 998;
+            overflow-y: auto;
         }
 
         .burger-menu.open {
@@ -115,134 +127,37 @@
             margin-top: 40px;
         }
 
-        footer a {
-            display: block;
-            margin: 8px 0;
-            color: var(--secondary-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover {
-            color: var(--hover-color);
-        }
-
-        footer hr {
-            margin: 20px 0;
-            border: none;
-            height: 1px;
-            background-color: #eee;
-        }
-
-        .social-icons {
-            margin-top: 15px;
-        }
-
-        .social-icons a {
-            display: inline-block;
-            margin: 0 8px;
-            color: var(--secondary-color);
-            font-size: 1.2rem;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .social-icons a:hover {
-            color: var(--hover-color);
-        }
-
-        /* === Базовые стили === */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 20px;
-        }
-
-        .container {
-            margin: auto;
-        }
-
-
-        /* === Формы и элементы ввода === */
-        .section {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        /*Кнопки*/
-        button,
         .btn {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
+            display: block;
+            width: max-content;
+            margin: 20px auto;
             padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: bold;
+            border-radius: var(--border-radius);
             text-decoration: none;
             text-align: center;
-            transition: background-color 0.3s ease;
-            margin-top: 5px;
-            width: 100%;
         }
 
-        button:hover,
         .btn:hover {
-            background-color: #0056b3;
+            background-color: var(--hover-color);
+        }
+
+        .section {
+            margin-top: 80px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
         }
     </style>
-
 </head>
-<script>
-    //кнопка назад
-    const tg = window.Telegram.WebApp;
-    tg.BackButton.show();
-
-    tg.BackButton.onClick(() => {
-        tg.expand(); // Убедимся, что expand() сработает
-        setTimeout(() => {
-            window.history.back();
-        }, 0);
-    });
-</script>
 <body>
 <div class="header-banner">
     <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
 </div>
+
 <div class="burger-menu" id="burgerMenu">
     <ul>
         <li><a href="/formation-groups">👥 Формирование групп</a></li>
@@ -255,57 +170,82 @@
         <li><a href="/help">❓ Помощь</a></li>
     </ul>
 </div>
+
 <div class="container">
     <h1>Ограничение по подписке на канал</h1>
-    <!-- Ограничение по подписке на канал -->
+    <div id="usercard"></div>
     <div class="section">
-        <h2>Ограничение по подписке на канал</h2>
+        <h2>Настройка ограничения</h2>
         <label for="groups-selected">Выберите группу, которую хотите ограничить:</label>
         <select id="groups-selected">
             <option value="">-- Выберите группу --</option>
         </select>
+
         <label for="groups-selecteds">Выберите группу / канал, на которую нужно подписаться:</label>
         <select id="groups-selecteds">
             <option value="">-- Выберите группу --</option>
         </select>
+
         <button onclick="toggleSubscriptionRequirement()">Включить подписку</button>
     </div>
+
     <a href="/" class="btn">Назад в админ-панель</a>
 </div>
 
-
 <script>
     const tg = window.Telegram.WebApp;
+
     document.addEventListener('DOMContentLoaded', () => {
         if (!tg) {
-            console.error('Это не WebApp Telegram');
+            console.error('Это не Telegram WebApp');
             return;
         }
+
         tg.expand();
         tg.BackButton.show();
+
         tg.BackButton.onClick(() => {
             tg.expand();
             setTimeout(() => window.history.back(), 0);
         });
+
         const user = tg.initDataUnsafe?.user || {};
-        const card = document.getElementById('usercard');
-        const greeting = document.createElement('h2');
-        const userName = user.first_name || user.username || 'пользователь';
-        greeting.innerText = `👋 Приветствую, ${userName}!`;
-        greeting.style.textAlign = 'center';
-        greeting.style.marginBottom = '30px';
-        card.appendChild(greeting);
-    });
-    const burgerMenuIcon = document.getElementById('burgerMenuIcon');
-    const burgerMenu = document.getElementById('burgerMenu');
-    burgerMenuIcon.addEventListener('click', () => {
-        burgerMenu.classList.toggle('open');
-    });
-    burgerMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            burgerMenu.classList.remove('open');
+        const usercard = document.getElementById('usercard');
+        if (usercard) {
+            const greeting = document.createElement('h2');
+            const userName = user.first_name || user.username || 'пользователь';
+            greeting.innerText = `👋 Приветствую, ${userName}!`;
+            greeting.style.textAlign = 'center';
+            greeting.style.marginBottom = '30px';
+            usercard.appendChild(greeting);
+        }
+
+        const burgerMenuIcon = document.getElementById('burgerMenuIcon');
+        const burgerMenu = document.getElementById('burgerMenu');
+
+        burgerMenuIcon.addEventListener('click', () => {
+            burgerMenu.classList.toggle('open');
+        });
+
+        burgerMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('open');
+            });
         });
     });
+
+    function toggleSubscriptionRequirement() {
+        const group = document.getElementById('groups-selected').value;
+        const target = document.getElementById('groups-selecteds').value;
+
+        if (!group || !target) {
+            alert("Пожалуйста, выберите обе группы.");
+            return;
+        }
+
+        alert(`Ограничение активировано: пользователь должен подписаться на ${target} для доступа к ${group}`);
+        // Здесь можно отправить данные на сервер
+    }
 </script>
 
 <script src="/scr/app/static/js/admin.js"></script>

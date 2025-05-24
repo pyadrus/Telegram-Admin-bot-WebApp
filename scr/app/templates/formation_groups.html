@@ -29,11 +29,30 @@
             padding: 20px;
         }
 
-
-        h1 {
+        h1, h2 {
             text-align: center;
-            margin: 30px 20px 20px 40px; /* сверху → справа → снизу → слева */
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
 
+        h2 {
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .features {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 30px 0;
+            color: #555;
         }
 
         .features li {
@@ -48,6 +67,13 @@
             left: 0;
             top: 0;
             color: var(--secondary-color);
+        }
+
+        .footer-text {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 20px;
+            text-align: center;
         }
 
         .header-banner {
@@ -148,80 +174,6 @@
 
         .social-icons a:hover {
             color: var(--hover-color);
-        }
-
-        /* === Базовые стили === */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 20px;
-        }
-
-        .container {
-            margin: auto;
-        }
-
-
-        /* === Формы и элементы ввода === */
-        .section {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        /*Кнопки*/
-        button,
-        .btn {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: bold;
-            text-decoration: none;
-            text-align: center;
-            transition: background-color 0.3s ease;
-            margin-top: 5px;
-            width: 100%;
-        }
-
-        button:hover,
-        .btn:hover {
-            background-color: #0056b3;
         }
     </style>
 
