@@ -407,4 +407,26 @@ button:hover,
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const burgerMenuIcon = document.getElementById('burgerMenuIcon');
+    const burgerMenu = document.getElementById('burgerMenu');
+
+    if (burgerMenuIcon && burgerMenu) {
+        burgerMenuIcon.addEventListener('click', () => {
+            burgerMenu.classList.toggle('open');
+        });
+
+        // Закрытие при клике на пункт меню
+        burgerMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('open');
+            });
+        });
+    } else {
+        console.warn("burgerMenuIcon или burgerMenu не найдены");
+    }
+});
+</script>
+
 </body>
