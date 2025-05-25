@@ -1,7 +1,7 @@
 from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)
-db = SqliteDatabase('scr/db/database.db')
+db = SqliteDatabase("scr/db/database.db")
 
 
 def get_privileged_users():
@@ -9,8 +9,7 @@ def get_privileged_users():
     Получает список привилегированных пользователей (chat_id, user_id)
     """
     try:
-        query = PrivilegedUsers.select(
-            PrivilegedUsers.chat_id, PrivilegedUsers.user_id)
+        query = PrivilegedUsers.select(PrivilegedUsers.chat_id, PrivilegedUsers.user_id)
         return {(row.chat_id, row.user_id) for row in query}
     except Exception as e:
         print(f"Ошибка при получении привилегированных пользователей: {e}")
@@ -21,12 +20,15 @@ class Groups(Model):
     """
     Модель для хранения групп / каналов для отслеживания.
     """
+
     username_chat_channel = CharField(unique=True)  # Получаем username группы
 
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "groups"  # Имя таблицы
-        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        primary_key = (
+            False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        )
 
 
 class BadWords(Model):
@@ -35,6 +37,7 @@ class BadWords(Model):
 
     :cvar bad_word: Поле для хранения запрещенного слова.
     """
+
     bad_word = CharField()  # Получаем ID
 
     class Meta:
@@ -44,6 +47,7 @@ class BadWords(Model):
         :cvar database: База данных, используемая моделью.
         :cvar table_name: Имя таблицы в базе данных.
         """
+
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "bad_words"  # Имя таблицы
 
@@ -55,8 +59,10 @@ class PrivilegedUsers(Model):
 
     class Meta:
         database = db  # Указываем, что данная модель будет использовать базу данных
-        table_name = 'privileged_users'  # Имя таблицы
-        primary_key = False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        table_name = "privileged_users"  # Имя таблицы
+        primary_key = (
+            False  # Для запрета автоматически создающегося поля id (как первичный ключ)
+        )
 
 
 class GroupRestrictions(Model):
@@ -75,6 +81,7 @@ class GroupRestrictions(Model):
         :cvar database: База данных, используемая моделью.
         :cvar table_name: Имя таблицы в базе данных.
         """
+
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "group_restrictions"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)
@@ -86,6 +93,7 @@ class Group(Model):
     Запись групп в базу данных
     (unique=True - для уникальности. Если ссылка уже есть, то запись не будет создана)
     """
+
     chat_id = IntegerField()  # ID группы
     chat_title = CharField()  # Название группы
     chat_total = IntegerField()  # Общее количество участников
@@ -99,6 +107,7 @@ class Group(Model):
         :cvar database: База данных, используемая моделью.
         :cvar table_name: Имя таблицы в базе данных.
         """
+
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "groups_administration"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)
@@ -110,6 +119,7 @@ class GroupMembers(Model):
     Запись в базу данных участников группы, которые подписались или отписались от группы.
     (null=True - поле может быть пустым.)
     """
+
     chat_id = IntegerField()  # Получаем ID чата
     chat_title = CharField()  # Получаем название чата
     user_id = IntegerField()  # Получаем ID пользователя
@@ -125,6 +135,7 @@ class GroupMembers(Model):
         :cvar database: База данных, используемая моделью.
         :cvar table_name: Имя таблицы в базе данных.
         """
+
         database = db  # Указываем, что данная модель будет использовать базу данных
         table_name = "group_members_add"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)

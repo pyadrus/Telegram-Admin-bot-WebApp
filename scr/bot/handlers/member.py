@@ -32,12 +32,11 @@ async def handle_new_member(event: ChatMemberUpdated):
             first_name=event.from_user.first_name,
             # Получаем фамилию пользователя который вступил в группу
             last_name=event.from_user.last_name,
-            date_now=datetime.datetime.now()  # Текущее время
+            date_now=datetime.datetime.now(),  # Текущее время
         )
         group.save()
     except Exception as error:
-        logger.exception(
-            f"Ошибка обработки добавления нового участника: {error}")
+        logger.exception(f"Ошибка обработки добавления нового участника: {error}")
 
 
 @router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
@@ -61,7 +60,7 @@ async def handle_member_left(event: ChatMemberUpdated):
             first_name=event.from_user.first_name,
             # Получаем фамилию пользователя который вступил в группу
             last_name=event.from_user.last_name,
-            date_now=datetime.datetime.now()  # Текущее время
+            date_now=datetime.datetime.now(),  # Текущее время
         )
         group.save()
     except Exception as error:

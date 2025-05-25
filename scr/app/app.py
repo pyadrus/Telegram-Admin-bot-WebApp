@@ -29,6 +29,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # === Маршруты ===
 
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     """
@@ -44,19 +45,25 @@ async def index(request: Request):
 # Новый маршрут для "Количество участников"
 @app.get("/restrictions_on_messages")
 async def restrictions_on_messages(request: Request):
-    return templates.TemplateResponse("restrictions_on_messages.html", {"request": request})
+    return templates.TemplateResponse(
+        "restrictions_on_messages.html", {"request": request}
+    )
 
 
 # Новый маршрут для "Ограничения на сообщения"
 @app.get("/restrictions_messages")
 async def restrictions_messages(request: Request):
-    return templates.TemplateResponse("restrictions_messages.html", {"request": request})
+    return templates.TemplateResponse(
+        "restrictions_messages.html", {"request": request}
+    )
 
 
 # Новый маршрут для "Ограничение по подписке на канал"
 @app.get("/channel_subscription_limit")
 async def channel_subscription_limit(request: Request):
-    return templates.TemplateResponse("channel_subscription_limit.html", {"request": request})
+    return templates.TemplateResponse(
+        "channel_subscription_limit.html", {"request": request}
+    )
 
 
 # Новый маршрут для "Фильтр запрещённых слов"
@@ -74,7 +81,9 @@ async def grant_user_special_rights_group(request: Request):
     :param request: Объект запроса.
     :return: HTML-страница с формой для ввода данных о пользователе и группе.
     """
-    return templates.TemplateResponse("grant_user_special_rights_group.html", {"request": request})
+    return templates.TemplateResponse(
+        "grant_user_special_rights_group.html", {"request": request}
+    )
 
 
 # Новый маршрут для "Формирование групп"
@@ -102,7 +111,9 @@ async def help(request: Request):
 
 @app.get("/add_groups_for_tracking")
 async def add_groups_for_tracking(request: Request):
-    return templates.TemplateResponse("add_groups_for_tracking.html", {"request": request})
+    return templates.TemplateResponse(
+        "add_groups_for_tracking.html", {"request": request}
+    )
 
 
 @app.post("/save-username")
@@ -111,13 +122,17 @@ async def save_username(username_chat_channel: str = Form(...)):
         db.create_tables([Groups], safe=True)
         with db.atomic():
             # Удаляем дубликаты (если есть)
-            Groups.delete().where(Groups.username_chat_channel == username_chat_channel).execute()
+            Groups.delete().where(
+                Groups.username_chat_channel == username_chat_channel
+            ).execute()
             # Добавляем новое значение
             Groups.create(username_chat_channel=username_chat_channel)
         return JSONResponse(content={"success": True})
     except Exception as e:
         print("Ошибка при сохранении:", e)
-        return JSONResponse(content={"success": False, "error": str(e)}, status_code=500)
+        return JSONResponse(
+            content={"success": False, "error": str(e)}, status_code=500
+        )
 
 
 """Удаление группы по username группы"""
@@ -139,7 +154,10 @@ async def delete_group(chat_id: int = Form(...)):
         deleted_count = query.execute()  # Выполняем запрос
 
         if deleted_count:
-            return {"success": True, "message": f"Группа с ID '{chat_id}' успешно удалена"}
+            return {
+                "success": True,
+                "message": f"Группа с ID '{chat_id}' успешно удалена",
+            }
         else:
             return {"success": False, "error": "Группа не найдена"}
     except Exception as e:
@@ -160,14 +178,21 @@ async def save_group(chat_username: str = Form(...)):
     chat_link - ссылка на группу.
     """
     try:
-        chat_id, chat_title, chat_total, chat_link = await get_participants_count(chat_username)
+        chat_id, chat_title, chat_total, chat_link = await get_participants_count(
+            chat_username
+        )
         permission_to_write = "True"
         # Создаем таблицу, если она не создана ранее
         db.create_tables([Group], safe=True)
         with db.atomic():
             # Вставляем новую
-            Group.insert(chat_id=chat_id, chat_title=chat_title, chat_total=chat_total, chat_link=chat_link,
-                         permission_to_write=permission_to_write).execute()
+            Group.insert(
+                chat_id=chat_id,
+                chat_title=chat_title,
+                chat_total=chat_total,
+                chat_link=chat_link,
+                permission_to_write=permission_to_write,
+            ).execute()
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)
@@ -206,8 +231,7 @@ async def update_participants(chat_title: str):
         # Получаем актуальные данные через Telegram
         chat_id, title, total, link = await get_participants_count(group.chat_link)
         # Обновляем запись в базе
-        Group.update(chat_total=total).where(
-            Group.chat_title == chat_title).execute()
+        Group.update(chat_total=total).where(Group.chat_title == chat_title).execute()
 
         return {"success": True, "participants_count": total}
     except Exception as e:
@@ -236,7 +260,8 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
         permission_to_write = "False"
         # Обновляем запись в базе
         Group.update(permission_to_write=permission_to_write).where(
-            Group.chat_title == chat_title).execute()
+            Group.chat_title == chat_title
+        ).execute()
         return {"success": True, "permission_to_write": permission_to_write}
     except Exception as e:
         logger.exception(e)
@@ -246,11 +271,11 @@ async def update_restrict_messages(chat_title: str, restricted: bool = True):
 @app.get("/readonly")
 async def chat_readonly(chat_id: int):
     """
-   Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
+    Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
 
-   :param chat_id: ID чата, в формате -1001234567890
-   :return: Словарь с ключами "success" и "message" или "error"
-   """
+    :param chat_id: ID чата, в формате -1001234567890
+    :return: Словарь с ключами "success" и "message" или "error"
+    """
     try:
         chat_id = str(f"-100{chat_id}")
         await bot.set_chat_permissions(chat_id=int(chat_id), permissions=READ_ONLY)
@@ -299,23 +324,31 @@ async def chat_give_privilege(chat_title: str, user_id: int):
     :param user_id: id пользователя
     """
     try:
-        logger.info(f"Выдача привилегий для пользователя {user_id} в чате '{chat_title}'")
+        logger.info(
+            f"Выдача привилегий для пользователя {user_id} в чате '{chat_title}'"
+        )
         # Получаем информацию о целевой группе (ту, которую хотим ограничить)
         group = Group.get(Group.chat_title == chat_title)
         group_id = group.chat_id
 
-        existing = PrivilegedUsers.select().where(
-            (PrivilegedUsers.chat_id == group_id) &
-            (PrivilegedUsers.user_id == user_id)
-        ).first()
+        existing = (
+            PrivilegedUsers.select()
+            .where(
+                (PrivilegedUsers.chat_id == group_id)
+                & (PrivilegedUsers.user_id == user_id)
+            )
+            .first()
+        )
 
         if not existing:
-            privileges = PrivilegedUsers(chat_id=group_id, user_id=user_id, chat_title=chat_title)
+            privileges = PrivilegedUsers(
+                chat_id=group_id, user_id=user_id, chat_title=chat_title
+            )
             privileges.save()
 
         return {
             "success": True,
-            "message": f"Пользователь {user_id} теперь имеет привилегии в чате '{chat_title}'"
+            "message": f"Пользователь {user_id} теперь имеет привилегии в чате '{chat_title}'",
         }
 
     except Exception as e:
@@ -354,19 +387,21 @@ async def chat_subscribe(chat_title: str, required_chat_title: str):
         restriction, created = GroupRestrictions.get_or_create(
             group_id=group_id,
             defaults={
-                'required_channel_id': channel_id,
-                'required_channel_username': channel_username
-            }
+                "required_channel_id": channel_id,
+                "required_channel_username": channel_username,
+            },
         )
         if not created:
             # Если запись уже существует — обновляем её
             GroupRestrictions.update(
                 required_channel_id=channel_id,
-                required_channel_username=channel_username
+                required_channel_username=channel_username,
             ).where(GroupRestrictions.group_id == group_id).execute()
 
-        return {"success": True,
-                "message": f"Теперь для группы '{chat_title}' требуется подписка на '{required_chat_title}'"}
+        return {
+            "success": True,
+            "message": f"Теперь для группы '{chat_title}' требуется подписка на '{required_chat_title}'",
+        }
     except Exception as e:
         return {"success": False, "error": str(e)}
 

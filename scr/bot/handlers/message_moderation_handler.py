@@ -43,37 +43,48 @@ async def unified_message_handler(message: Message) -> None:
                 chat_id,
                 translations["ru"]["menu"]["user"],
                 reply_markup=create_admin_panel_keyboard(user_id),
-                parse_mode="HTML"
+                parse_mode="HTML",
             )
         return
 
     # Проверка подписки на канал
     try:
         clean_id = str(message.chat.id)[4:]
-        restriction = GroupRestrictions.get_or_none(GroupRestrictions.group_id == clean_id)
+        restriction = GroupRestrictions.get_or_none(
+            GroupRestrictions.group_id == clean_id
+        )
         if restriction:
             required_channel_id = restriction.required_channel_id
             required_channel_username = restriction.required_channel_username
             channel_chat_id = f"-100{required_channel_id}"
 
             member = await bot.get_chat_member(chat_id=channel_chat_id, user_id=user_id)
-            if member.status not in [ChatMemberStatus.MEMBER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR]:
+            if member.status not in [
+                ChatMemberStatus.MEMBER,
+                ChatMemberStatus.ADMINISTRATOR,
+                ChatMemberStatus.CREATOR,
+            ]:
                 await message.delete()
                 bot_message = await message.answer(
                     f"{message.from_user.mention_html()}, привет! 👋 Чтобы писать в группе, подпишись на канал {required_channel_username}. Это временная мера — спасибо за понимание! 🌟",
-                    parse_mode="HTML"
+                    parse_mode="HTML",
                 )
                 await asyncio.create_task(delete_message_after_delay(bot_message, 60))
                 return
     except Exception as e:
         logger.exception(f"Ошибка при проверке подписки: {e}")
         await message.delete()
-        user_mention = message.from_user.mention_html() if message.from_user.username else f"User {user_id}"
+        user_mention = (
+            message.from_user.mention_html()
+            if message.from_user.username
+            else f"User {user_id}"
+        )
         restriction = GroupRestrictions.get(GroupRestrictions.group_id == clean_id)
         channel_username = restriction.required_channel_username
         bot_message = await message.answer(
             f"{user_mention}, привет! 👋 Чтобы писать в группе, подпишись на канал {channel_username}. Это временная мера — спасибо за понимание! 🌟",
-            parse_mode="HTML")
+            parse_mode="HTML",
+        )
         await asyncio.create_task(delete_message_after_delay(bot_message, 60))
         return
 
@@ -86,7 +97,7 @@ async def unified_message_handler(message: Message) -> None:
         await message.delete()
         warning = await message.answer(
             translations["ru"]["message_moderation"]["moderation_forward_message"],
-            parse_mode="HTML"
+            parse_mode="HTML",
         )
         await asyncio.sleep(int(time_del))
         await warning.delete()
@@ -103,7 +114,7 @@ async def unified_message_handler(message: Message) -> None:
                     logger.error("Ошибка при удалении сообщения (уже удалено)")
                 warning = await message.answer(
                     translations["ru"]["message_moderation"]["moderation_bad_words"],
-                    parse_mode="HTML"
+                    parse_mode="HTML",
                 )
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
@@ -119,7 +130,7 @@ async def unified_message_handler(message: Message) -> None:
                     logger.error("Ошибка при удалении сообщения (уже удалено)")
                 warning = await message.answer(
                     translations["ru"]["message_moderation"]["moderation_url_message"],
-                    parse_mode="HTML"
+                    parse_mode="HTML",
                 )
                 await asyncio.sleep(int(time_del))
                 await warning.delete()
@@ -129,31 +140,40 @@ async def unified_message_handler(message: Message) -> None:
 @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=JOIN_TRANSITION))
 async def on_chat_member_update(update: ChatMemberUpdated):
     """Снимает ограничения с пользователя, если он подписался на канал"""
-    if update.new_chat_member.status not in [ChatMemberStatus.MEMBER, ChatMemberStatus.ADMINISTRATOR]:
+    if update.new_chat_member.status not in [
+        ChatMemberStatus.MEMBER,
+        ChatMemberStatus.ADMINISTRATOR,
+    ]:
         return
     try:
         # Чистим ID канала от префикса -100 перед поиском в базе
         clean_channel_id = str(update.chat.id)[4:]  # -> "2022404388"
         # Находим все группы, где требуется подписка на этот канал
         query = GroupRestrictions.select(GroupRestrictions.group_id).where(
-            GroupRestrictions.required_channel_id == clean_channel_id)
+            GroupRestrictions.required_channel_id == clean_channel_id
+        )
         # Получаем список ID групп
         groups = list(query.tuples())
         for group_tuple in groups:
             # Получаем group_id из кортежа (предполагается, что select вернул один столбец)
             group_id = group_tuple[0]
             try:
-                member = await bot.get_chat_member(chat_id=group_id, user_id=update.user.id)
+                member = await bot.get_chat_member(
+                    chat_id=group_id, user_id=update.user.id
+                )
                 if member.status == ChatMemberStatus.RESTRICTED:
                     await bot.restrict_chat_member(
                         chat_id=group_id,
                         user_id=update.user.id,
-                        permissions=ChatPermissions(can_send_messages=True)
+                        permissions=ChatPermissions(can_send_messages=True),
                     )
-                    logger.info(f"Пользователь {update.user.id} разблокирован в группе {group_id}")
+                    logger.info(
+                        f"Пользователь {update.user.id} разблокирован в группе {group_id}"
+                    )
             except Exception as e:
                 logger.error(
-                    f"Ошибка при снятии ограничений для группы {group_id}: {e}")
+                    f"Ошибка при снятии ограничений для группы {group_id}: {e}"
+                )
                 continue
     except Exception as e:
         logger.error(f"Ошибка при обработке события JOIN_TRANSITION: {e}")
