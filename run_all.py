@@ -10,7 +10,12 @@ commands = [
     [sys.executable, "scr/app/app.py"],  # запускает приложение
     [sys.executable, "scr/bot/bot.py"],  # запускает бота
     [sys.executable, "scr/parser/parser.py"],  # запускает парсер и сервера
-    ["tuna", "http", "8080", "--subdomain=mybotadmin"]  # запускает сервер на порту 8080 с поддоменом mybotadmin
+    [
+        "tuna",
+        "http",
+        "8080",
+        "--subdomain=mybotadmin",
+    ],  # запускает сервер на порту 8080 с поддоменом mybotadmin
 ]
 
 # Установить PYTHONPATH на корень проекта

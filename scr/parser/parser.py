@@ -14,7 +14,7 @@ from scr.utils.models import Groups
 CONFIG = {
     "target_channel_id": -1001918436153,
     "keywords": ["киевский район", "донецк сити", "шахтерская площадь"],
-    "session_name": "scr/setting/session_name"
+    "session_name": "scr/setting/session_name",
 }
 
 # 🧠 Простейший трекер сообщений (в памяти)

@@ -1,267 +1,179 @@
 <style>
-    :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --hover-color: #2980b9;
-        --background-color: #f9f9f9;
-        --text-color: #333;
-        --border-radius: 8px;
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+  :root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --hover-color: #2980b9;
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 
-    .container {
-        padding-left: 0;
-        padding-right: 0;
-    }
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        line-height: 1.6;
-        padding: 20px;
-    }
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+  }
 
+  h1 {
+    text-align: center;
+    margin: 30px 20px 20px 40px; /* сверху → справа → снизу → слева */
+  }
 
-    h1 {
-        text-align: center;
-        margin: 30px 20px 20px 40px; /* сверху → справа → снизу → слева */
+  .features li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
+  }
 
-    }
+  .features li::before {
+    content: "✔️";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--secondary-color);
+  }
 
-    .features li {
-        position: relative;
-        padding-left: 25px;
-        margin-bottom: 12px;
-    }
+  .header-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 48px;
+    max-width: 100%; /* если вдруг стояло ограничение */
+    box-sizing: border-box;
+    background-color: #333;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
 
-    .features li::before {
-        content: "✔️";
-        position: absolute;
-        left: 0;
-        top: 0;
-        color: var(--secondary-color);
-    }
+  .burger-menu-icon {
+    cursor: pointer;
+    font-size: 35px;
+    color: white;
+  }
 
-    .header-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 48px;
-        max-width: 100%; /* если вдруг стояло ограничение */
-        box-sizing: border-box;
-        background-color: #333;
-        z-index: 999;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-    }
+  .burger-menu {
+    position: fixed;
+    top: 48px; /* выравниваем под хедер */
+    left: -250px;
+    width: 250px;
+    height: calc(100vh - 48px); /* вся высота экрана минус высота шапки */
+    background-color: #333;
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto; /* чтобы появлялся скролл, если пунктов много */
+  }
 
-    .burger-menu-icon {
-        cursor: pointer;
-        font-size: 35px;
-        color: white;
-    }
+  .burger-menu.open {
+    left: 0;
+  }
 
-    .burger-menu {
-        position: fixed;
-        top: 48px; /* выравниваем под хедер */
-        left: -250px;
-        width: 250px;
-        height: calc(100vh - 48px); /* вся высота экрана минус высота шапки */
-        background-color: #333;
-        transition: left 0.3s ease;
-        z-index: 999;
-        overflow-y: auto; /* чтобы появлялся скролл, если пунктов много */
-    }
+  .burger-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0 0;
+  }
 
-    .burger-menu.open {
-        left: 0;
-    }
+  .burger-menu ul li {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+  }
 
-    .burger-menu ul {
-        list-style: none;
-        padding: 0;
-        margin: 12px 0 0 0;
-    }
+  .burger-menu ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+  }
 
-    .burger-menu ul li {
-        padding: 10px;
-        border-bottom: 1px solid #444;
-    }
+  footer {
+    text-align: center;
+    padding: 5px;
+    border-top: 1px solid #ddd;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 40px;
+  }
 
-    .burger-menu ul li a {
-        color: white;
-        text-decoration: none;
-        font-size: 15px;
-    }
+  footer a {
+    display: block;
+    margin: 8px 0;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
 
-    footer {
-        text-align: center;
-        padding: 5px;
-        border-top: 1px solid #ddd;
-        font-size: 0.9rem;
-        color: #555;
-        margin-top: 40px;
-    }
+  footer a:hover {
+    color: var(--hover-color);
+  }
 
-    footer a {
-        display: block;
-        margin: 8px 0;
-        color: var(--secondary-color);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
+  footer hr {
+    margin: 20px 0;
+    border: none;
+    height: 1px;
+    background-color: #eee;
+  }
 
-    footer a:hover {
-        color: var(--hover-color);
-    }
+  .social-icons {
+    margin-top: 15px;
+  }
 
-    footer hr {
-        margin: 20px 0;
-        border: none;
-        height: 1px;
-        background-color: #eee;
-    }
+  .social-icons a {
+    display: inline-block;
+    margin: 0 8px;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
 
-    .social-icons {
-        margin-top: 15px;
-    }
+  .social-icons a:hover {
+    color: var(--hover-color);
+  }
 
-    .social-icons a {
-        display: inline-block;
-        margin: 0 8px;
-        color: var(--secondary-color);
-        font-size: 1.2rem;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .social-icons a:hover {
-        color: var(--hover-color);
-    }
-
-    /* === Базовые стили === */
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        padding: 20px;
-    }
-
-    .container {
-        margin: auto;
-    }
-
-
-    /* === Формы и элементы ввода === */
-    .section {
-        margin-bottom: 25px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
-
-    input[type="text"],
-    textarea,
-    select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        margin-bottom: 12px;
-        transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    textarea:focus,
-    select:focus {
-        border-color: #007bff;
-        outline: none;
-    }
-
-    /*Кнопки*/
-    button,
-    .btn {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.95rem;
-        font-weight: bold;
-        text-decoration: none;
-        text-align: center;
-        transition: background-color 0.3s ease;
-        margin-top: 5px;
-        width: 100%;
-    }
-
-    button:hover,
-    .btn:hover {
-        background-color: #0056b3;
-    }
-
-    /* === Базовые стили === */
-* {
+  /* === Базовые стили === */
+  * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
+  }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f4f4;
     color: #333;
     padding: 20px;
-}
+  }
 
-.container {
-    max-width: 800px;
+  .container {
     margin: auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+  }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2rem;
-    color: #2c3e50;
-}
-
-/* === Формы и элементы ввода === */
-.section {
+  /* === Формы и элементы ввода === */
+  .section {
     margin-bottom: 25px;
-}
+  }
 
-label {
+  label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
     font-size: 0.95rem;
-}
+  }
 
-input[type="text"],
-textarea,
-select {
+  input[type="text"],
+  textarea,
+  select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -269,17 +181,18 @@ select {
     font-size: 0.95rem;
     margin-bottom: 12px;
     transition: border-color 0.3s ease;
-}
+  }
 
-input[type="text"]:focus,
-textarea:focus,
-select:focus {
+  input[type="text"]:focus,
+  textarea:focus,
+  select:focus {
     border-color: #007bff;
     outline: none;
-}
+  }
 
-button,
-.btn {
+  /*Кнопки*/
+  button,
+  .btn {
     display: inline-block;
     background-color: #007bff;
     color: white;
@@ -294,35 +207,119 @@ button,
     transition: background-color 0.3s ease;
     margin-top: 5px;
     width: 100%;
-}
+  }
 
-button:hover,
-.btn:hover {
+  button:hover,
+  .btn:hover {
     background-color: #0056b3;
-}
+  }
 
-/* === Статусные сообщения === */
-.status {
+  /* === Базовые стили === */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #2c3e50;
+  }
+
+  /* === Формы и элементы ввода === */
+  .section {
+    margin-bottom: 25px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    transition: border-color 0.3s ease;
+  }
+
+  input[type="text"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  button,
+  .btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    margin-top: 5px;
+    width: 100%;
+  }
+
+  button:hover,
+  .btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* === Статусные сообщения === */
+  .status {
     margin-top: 10px;
     padding: 10px 15px;
     border-radius: 6px;
     font-size: 0.9rem;
-}
+  }
 
-.success {
+  .success {
     background-color: #d4edda;
     color: #155724;
     border-left: 4px solid #155724;
-}
+  }
 
-.error {
+  .error {
     background-color: #f8d7da;
     color: #721c24;
     border-left: 4px solid #721c24;
-}
+  }
 
-/* === Кнопка-ссылка (альтернатива) === */
-.link-button {
+  /* === Кнопка-ссылка (альтернатива) === */
+  .link-button {
     display: inline-block;
     padding: 10px 20px;
     margin-top: 10px;
@@ -334,99 +331,106 @@ button:hover,
     color: white;
     border-radius: 6px;
     transition: background-color 0.3s ease;
-}
+  }
 
-.link-button:hover {
+  .link-button:hover {
     background-color: #218838;
-}
+  }
 </style>
 <title>Help</title>
 <body>
-<div class="header-banner">
+  <div class="header-banner">
     <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
-</div>
-<div class="burger-menu" id="burgerMenu">
+  </div>
+  <div class="burger-menu" id="burgerMenu">
     <ul>
-        <li><a href="/formation-groups">👥 Формирование групп</a></li>
-        <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
-        <li><a href="/restrictions_messages">✉️ Ограничения на сообщения</a></li>
-        <li><a href="/channel_subscription_limit">📢 Ограничение по подписке на канал</a></li>
-        <li><a href="/filter_words">🚫 Фильтр запрещённых слов</a></li>
-        <li><a href="/grant_user_special_rights_group">🔒 Выдать пользователю особые права</a></li>
-        <li><a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a></li>
-        <li><a href="/help">❓ Помощь</a></li>
+      <li><a href="/formation-groups">👥 Формирование групп</a></li>
+      <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
+      <li><a href="/restrictions_messages">✉️ Ограничения на сообщения</a></li>
+      <li>
+        <a href="/channel_subscription_limit"
+          >📢 Ограничение по подписке на канал</a
+        >
+      </li>
+      <li><a href="/filter_words">🚫 Фильтр запрещённых слов</a></li>
+      <li>
+        <a href="/grant_user_special_rights_group"
+          >🔒 Выдать пользователю особые права</a
+        >
+      </li>
+      <li>
+        <a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a>
+      </li>
+      <li><a href="/help">❓ Помощь</a></li>
     </ul>
-</div>
+  </div>
 
-
-<footer>
+  <footer>
     <a href="/privacy_policy">Политика конфиденциальности</a>
     <a href="/terms_of_use">Условия использования</a>
     <a href="https://t.me/PyAdminRU" target="_blank">Telegram</a>
     <a href="https://t.me/master_tg_d" target="_blank">Telegram канал</a>
-    <hr/>
+    <hr />
     <div class="social-icons">
-        <a href="https://t.me/PyAdminRU" target="_blank">&#x2709;&#xFE0F;</a>
-        <a href="https://t.me/master_tg_d" target="_blank">&#x1F4AC;</a>
+      <a href="https://t.me/PyAdminRU" target="_blank">&#x2709;&#xFE0F;</a>
+      <a href="https://t.me/master_tg_d" target="_blank">&#x1F4AC;</a>
     </div>
     &copy; 2025 PyAdminRU. Все права защищены.
-</footer>
+  </footer>
 
-
-<script>
+  <script>
     const tg = window.Telegram.WebApp;
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!tg) {
-            console.error('Это не WebApp Telegram');
-            return;
-        }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!tg) {
+        console.error("Это не WebApp Telegram");
+        return;
+      }
+      tg.expand();
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
         tg.expand();
-        tg.BackButton.show();
-        tg.BackButton.onClick(() => {
-            tg.expand();
-            setTimeout(() => window.history.back(), 0);
-        });
-        const user = tg.initDataUnsafe?.user || {};
-        const card = document.getElementById('usercard');
-        const greeting = document.createElement('h2');
-        const userName = user.first_name || user.username || 'пользователь';
-        greeting.innerText = `👋 Приветствую, ${userName}!`;
-        greeting.style.textAlign = 'center';
-        greeting.style.marginBottom = '30px';
-        card.appendChild(greeting);
+        setTimeout(() => window.history.back(), 0);
+      });
+      const user = tg.initDataUnsafe?.user || {};
+      const card = document.getElementById("usercard");
+      const greeting = document.createElement("h2");
+      const userName = user.first_name || user.username || "пользователь";
+      greeting.innerText = `👋 Приветствую, ${userName}!`;
+      greeting.style.textAlign = "center";
+      greeting.style.marginBottom = "30px";
+      card.appendChild(greeting);
     });
-    const burgerMenuIcon = document.getElementById('burgerMenuIcon');
-    const burgerMenu = document.getElementById('burgerMenu');
-    burgerMenuIcon.addEventListener('click', () => {
-        burgerMenu.classList.toggle('open');
+    const burgerMenuIcon = document.getElementById("burgerMenuIcon");
+    const burgerMenu = document.getElementById("burgerMenu");
+    burgerMenuIcon.addEventListener("click", () => {
+      burgerMenu.classList.toggle("open");
     });
-    burgerMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            burgerMenu.classList.remove('open');
-        });
+    burgerMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        burgerMenu.classList.remove("open");
+      });
     });
-</script>
+  </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const burgerMenuIcon = document.getElementById('burgerMenuIcon');
-    const burgerMenu = document.getElementById('burgerMenu');
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const burgerMenuIcon = document.getElementById("burgerMenuIcon");
+      const burgerMenu = document.getElementById("burgerMenu");
 
-    if (burgerMenuIcon && burgerMenu) {
-        burgerMenuIcon.addEventListener('click', () => {
-            burgerMenu.classList.toggle('open');
+      if (burgerMenuIcon && burgerMenu) {
+        burgerMenuIcon.addEventListener("click", () => {
+          burgerMenu.classList.toggle("open");
         });
 
         // Закрытие при клике на пункт меню
-        burgerMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                burgerMenu.classList.remove('open');
-            });
+        burgerMenu.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            burgerMenu.classList.remove("open");
+          });
         });
-    } else {
+      } else {
         console.warn("burgerMenuIcon или burgerMenu не найдены");
-    }
-});
-</script>
-
+      }
+    });
+  </script>
 </body>

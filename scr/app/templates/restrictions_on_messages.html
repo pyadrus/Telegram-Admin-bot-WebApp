@@ -302,17 +302,7 @@
       /*}*/
     </style>
   </head>
-  <script>
-    //кнопка назад
-    const tg = window.Telegram.WebApp;
-    tg.BackButton.show();
-    tg.BackButton.onClick(() => {
-      tg.expand(); // Убедимся, что expand() сработает
-      setTimeout(() => {
-        window.history.back();
-      }, 0);
-    });
-  </script>
+  <script src="/scr/app/static/js/back_button.js" defer></script>
   <body>
     <div class="header-banner">
       <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
