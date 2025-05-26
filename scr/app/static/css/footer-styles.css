@@ -32,3 +32,12 @@ footer hr {
   margin-top: 20px;
   text-align: center;
 }
+
+.social-icons a {
+  display: inline-block;
+  margin: 0 8px;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
