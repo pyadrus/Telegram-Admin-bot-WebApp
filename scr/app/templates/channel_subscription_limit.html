@@ -5,176 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ограничение по подписке на канал</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <!-- Правильный способ подключения CSS -->
     <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css" />
     <!-- Футер -->
     <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css" />
     <!-- Стиль -->
     <link rel="stylesheet" href="/scr/app/static/css/styles.css" />
-
-    <style>
-      :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --hover-color: #2980b9;
-        --background-color: #f9f9f9;
-        --text-color: #333;
-        --border-radius: 8px;
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .features {
-        list-style-type: none;
-        padding-left: 0;
-        margin: 30px 0;
-        color: #555;
-      }
-
-      .features li::before {
-        content: "✔️";
-        position: absolute;
-        left: 0;
-        color: var(--secondary-color);
-      }
-
-      .header-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 48px;
-        background-color: #333;
-        z-index: 999;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-      }
-
-      .btn {
-        display: block;
-        width: max-content;
-        margin: 20px auto;
-        padding: 10px 20px;
-        background-color: var(--secondary-color);
-        color: white;
-        border: none;
-        border-radius: var(--border-radius);
-        text-decoration: none;
-        text-align: center;
-      }
-
-      .btn:hover {
-        background-color: var(--hover-color);
-      }
-
-      .section {
-        margin-top: 80px;
-        padding: 20px;
-        background-color: white;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-      }
-
-      /* === Формы и элементы ввода === */
-      .section {
-        margin-bottom: 25px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        font-size: 0.95rem;
-      }
-
-      input[type="text"],
-      textarea,
-      select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        margin-bottom: 12px;
-        transition: border-color 0.3s ease;
-      }
-
-      input[type="text"]:focus,
-      textarea:focus,
-      select:focus {
-        border-color: #007bff;
-        outline: none;
-      }
-
-      button,
-      .btn {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.95rem;
-        font-weight: bold;
-        text-decoration: none;
-        text-align: center;
-        transition: background-color 0.3s ease;
-        margin-top: 5px;
-        width: 100%;
-      }
-
-      button:hover,
-      .btn:hover {
-        background-color: #0056b3;
-      }
-
-      /* === Статусные сообщения === */
-      .status {
-        margin-top: 10px;
-        padding: 10px 15px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-      }
-
-      .success {
-        background-color: #d4edda;
-        color: #155724;
-        border-left: 4px solid #155724;
-      }
-
-      .error {
-        background-color: #f8d7da;
-        color: #721c24;
-        border-left: 4px solid #721c24;
-      }
-
-      /* === Кнопка-ссылка (альтернатива) === */
-      .link-button {
-        display: inline-block;
-        padding: 10px 20px;
-        margin-top: 10px;
-        font-size: 0.95rem;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        background-color: #28a745;
-        color: white;
-        border-radius: 6px;
-        transition: background-color 0.3s ease;
-      }
-
-      .link-button:hover {
-        background-color: #218838;
-      }
-    </style>
   </head>
   <body>
     <div class="header-banner">
       <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
     </div>
+
     <div class="burger-menu" id="burgerMenu">
       <ul>
         <li><a href="/formation-groups">👥 Формирование групп</a></li>
@@ -204,29 +46,29 @@
 
     <div class="container">
       <h1>Ограничение по подписке на канал</h1>
-      <div id="usercard"></div>
-      <div class="section">
+      <!-- <div id="usercard"></div> -->
         <h2>Настройка ограничения</h2>
-        <label for="groups-selected"
-          >Выберите группу, которую хотите ограничить:</label
-        >
-        <select id="groups-selected">
-          <option value="">-- Выберите группу --</option>
-        </select>
+        
+        <div class="section">
+          <label for="groups-selected">Выберите группу, которую хотите ограничить:</label>
+          <select id="groups-selected">
+            <option value="">-- Выберите группу --</option>
+          </select>
+        </div>
+        
+        <div class="section"></div>
+          <label for="groups-selecteds">Выберите группу / канал, на которую нужно подписаться:</label>
+          <select id="groups-selecteds">
+            <option value="">-- Выберите группу --</option>
+          </select>
+        </div>
 
-        <label for="groups-selecteds"
-          >Выберите группу / канал, на которую нужно подписаться:</label
-        >
-        <select id="groups-selecteds">
-          <option value="">-- Выберите группу --</option>
-        </select>
-
-        <button onclick="toggleSubscriptionRequirement()">
-          Включить подписку
-        </button>
+        <div class="section">
+         <button onclick="toggleSubscriptionRequirement()">Включить подписку</button>
+        </div>
+        <a href="/" class="button">Назад в админ-панель</a>
+      
       </div>
-
-      <a href="/" class="btn">Назад в админ-панель</a>
 
       <footer>
         <a href="/privacy_policy">Политика конфиденциальности</a>
