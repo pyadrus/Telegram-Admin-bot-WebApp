@@ -307,20 +307,34 @@
     <div class="header-banner">
       <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
     </div>
-    
+
     <div class="burger-menu" id="burgerMenu">
       <ul>
         <li><a href="/formation-groups">👥 Формирование групп</a></li>
-        <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
-        <li><a href="/restrictions_messages">✉️ Ограничения на сообщения</a></li>
-        <li><a href="/channel_subscription_limit">📢 Ограничение по подписке на канал</a></li>
+        <li>
+          <a href="/restrictions_on_messages">👤 Количество участников</a>
+        </li>
+        <li>
+          <a href="/restrictions_messages">✉️ Ограничения на сообщения</a>
+        </li>
+        <li>
+          <a href="/channel_subscription_limit"
+            >📢 Ограничение по подписке на канал</a
+          >
+        </li>
         <li><a href="/filter_words">🚫 Фильтр запрещённых слов</a></li>
-        <li><a href="/grant_user_special_rights_group">🔒 Выдать пользователю особые права</a></li>
-        <li><a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a></li>
+        <li>
+          <a href="/grant_user_special_rights_group"
+            >🔒 Выдать пользователю особые права</a
+          >
+        </li>
+        <li>
+          <a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a>
+        </li>
         <li><a href="/help">❓ Помощь</a></li>
       </ul>
     </div>
-    
+
     <div class="container">
       <h1>Выдать пользователю особые права в группе</h1>
       <!-- Выдать пользователю особые права в группе -->
@@ -394,28 +408,8 @@
       });
     </script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const burgerMenuIcon = document.getElementById("burgerMenuIcon");
-        const burgerMenu = document.getElementById("burgerMenu");
-
-        if (burgerMenuIcon && burgerMenu) {
-          burgerMenuIcon.addEventListener("click", () => {
-            burgerMenu.classList.toggle("open");
-          });
-
-          // Закрытие при клике на пункт меню
-          burgerMenu.querySelectorAll("a").forEach((link) => {
-            link.addEventListener("click", () => {
-              burgerMenu.classList.remove("open");
-            });
-          });
-        } else {
-          console.warn("burgerMenuIcon или burgerMenu не найдены");
-        }
-      });
-    </script>
-
+    <!-- Открытие бургер меню -->
+    <script src="/scr/app/static/js/burger.js"></script>
     <script src="/scr/app/static/js/admin.js"></script>
   </body>
 </html>
