@@ -1,116 +1,95 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Добавить группы / каналы для отслеживания</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Правильный способ подключения CSS -->
-    <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css" />
+    <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css"/>
     <!-- Футер -->
-    <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css" />
+    <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css"/>
     <!-- Стиль -->
-    <link rel="stylesheet" href="/scr/app/static/css/styles.css" />
-  </head>
-  <body>
-    <div class="header-banner">
-      <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
-    </div>
+    <link rel="stylesheet" href="/scr/app/static/css/styles.css"/>
+</head>
+<body>
 
-    <div class="burger-menu" id="burgerMenu">
-      <ul>
+<div class="header-banner">
+    <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
+</div>
+
+<div class="burger-menu" id="burgerMenu">
+    <ul>
         <li><a href="/formation-groups">👥 Формирование групп</a></li>
-        <li>
-          <a href="/restrictions_on_messages">👤 Количество участников</a>
-        </li>
-        <li>
-          <a href="/restrictions_messages">✉️ Ограничения на сообщения</a>
-        </li>
-        <li>
-          <a href="/channel_subscription_limit"
-            >📢 Ограничение по подписке на канал</a
-          >
-        </li>
+        <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
+        <li><a href="/restrictions_messages">✉️ Ограничения на сообщения</a></li>
+        <li><a href="/channel_subscription_limit">📢 Ограничение по подписке на канал</a></li>
         <li><a href="/filter_words">🚫 Фильтр запрещённых слов</a></li>
-        <li>
-          <a href="/grant_user_special_rights_group"
-            >🔒 Выдать пользователю особые права</a
-          >
-        </li>
-        <li>
-          <a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a>
-        </li>
+        <li><a href="/grant_user_special_rights_group">🔒 Выдать пользователю особые права</a></li>
+        <li><a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a></li>
         <li><a href="/help">❓ Помощь</a></li>
-      </ul>
-    </div>
+    </ul>
+</div>
 
-    <div class="container">
-      <div id="usercard"></div>
-      <h1>Добавить группы / каналы для отслеживания</h1>
+<div class="container">
+    <h1>Добавить группы / каналы для отслеживания</h1>
+    <label for="save-username">Введите username группы / канала, например: @username:</label>
+    <textarea id="save-username" rows="4" placeholder="Пример: @username"></textarea>
+    <button onclick="saveUsername()">Сохранить</button>
+</div>
 
-        <label for="save-username"
-          >Введите username группы / канала, например: @username:</label
-        >
-        <textarea
-          id="save-username"
-          rows="4"
-          placeholder="Пример: @username"
-        ></textarea>
-        <button onclick="saveUsername()">Сохранить</button>
-    </div>
-
-    <footer>
-      <a href="/privacy_policy">Политика конфиденциальности</a>
-      <a href="/terms_of_use">Условия использования</a>
-      <a href="https://t.me/PyAdminRU" target="_blank">Telegram</a>
-      <a href="https://t.me/master_tg_d" target="_blank">Telegram канал</a>
-      <hr />
-      <div class="social-icons">
+<footer>
+    <a href="/privacy_policy">Политика конфиденциальности</a>
+    <a href="/terms_of_use">Условия использования</a>
+    <a href="https://t.me/PyAdminRU" target="_blank">Telegram</a>
+    <a href="https://t.me/master_tg_d" target="_blank">Telegram канал</a>
+    <hr/>
+    <div class="social-icons">
         <a href="https://t.me/PyAdminRU" target="_blank">&#x2709;&#xFE0F;</a>
         <a href="https://t.me/master_tg_d" target="_blank">&#x1F4AC;</a>
-      </div>
-      &copy; 2025 PyAdminRU. Все права защищены.
-    </footer>
+    </div>
+    &copy; 2025 PyAdminRU. Все права защищены.
+</footer>
 
-    <script>
-      async function saveUsername() {
+<script>
+    async function saveUsername() {
         const inputField = document.getElementById("save-username");
         const save_username = inputField.value.trim();
 
         if (!save_username.startsWith("@")) {
-          alert("Username должен начинаться с @");
-          return;
+            alert("Username должен начинаться с @");
+            return;
         }
 
         try {
-          const formData = new FormData();
-          formData.append("username_chat_channel", save_username);
+            const formData = new FormData();
+            formData.append("username_chat_channel", save_username);
 
-          const response = await fetch("/save-username", {
-            method: "POST",
-            body: formData,
-          });
+            const response = await fetch("/save-username", {
+                method: "POST",
+                body: formData,
+            });
 
-          if (!response.ok) {
-            throw new Error(`Ошибка сервера: ${response.status}`);
-          }
+            if (!response.ok) {
+                throw new Error(`Ошибка сервера: ${response.status}`);
+            }
 
-          const result = await response.json();
+            const result = await response.json();
 
-          if (result.success) {
-            inputField.value = "";
-            alert("Группа / канал успешно добавлена!");
-          } else {
-            alert("Ошибка при добавлении: " + result.error);
-          }
+            if (result.success) {
+                inputField.value = "";
+                alert("Группа / канал успешно добавлена!");
+            } else {
+                alert("Ошибка при добавлении: " + result.error);
+            }
         } catch (error) {
-          console.error("Ошибка:", error);
-          alert("Не удалось сохранить группу / канал.");
+            console.error("Ошибка:", error);
+            alert("Не удалось сохранить группу / канал.");
         }
-      }
-    </script>
-    <!-- Открытие бургер меню -->
-    <script src="/scr/app/static/js/burger.js"></script>
-    <script src="/scr/app/static/js/admin.js" defer></script>
-  </body>
+    }
+</script>
+<!-- Открытие бургер меню -->
+<script src="/scr/app/static/js/burger.js"></script>
+<script src="/scr/app/static/js/admin.js" defer></script>
+</body>
 </html>
