@@ -12,23 +12,18 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-color);
   margin: 0;
-  padding: 0;
   background-color: #f9f9f9;
-}
-
-/* Описание */
-.description {
-  font-size: 1.1rem;
-  text-align: center;
-  margin-bottom: 20px;
 }
 
 /* Контейнер */
 .container {
-  background: #ffffff;
   padding: 20px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+}
+
+/* Ограничитель ширины формы */
+.form-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 /* Заголовок / баннер */
@@ -46,6 +41,13 @@ body {
   padding: 0 20px;
   z-index: 999;
   box-sizing: border-box;
+}
+
+/* Описание */
+.description {
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Секции */
@@ -83,39 +85,28 @@ label {
   font-size: 0.95rem;
 }
 
-/* Инпуты и textarea */
+/* Инпуты, textarea, select */
 input[type="text"],
 textarea,
 select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--secondary-color);
   border-radius: 6px;
   font-size: 0.95rem;
-  margin-bottom: 12px;
-  transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--secondary-color);
-  outline: none;
-}
-
-/* Textarea */
-textarea {
-  resize: vertical;
   margin-top: 10px;
   margin-bottom: 10px;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
 }
 
 /* Кнопки */
-button,
-.btn {
+button {
   display: inline-block;
   width: 100%;
-  padding: 10px 20px;
+  padding: 10px 12px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -127,16 +118,13 @@ button,
   text-decoration: none;
   transition: background-color 0.3s ease;
   margin-top: 5px;
-}
-
-button:hover,
-.btn:hover {
-  background-color: #0056b3;
+  box-sizing: border-box;
 }
 
 /* Зелёная кнопка-ссылка */
 .link-button {
   display: inline-block;
+  width: 100%;
   padding: 10px 20px;
   margin-top: 10px;
   font-size: 0.95rem;
@@ -147,6 +135,7 @@ button:hover,
   color: white;
   border-radius: 6px;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 /* Иконки соцсетей */
