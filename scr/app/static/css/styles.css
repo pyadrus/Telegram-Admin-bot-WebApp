@@ -2,37 +2,60 @@
   --primary-color: #2c3e50;
   --secondary-color: #3498db;
   --hover-color: #2980b9;
-  --background-color: #f9f9f9;
   --text-color: #333;
   --border-radius: 8px;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Базовые стили */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+/* Описание */
 .description {
   font-size: 1.1rem;
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
 }
 
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  line-height: 1.6;
+/* Контейнер */
+.container {
+  background: #ffffff;
   padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
-.features li::before {
-  content: "✔️";
-  position: absolute;
-  left: 0;
+/* Заголовок / баннер */
+.header-banner {
+  position: fixed;
   top: 0;
-  color: var(--secondary-color);
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 999;
+  box-sizing: border-box;
 }
 
+/* Секции */
+.section {
+  margin-bottom: 25px;
+}
+
+/* Список фич */
 .features {
-  list-style-type: none;
+  list-style: none;
   padding-left: 0;
   margin: 30px 0;
   color: #555;
@@ -44,98 +67,15 @@ body {
   margin-bottom: 12px;
 }
 
-.header-banner {
-  position: fixed;
+.features li::before {
+  content: "✔️";
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 48px;
-  max-width: 100%;
-  box-sizing: border-box;
-  background-color: #333;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
+  color: var(--secondary-color);
 }
 
-textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: var(--border-radius);
-  border: 1px solid #ccc;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  resize: vertical;
-}
-
-.container {
-  max-width: 800px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-button,
-.btn {
-  display: inline-block;
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  margin-top: 5px;
-  width: 100%;
-}
-
-button:hover,
-.btn:hover {
-  background-color: #0056b3;
-}
-
-.success {
-  background-color: #d4edda;
-  color: #155724;
-  border-left: 4px solid #155724;
-}
-
-.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border-left: 4px solid #721c24;
-}
-
-.link-button {
-  display: inline-block;
-  padding: 10px 20px;
-  margin-top: 10px;
-  font-size: 0.95rem;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  background-color: #28a745;
-  color: white;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.social-icons a:hover {
-  color: var(--hover-color);
-}
-
-.section {
-  margin-bottom: 25px;
-}
-
+/* Метки */
 label {
   display: block;
   margin-bottom: 8px;
@@ -143,6 +83,7 @@ label {
   font-size: 0.95rem;
 }
 
+/* Инпуты и textarea */
 input[type="text"],
 textarea,
 select {
@@ -158,10 +99,75 @@ select {
 input[type="text"]:focus,
 textarea:focus,
 select:focus {
-  border-color: #007bff;
+  border-color: var(--secondary-color);
   outline: none;
 }
 
+/* Textarea */
+textarea {
+  resize: vertical;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Кнопки */
+button,
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  margin-top: 5px;
+}
+
+button:hover,
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* Зелёная кнопка-ссылка */
+.link-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+/* Иконки соцсетей */
+.social-icons a:hover {
+  color: var(--hover-color);
+}
+
+/* Сообщения об успехе и ошибках */
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #155724;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #721c24;
+}
+
+/* Статус */
 .status {
   margin-top: 10px;
   padding: 10px 15px;

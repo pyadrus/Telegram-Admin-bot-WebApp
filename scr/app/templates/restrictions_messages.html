@@ -2,32 +2,25 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Ограничения на сообщения</title>
+    <title>Формирование групп</title>
+
+    <!-- Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Правильный способ подключения CSS -->
+
+    <!-- Стили -->
     <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css"/>
-    <!-- Футер -->
     <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css"/>
+    <link rel="stylesheet" href="/scr/app/static/css/styles.css"/>
 </head>
-<script>
-    //кнопка назад
-    const tg = window.Telegram.WebApp;
-    tg.BackButton.show();
 
-    tg.BackButton.onClick(() => {
-        tg.expand(); // Убедимся, что expand() сработает
-        setTimeout(() => {
-            window.history.back();
-        }, 0);
-    });
-</script>
 <body>
-<div class="header-banner">
+<!-- Верхняя панель -->
+<header class="header-banner">
     <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
-</div>
+</header>
 
-<div class="burger-menu" id="burgerMenu">
+<!-- Бургер-меню -->
+<nav class="burger-menu" id="burgerMenu">
     <ul>
         <li><a href="/formation-groups">👥 Формирование групп</a></li>
         <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
@@ -38,21 +31,52 @@
         <li><a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a></li>
         <li><a href="/help">❓ Помощь</a></li>
     </ul>
-</div>
+</nav>
 
-<div class="container">
-    <h1>Ограничения на сообщения</h1>
-    <!-- Выбор группы для ограничений -->
-    <h2>Ограничения на сообщения</h2>
-    <label for="groups-select">Выберите группу:</label>
-    <select id="groups-select">
-        <option value="">-- Выберите группу --</option>
-    </select>
-    <!-- Исправленные кнопки -->
-    <button onclick="setReadOnly()">🔒 Заблокировать написание</button>
-    <button onclick="setFullAccess()">🔓 Разрешить писать</button>
+<!-- Контент -->
+<main class="container">
+    <h1>Формирование групп</h1>
+
+    <!-- Статусы -->
+    {% if request.query_params.success %}
+    <div class="status success">Группа успешно сохранена!</div>
+    {% endif %}
+    {% if request.query_params.error %}
+    <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
+    {% endif %}
+
+    <p>
+        Это страница для формирования пользовательских групп.<br><br>
+        Для дальнейшего взаимодействия с группами, нужно задать <strong>@username</strong> группы.
+    </p>
+
+    <!-- Форма добавления группы -->
+    <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="chat-username">Введите username группы или канала в виде @username:</label>
+        <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
+        <button type="submit">Сохранить группу</button>
+    </form>
+
+    <hr class="my-8 h-px border-0 bg-gray-300"/>
+
+    <!-- Удаление группы -->
+    <section>
+        <h3>Удаление группы</h3>
+        <p>Выберите группу из списка и нажмите «Удалить»</p>
+        <label for="group-select-del">Группа:</label>
+        <select id="group-select-del">
+            <option value="">-- Выберите группу --</option>
+        </select>
+        <button onclick="delGroup()">Удалить выбранную группу</button>
+        <p id="delete-status" class="status"></p>
+    </section>
+
+    <hr class="my-8 h-px border-0 bg-gray-300"/>
+
+    <!-- Кнопка возврата -->
     <a href="/" class="btn">Назад в админ-панель</a>
 
+    <!-- Футер -->
     <footer>
         <a href="/privacy_policy">Политика конфиденциальности</a>
         <a href="/terms_of_use">Условия использования</a>
@@ -65,8 +89,8 @@
         </div>
         &copy; 2025 PyAdminRU. Все права защищены.
     </footer>
-</div>
-
+</main>
+<!-- Скрипты -->
 <!-- Открытие бургер меню -->
 <script src="/scr/app/static/js/burger.js"></script>
 <script src="/scr/app/static/js/admin.js"></script>
