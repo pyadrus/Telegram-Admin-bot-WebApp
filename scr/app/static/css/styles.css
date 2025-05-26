@@ -12,14 +12,14 @@ body {
   padding: 20px;
 }
 
-.container {
+/* .container {
   max-width: 800px;
   margin: auto;
   background: white;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+} */
 
 h1 {
   text-align: center;
@@ -29,9 +29,9 @@ h1 {
 }
 
 /* === Формы и элементы ввода === */
-.section {
+/* .section {
   margin-bottom: 25px;
-}
+} */
 
 label {
   display: block;
@@ -59,7 +59,7 @@ select:focus {
   outline: none;
 }
 
-button,
+/* button,
 .btn {
   display: inline-block;
   background-color: #007bff;
@@ -75,35 +75,35 @@ button,
   transition: background-color 0.3s ease;
   margin-top: 5px;
   width: 100%;
-}
+} */
 
-button:hover,
+/* button:hover,
 .btn:hover {
   background-color: #0056b3;
-}
+} */
 
 /* === Статусные сообщения === */
-.status {
+/* .status {
   margin-top: 10px;
   padding: 10px 15px;
   border-radius: 6px;
   font-size: 0.9rem;
-}
+} */
 
-.success {
+/* .success {
   background-color: #d4edda;
   color: #155724;
   border-left: 4px solid #155724;
-}
+} */
 
-.error {
+/* .error {
   background-color: #f8d7da;
   color: #721c24;
   border-left: 4px solid #721c24;
-}
+} */
 
 /* === Кнопка-ссылка (альтернатива) === */
-.link-button {
+/* .link-button {
   display: inline-block;
   padding: 10px 20px;
   margin-top: 10px;
@@ -115,8 +115,8 @@ button:hover,
   color: white;
   border-radius: 6px;
   transition: background-color 0.3s ease;
-}
+} */
 
-.link-button:hover {
+/* .link-button:hover {
   background-color: #218838;
-}
+} */
