@@ -25,3 +25,10 @@ footer hr {
   height: 1px;
   background-color: #eee;
 }
+
+.footer-text {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 20px;
+  text-align: center;
+}
