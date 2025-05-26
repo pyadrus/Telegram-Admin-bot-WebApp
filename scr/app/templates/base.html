@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ограничение по подписке на канал</title>
+    <title>{% block title %}PyAdminRU{% endblock %}</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Правильный способ подключения CSS -->
     <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css" />
@@ -33,30 +33,10 @@
         </ul>
     </div>
 
+    <!-- Основное содержимое страницы -->
     <div class="container">
-        <h1>Ограничение по подписке на канал</h1>
-        <!-- <div id="usercard"></div> -->
-        <h2>Настройка ограничения</h2>
-
-        <div class="section">
-            <label for="groups-selected">Выберите группу, которую хотите ограничить:</label>
-            <select id="groups-selected">
-                <option value="">-- Выберите группу --</option>
-            </select>
-        </div>
-
-        <div class="section"></div>
-        <label for="groups-selecteds">Выберите группу / канал, на которую нужно подписаться:</label>
-        <select id="groups-selecteds">
-            <option value="">-- Выберите группу --</option>
-        </select>
-    </div>
-
-    <div class="section">
-        <button onclick="toggleSubscriptionRequirement()">Включить подписку</button>
-    </div>
-    <a href="/" class="button">Назад в админ-панель</a>
-
+        {% block content %}
+        {% endblock %}
     </div>
 
     <footer>
@@ -71,10 +51,12 @@
         </div>
         &copy; 2025 PyAdminRU. Все права защищены.
     </footer>
-    </div>
 
+    <!-- Приветствие пользователей -->
+    <script src="/scr/app/static/js/greeting-users.js"></script>
     <!-- Открытие бургер меню -->
     <script src="/scr/app/static/js/burger.js"></script>
+    <!-- Осносная логика проекта -->
     <script src="/scr/app/static/js/admin.js"></script>
 </body>
 

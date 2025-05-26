@@ -1,103 +1,124 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="ru"> -->
+
+<!-- <head> -->
+<!-- <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Админ-панель</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Правильный способ подключения CSS -->
-    <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css"/>
-    <!-- Футер -->
-    <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css"/>
-    <!-- Стиль -->
-    <link rel="stylesheet" href="/scr/app/static/css/styles.css"/>
-</head>
-<body>
-<div class="header-banner">
-    <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
-</div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script> -->
+<!-- Правильный способ подключения CSS -->
+<!-- <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css" /> -->
+<!-- Футер -->
+<!-- <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css" /> -->
+<!-- Стиль -->
+<!-- <link rel="stylesheet" href="/scr/app/static/css/styles.css" /> -->
+<!-- </head> -->
+<!-- <script src="/scr/app/static/js/back_button.js" defer></script> -->
 
-<div class="burger-menu" id="burgerMenu">
-    <ul>
-        <li><a href="/formation-groups">👥 Формирование групп</a></li>
-        <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
-        <li><a href="/restrictions_messages">✉️ Ограничения на сообщения</a></li>
-        <li><a href="/channel_subscription_limit">📢 Ограничение по подписке на канал</a></li>
-        <li><a href="/filter_words">🚫 Фильтр запрещённых слов</a></li>
-        <li><a href="/grant_user_special_rights_group">🔒 Выдать пользователю особые права</a></li>
-        <li><a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a></li>
-        <li><a href="/help">❓ Помощь</a></li>
-    </ul>
-</div>
+<!-- <body>
+    <div class="header-banner">
+        <div class="burger-menu-icon" id="burgerMenuIcon">&#9776;</div>
+    </div>
 
-<div class="container">
-    <h1>⚙️ Админ-панель</h1>
-    <div id="usercard" class="user-info"></div>
-    <p class="description">
-        Добро пожаловать в <strong>админ-панель управления ботом</strong>. Здесь
-        вы можете легко настраивать и поддерживать порядок в ваших группах и
-        каналах.
-    </p>
-    <ul class="features">
-        <li>
-            <strong>Удобное отображение количества участников:</strong> следите за
-            числом подписчиков.
-        </li>
-        <li>
-            <strong>Ограничения на сообщения:</strong> запрет на отправку
-            сообщений без подписки на канал.
-        </li>
-        <li>
-            <strong>Фильтрация запрещённых слов:</strong> предотвращайте спам.
-        </li>
-        <li>
-            <strong>Выдача особых прав:</strong> отдельные пользователи могут
-            обходить ограничения.
-        </li>
-    </ul>
-    <p class="footer-text">
-        Сделайте управление вашими чатами простым и эффективным. Настройки
-        помогут сохранить комфорт в любом сообществе.
-    </p>
-    <footer>
-        <a href="/privacy_policy">Политика конфиденциальности</a>
-        <a href="/terms_of_use">Условия использования</a>
-        <a href="https://t.me/PyAdminRU" target="_blank">Telegram</a>
-        <a href="https://t.me/master_tg_d" target="_blank">Telegram канал</a>
-        <hr/>
-        <div class="social-icons">
-            <a href="https://t.me/PyAdminRU" target="_blank">&#x2709;&#xFE0F;</a>
-            <a href="https://t.me/master_tg_d" target="_blank">&#x1F4AC;</a>
-        </div>
-        &copy; 2025 PyAdminRU. Все права защищены.
-    </footer>
-</div>
-<script>
-    const tg = window.Telegram.WebApp;
-    document.addEventListener("DOMContentLoaded", () => {
-        if (!tg) {
-            console.error("Это не WebApp Telegram");
-            return;
-        }
-        tg.expand();
-        tg.BackButton.show();
-        tg.BackButton.onClick(() => {
-            tg.expand();
-            setTimeout(() => window.history.back(), 0);
-        });
-        const user = tg.initDataUnsafe?.user || {};
-        const card = document.getElementById("usercard");
-        const greeting = document.createElement("h2");
-        const userName = user.first_name || user.username || "пользователь";
-        greeting.innerText = `👋 Приветствую, ${userName}!`;
-        greeting.style.textAlign = "center";
-        greeting.style.marginBottom = "30px";
-        card.appendChild(greeting);
-    });
-</script>
+    <div class="burger-menu" id="burgerMenu">
+        <ul>
+            <li><a href="/formation-groups">👥 Формирование групп</a></li>
+            <li><a href="/restrictions_on_messages">👤 Количество участников</a></li>
+            <li><a href="/restrictions_messages">✉️ Ограничения на сообщения</a></li>
+            <li><a href="/channel_subscription_limit">📢 Ограничение по подписке на канал</a></li>
+            <li><a href="/filter_words">🚫 Фильтр запрещённых слов</a></li>
+            <li><a href="/grant_user_special_rights_group">🔒 Выдать пользователю особые права</a></li>
+            <li><a href="/add_groups_for_tracking">🔍 Добавить группы / каналы</a></li>
+            <li><a href="/help">❓ Помощь</a></li>
+        </ul>
+    </div> -->
+
+<!-- <div class="container">
+        <h1>⚙️ Админ-панель</h1>
+        <div id="usercard" class="user-info"></div>
+        <p class="description">
+            Добро пожаловать в <strong>админ-панель управления ботом</strong>. Здесь
+            вы можете легко настраивать и поддерживать порядок в ваших группах и
+            каналах.
+        </p>
+        <ul class="features">
+            <li>
+                <strong>Удобное отображение количества участников:</strong> следите за
+                числом подписчиков.
+            </li>
+            <li>
+                <strong>Ограничения на сообщения:</strong> запрет на отправку
+                сообщений без подписки на канал.
+            </li>
+            <li>
+                <strong>Фильтрация запрещённых слов:</strong> предотвращайте спам.
+            </li>
+            <li>
+                <strong>Выдача особых прав:</strong> отдельные пользователи могут
+                обходить ограничения.
+            </li>
+        </ul>
+        <p class="footer-text">
+            Сделайте управление вашими чатами простым и эффективным. Настройки
+            помогут сохранить комфорт в любом сообществе.
+        </p>
+        <footer>
+            <a href="/privacy_policy">Политика конфиденциальности</a>
+            <a href="/terms_of_use">Условия использования</a>
+            <a href="https://t.me/PyAdminRU" target="_blank">Telegram</a>
+            <a href="https://t.me/master_tg_d" target="_blank">Telegram канал</a>
+            <hr />
+            <div class="social-icons">
+                <a href="https://t.me/PyAdminRU" target="_blank">&#x2709;&#xFE0F;</a>
+                <a href="https://t.me/master_tg_d" target="_blank">&#x1F4AC;</a>
+            </div>
+            &copy; 2025 PyAdminRU. Все права защищены.
+        </footer>
+    </div> -->
+
+<!-- Приветствие пользователей -->
+<!-- <script src="/scr/app/static/js/greeting-users.js"></script> -->
 <!-- Открытие бургер меню -->
-<script src="/scr/app/static/js/burger.js"></script>
+<!-- <script src="/scr/app/static/js/burger.js"></script> -->
 <!-- Осносная логика проекта -->
-<script src="/scr/app/static/js/admin.js"></script>
-</body>
-</html>
+<!-- <script src="/scr/app/static/js/admin.js"></script> -->
+<!-- </body> -->
+
+<!-- </html> -->
+
+{% extends "base.html" %}
+{% block title %}⚙️ Админ-панель{% endblock %}
+{% block content %}
+<div id="usercard" class="user-info"></div>
+<p class="description">
+    Добро пожаловать в <strong>админ-панель управления ботом</strong>. Здесь
+    вы можете легко настраивать и поддерживать порядок в ваших группах и
+    каналах.
+</p>
+<ul class="features">
+    <li>
+        <strong>Удобное отображение количества участников:</strong> следите за
+        числом подписчиков.
+    </li>
+    <li>
+        <strong>Ограничения на сообщения:</strong> запрет на отправку
+        сообщений без подписки на канал.
+    </li>
+    <li>
+        <strong>Фильтрация запрещённых слов:</strong> предотвращайте спам.
+    </li>
+    <li>
+        <strong>Выдача особых прав:</strong> отдельные пользователи могут
+        обходить ограничения.
+    </li>
+</ul>
+
+<p class="footer-text">
+    Сделайте управление вашими чатами простым и эффективным. Настройки
+    помогут сохранить комфорт в любом сообществе.
+</p>
+
+</div>
+<!-- Приветствие пользователей -->
+<script src="/scr/app/static/js/greeting-users.js"></script>
+{% endblock %}

@@ -231,7 +231,8 @@ async def update_participants(chat_title: str):
         # Получаем актуальные данные через Telegram
         chat_id, title, total, link = await get_participants_count(group.chat_link)
         # Обновляем запись в базе
-        Group.update(chat_total=total).where(Group.chat_title == chat_title).execute()
+        Group.update(chat_total=total).where(
+            Group.chat_title == chat_title).execute()
 
         return {"success": True, "participants_count": total}
     except Exception as e:
