@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Выдать пользователю особые права в группе</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Правильный способ подключения CSS -->
+    <link rel="stylesheet" href="/scr/app/static/css/styless-burger-menu.css" />
+    <!-- Футер -->
+    <link rel="stylesheet" href="/scr/app/static/css/footer-styles.css" />
 
     <style>
       :root {
@@ -79,73 +83,6 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 20px;
-      }
-
-      .burger-menu-icon {
-        cursor: pointer;
-        font-size: 35px;
-        color: white;
-      }
-
-      .burger-menu {
-        position: fixed;
-        top: 48px; /* выравниваем под хедер */
-        left: -250px;
-        width: 250px;
-        height: calc(100vh - 48px); /* вся высота экрана минус высота шапки */
-        background-color: #333;
-        transition: left 0.3s ease;
-        z-index: 999;
-        overflow-y: auto; /* чтобы появлялся скролл, если пунктов много */
-      }
-
-      .burger-menu.open {
-        left: 0;
-      }
-
-      .burger-menu ul {
-        list-style: none;
-        padding: 0;
-        margin: 12px 0 0 0;
-      }
-
-      .burger-menu ul li {
-        padding: 10px;
-        border-bottom: 1px solid #444;
-      }
-
-      .burger-menu ul li a {
-        color: white;
-        text-decoration: none;
-        font-size: 15px;
-      }
-
-      footer {
-        text-align: center;
-        padding: 5px;
-        border-top: 1px solid #ddd;
-        font-size: 0.9rem;
-        color: #555;
-        margin-top: 40px;
-      }
-
-      footer a {
-        display: block;
-        margin: 8px 0;
-        color: var(--secondary-color);
-        text-decoration: none;
-        transition: color 0.3s ease;
-      }
-
-      footer a:hover {
-        color: var(--hover-color);
-      }
-
-      footer hr {
-        margin: 20px 0;
-        border: none;
-        height: 1px;
-        background-color: #eee;
       }
 
       .social-icons {
