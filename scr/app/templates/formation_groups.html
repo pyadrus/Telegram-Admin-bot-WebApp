@@ -13,9 +13,9 @@
 {% endif %}
 <p>
     Это страница для формирования пользовательских групп.
-    <hr class="my-8 h-px border-0 bg-gray-300" />
-    Для дальнейшего взаимодействия с группами, нужно задать @username
-    группы.
+<hr class="my-8 h-px border-0 bg-gray-300"/>
+Для дальнейшего взаимодействия с группами, нужно задать @username
+группы.
 </p>
 <!--
   Форма для ввода ID группы. Форма отправляет POST-запрос на /save-group
@@ -26,12 +26,12 @@
 
 <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
     <label for="chat-username">Введите username группы или канала в виде @username:</label>
-    <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username" />
+    <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
     <button type="submit">Сохранить группу</button>
 </form>
 
 <!-- Линия разделения -->
-<hr class="my-8 h-px border-0 bg-gray-300" />
+<hr class="my-8 h-px border-0 bg-gray-300"/>
 <!-- Раздел "Удаление групп" -->
 <h3>Удаление группы</h3>
 <p>Выберите группу из списка и нажмите «Удалить»</p>
@@ -43,7 +43,7 @@
 <!-- Статус операции -->
 <p id="delete-status" class="status"></p>
 <!-- Линия разделения -->
-<hr class="my-8 h-px border-0 bg-gray-300" />
+<hr class="my-8 h-px border-0 bg-gray-300"/>
 <a href="/" class="btn">Назад в админ-панель</a>
 
 <!-- === Встроенный JavaScript === -->
