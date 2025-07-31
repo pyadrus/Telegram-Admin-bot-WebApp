@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from aiogram.filters import Command
 from aiogram.types import Message
 from loguru import logger

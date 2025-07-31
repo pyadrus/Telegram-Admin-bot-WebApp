@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import configparser
 
 from aiogram import Bot, Dispatcher, Router

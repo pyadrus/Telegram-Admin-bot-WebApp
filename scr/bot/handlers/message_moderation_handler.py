@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import asyncio
 
 from aiogram.enums import ChatMemberStatus
@@ -42,7 +43,7 @@ async def unified_message_handler(message: Message) -> None:
             await bot.send_message(
                 chat_id,
                 translations["ru"]["menu"]["user"],
-                reply_markup=create_admin_panel_keyboard(user_id),
+                reply_markup=create_admin_panel_keyboard(),
                 parse_mode="HTML",
             )
         return
