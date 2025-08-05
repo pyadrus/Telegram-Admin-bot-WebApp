@@ -2,7 +2,7 @@
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi import Form
 from fastapi import Request
 from fastapi.responses import HTMLResponse
@@ -89,14 +89,18 @@ async def grant_user_special_rights_group(request: Request):
 
 # Новый маршрут для "Формирование групп"
 @app.get("/formation-groups")
-async def formation_groups(request: Request):
+async def formation_groups(request: Request, user_id: int = Query(...)):
     """
     Отображение страницы с формой для ввода username группы.
 
+    :param user_id: ID пользователя, который добавляет группу.
     :param request: Объект запроса.
     :return: HTML-страница с формой для ввода username группы.
     """
-    return templates.TemplateResponse("formation_groups.html", {"request": request})
+    return templates.TemplateResponse("formation_groups.html", {
+        "request": request,
+        "current_user_id": user_id
+    })
 
 
 """Помощь пользователю"""
@@ -170,13 +174,14 @@ async def delete_group(chat_id: int = Form(...)):
 
 
 @app.post("/save-group")
-async def save_group(chat_username: str = Form(...)):
+async def save_group(chat_username: str = Form(...), user_id: int = Form(...)): # Добавляем user_id
     """
     Запись данных в базу данных по username группы.
     chat_id - ID группы,
     chat_title - название группы,
     chat_total - общее количество участников,
     chat_link - ссылка на группу.
+    user_id - ID пользователя, который добавил группу
     """
     try:
         chat_id, chat_title, chat_total, chat_link = await get_participants_count(
@@ -188,6 +193,7 @@ async def save_group(chat_username: str = Form(...)):
         with db.atomic():
             # Вставляем новую
             Group.insert(
+                user_id=user_id,  # Добавляем user_id
                 chat_id=chat_id,
                 chat_title=chat_title,
                 chat_total=chat_total,
@@ -199,15 +205,24 @@ async def save_group(chat_username: str = Form(...)):
         return RedirectResponse(url="/formation-groups?error=1", status_code=303)
 
 
-# Получение списка групп для отображения на странице
+# Получение списка групп для отображения на странице. Получение списка групп пользователя телеграмм бота
 @app.get("/chat_title")
-async def get_groups():
+async def get_groups(user_id: int = Query(...)):
     """
     Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
     группы с базы данных.
+    Возвращает список групп, принадлежащих пользователю с заданным user_id.
     """
-    chat_title = list(Group.select().dicts())
-    return {"chat_title": chat_title}
+    try:
+        groups = list(
+            Group
+            .select(Group.chat_title)
+            .where(Group.user_id == user_id)
+            .dicts()
+        )
+        return {"chat_title": groups}
+    except Exception as e:
+        return {"chat_title": [], "error": str(e)}
 
 
 @app.get("/get-participants")

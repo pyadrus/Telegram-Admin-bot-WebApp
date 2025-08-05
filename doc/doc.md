@@ -1,0 +1,1 @@
+`scr/app/templates/base.html` - шаблон HTML страниц

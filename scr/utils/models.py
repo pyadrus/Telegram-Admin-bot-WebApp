@@ -2,7 +2,7 @@
 from peewee import SqliteDatabase, Model, CharField, IntegerField
 
 # Настройка подключения к базе данных SQLite (или другой базы данных)
-db = SqliteDatabase("scr/db/database.db")
+db = SqliteDatabase(f"scr/db/database.db")
 
 
 def get_privileged_users():
@@ -94,7 +94,7 @@ class Group(Model):
     Запись групп в базу данных
     (unique=True - для уникальности. Если ссылка уже есть, то запись не будет создана)
     """
-
+    user_id = IntegerField()  # ID пользователя
     chat_id = IntegerField()  # ID группы
     chat_title = CharField()  # Название группы
     chat_total = IntegerField()  # Общее количество участников
@@ -143,6 +143,28 @@ class GroupMembers(Model):
         primary_key = False
 
 
+def add_column_if_not_exists(table_name: str, column_name: str, column_type: str):
+    """
+    Проверяет, существует ли столбец в таблице, и добавляет его, если отсутствует.
+
+    :param table_name: Название таблицы
+    :param column_name: Название столбца
+    :param column_type: Тип столбца (TEXT, INTEGER, REAL, BLOB)
+    """
+    # Получаем информацию о столбцах таблицы
+    cursor = db.execute_sql(f"PRAGMA table_info({table_name});")
+    columns = [row[1] for row in cursor.fetchall()]  # row[1] — это имя столбца
+
+    if column_name not in columns:
+        try:
+            db.execute_sql(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type};")
+            print(f"✅ Столбец '{column_name}' добавлен в таблицу '{table_name}'.")
+        except Exception as e:
+            print(f"❌ Ошибка при добавлении столбца '{column_name}': {e}")
+    else:
+        print(f"ℹ️ Столбец '{column_name}' уже существует в таблице '{table_name}'.")
+
+
 def initialize_db():
     """
     Инициализирует базу данных, создавая необходимые таблицы.
@@ -150,11 +172,20 @@ def initialize_db():
     :return: None
     """
     db.connect()
+
     db.create_tables([Group], safe=True)
     db.create_tables([GroupMembers], safe=True)
     db.create_tables([PrivilegedUsers], safe=True)
     db.create_tables([GroupRestrictions], safe=True)
     db.create_tables([BadWords], safe=True)
+
+    # Добавляем столбец user_id в таблицу groups_administration, если его нет
+    add_column_if_not_exists(
+        table_name="groups_administration",
+        column_name="user_id",
+        column_type="INTEGER"
+    )
+
     db.close()
 
 

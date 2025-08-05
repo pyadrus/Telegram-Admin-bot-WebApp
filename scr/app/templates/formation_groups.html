@@ -11,12 +11,14 @@
     Ошибка: группа не сохранена (возможно, уже существует).
 </div>
 {% endif %}
+
 <p>
-    Это страница для формирования пользовательских групп.
-<hr class="my-8 h-px border-0 bg-gray-300"/>
-Для дальнейшего взаимодействия с группами, нужно задать @username
-группы.
+        Это страница для формирования пользовательских групп.
+    <hr class="my-8 h-px border-0 bg-gray-300"/>
+    Для дальнейшего взаимодействия с группами, нужно задать @username
+    группы.
 </p>
+
 <!--
   Форма для ввода ID группы. Форма отправляет POST-запрос на /save-group
   Поле <input> имеет атрибут name="chat_id"
@@ -27,6 +29,8 @@
 <form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
     <label for="chat-username">Введите username группы или канала в виде @username:</label>
     <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
+    <!-- Добавляем скрытое поле для передачи user_id -->
+    <input type="hidden" name="user_id" value="{{ current_user_id }}">
     <button type="submit">Сохранить группу</button>
 </form>
 

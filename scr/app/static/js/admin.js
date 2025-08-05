@@ -23,15 +23,19 @@ function populateSelect(url, selectId) {
 
 // При загрузке страницы
 window.onload = () => {
-  populateSelect("/chat_title", "group-select"); // Выбор группы, для получения количества участников
+// Получаем user_id из глобальной переменной, переданной в шаблоне
+ const userId = CURRENT_USER_ID;
+
+  populateSelect(`/chat_title?user_id=${userId}`, "group-select"); // Выбор группы, для получения количества участников
   populateSelect("/chat_title", "groups-select");
   populateSelect("/chat_title", "groups-selected");
   populateSelect("/chat_title", "groups-selecteds");
   populateSelect("/chat_title", "groups-select-privilage");
 };
 
-// Получение участников
+// Получение количества участников групп / каналов
 async function getParticipants() {
+
   const chat_title = document.getElementById("group-select").value.trim();
   if (!chat_title) {
     alert("Выберите группу из списка");

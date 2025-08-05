@@ -11,6 +11,7 @@ config.read("scr/setting/config.ini")
 bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')
 time_del = config.get('TIME_DEL', 'TIME_DEL')
 
+# === Телеграм (api_id и api_hash для управления аккаунтом) ===
 api_id = config.get('telegram_settings', 'id')
 api_hash = config.get('telegram_settings', 'hash')
 

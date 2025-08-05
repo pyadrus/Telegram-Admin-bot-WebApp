@@ -3,12 +3,26 @@
 {% block content %}
 </br>
 <h3>👤 Количество участников</h3>
-<!-- Получение количества участников -->
+
 <label for="group-select">Выберите группу:</label>
 <select id="group-select">
-    <option value="">-- Выберите группу --</option>
+    <option value="">-- Загрузка... --</option>
 </select>
+
 <button onclick="getParticipants()">Получить количество участников</button>
 <p id="participants-count" class="status"></p>
 <a href="/" class="btn">Назад в админ-панель</a>
+
+<script>
+    // Определяем CURRENT_USER_ID для использования в других скриптах
+    const CURRENT_USER_ID = {{ current_user_id }};
+</script>
+
+
+<!-- Сначала подключаем get_id.js, где может использоваться CURRENT_USER_ID -->
+<script src="/scr/app/static/js/get_id.js"></script>
+
+<!-- Затем подключаем admin.js, который использует CURRENT_USER_ID -->
+<script src="/scr/app/static/js/admin.js"></script>
+
 {% endblock %}
