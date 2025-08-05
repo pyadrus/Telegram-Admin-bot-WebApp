@@ -33,100 +33,100 @@ window.onload = () => {
   populateSelect("/chat_title", "groups-select-privilage");
 };
 
-// Получение количества участников групп / каналов
-async function getParticipants() {
-
-  const chat_title = document.getElementById("group-select").value.trim();
-  if (!chat_title) {
-    alert("Выберите группу из списка");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `/update-participants?chat_title=${encodeURIComponent(chat_title)}`
-    );
-    const data = await response.json();
-    const statusEl = document.getElementById("participants-count");
-
-    if (data.success) {
-      statusEl.innerText = `Участников: ${data.participants_count}`;
-      statusEl.className = "status success";
-    } else {
-      throw new Error("Ошибка получения данных");
-    }
-  } catch (error) {
-    document.getElementById("participants-count").innerText =
-      "Не удалось получить количество участников";
-    document.getElementById("participants-count").className = "status error";
-  }
-}
+// // Получение количества участников групп / каналов
+// async function getParticipants() {
+//
+//   const chat_title = document.getElementById("group-select").value.trim();
+//   if (!chat_title) {
+//     alert("Выберите группу из списка");
+//     return;
+//   }
+//
+//   try {
+//     const response = await fetch(
+//       `/update-participants?chat_title=${encodeURIComponent(chat_title)}`
+//     );
+//     const data = await response.json();
+//     const statusEl = document.getElementById("participants-count");
+//
+//     if (data.success) {
+//       statusEl.innerText = `Участников: ${data.participants_count}`;
+//       statusEl.className = "status success";
+//     } else {
+//       throw new Error("Ошибка получения данных");
+//     }
+//   } catch (error) {
+//     document.getElementById("participants-count").innerText =
+//       "Не удалось получить количество участников";
+//     document.getElementById("participants-count").className = "status error";
+//   }
+// }
 
 // Ограничение на отправку сообщений
-async function toggleRestrictMessages() {
-  const chat_title = document.getElementById("groups-select").value.trim();
-  if (!chat_title) {
-    alert("Выберите группу из списка");
-    return;
-  }
+// async function toggleRestrictMessages() {
+//   const chat_title = document.getElementById("groups-select").value.trim();
+//   if (!chat_title) {
+//     alert("Выберите группу из списка");
+//     return;
+//   }
+//
+//   try {
+//     const response = await fetch(
+//       `/update-restrict-messages?chat_title=${encodeURIComponent(
+//         chat_title
+//       )}&restricted=true`
+//     );
+//     const data = await response.json();
+//     const statusEl = document.getElementById("participants-count");
+//
+//     if (data.success) {
+//       statusEl.innerText = data.is_restricted
+//         ? `Сообщения заблокированы для "${chat_title}"`
+//         : `Сообщения разрешены для "${chat_title}"`;
+//       statusEl.className = "status success";
+//     } else {
+//       throw new Error("Ошибка установки ограничений");
+//     }
+//   } catch (error) {
+//     document.getElementById("participants-count").innerText =
+//       "Не удалось применить ограничения";
+//     document.getElementById("participants-count").className = "status error";
+//   }
+// }
 
-  try {
-    const response = await fetch(
-      `/update-restrict-messages?chat_title=${encodeURIComponent(
-        chat_title
-      )}&restricted=true`
-    );
-    const data = await response.json();
-    const statusEl = document.getElementById("participants-count");
+// async function setReadOnly() {
+//   const chat_title = document.getElementById("groups-select").value.trim(); // ← важно: groups-select
+//   if (!chat_title) return alert("Выберите группу");
+//
+//   const res = await fetch(
+//     `/get-chat-id?title=${encodeURIComponent(chat_title)}`
+//   );
+//   const data = await res.json();
+//
+//   if (!data.success) return alert("Не найден ID группы");
+//
+//   const response = await fetch(`/readonly?chat_id=${data.chat_id}`);
+//   const result = await response.json();
+//
+//   alert(result.message || "Ошибка при установке ограничений");
+// }
 
-    if (data.success) {
-      statusEl.innerText = data.is_restricted
-        ? `Сообщения заблокированы для "${chat_title}"`
-        : `Сообщения разрешены для "${chat_title}"`;
-      statusEl.className = "status success";
-    } else {
-      throw new Error("Ошибка установки ограничений");
-    }
-  } catch (error) {
-    document.getElementById("participants-count").innerText =
-      "Не удалось применить ограничения";
-    document.getElementById("participants-count").className = "status error";
-  }
-}
-
-async function setReadOnly() {
-  const chat_title = document.getElementById("groups-select").value.trim(); // ← важно: groups-select
-  if (!chat_title) return alert("Выберите группу");
-
-  const res = await fetch(
-    `/get-chat-id?title=${encodeURIComponent(chat_title)}`
-  );
-  const data = await res.json();
-
-  if (!data.success) return alert("Не найден ID группы");
-
-  const response = await fetch(`/readonly?chat_id=${data.chat_id}`);
-  const result = await response.json();
-
-  alert(result.message || "Ошибка при установке ограничений");
-}
-
-async function setFullAccess() {
-  const chat_title = document.getElementById("groups-select").value.trim();
-  if (!chat_title) return alert("Выберите группу");
-
-  const res = await fetch(
-    `/get-chat-id?title=${encodeURIComponent(chat_title)}`
-  );
-  const data = await res.json();
-
-  if (!data.success) return alert("Не найден ID группы");
-
-  const response = await fetch(`/writeable?chat_id=${data.chat_id}`);
-  const result = await response.json();
-
-  alert(result.message || "Ошибка при снятии ограничений");
-}
+// async function setFullAccess() {
+//   const chat_title = document.getElementById("groups-select").value.trim();
+//   if (!chat_title) return alert("Выберите группу");
+//
+//   const res = await fetch(
+//     `/get-chat-id?title=${encodeURIComponent(chat_title)}`
+//   );
+//   const data = await res.json();
+//
+//   if (!data.success) return alert("Не найден ID группы");
+//
+//   const response = await fetch(`/writeable?chat_id=${data.chat_id}`);
+//   const result = await response.json();
+//
+//   alert(result.message || "Ошибка при снятии ограничений");
+// }
 
 // Установка ограничения по подписке между двумя группами
 async function toggleSubscriptionRequirement() {

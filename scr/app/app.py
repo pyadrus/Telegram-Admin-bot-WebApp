@@ -12,7 +12,7 @@ from fastapi.templating import Jinja2Templates
 from loguru import logger
 from starlette.responses import JSONResponse
 
-from scr.bot.system.dispatcher import bot, READ_ONLY, FULL_ACCESS
+# from scr.bot.system.dispatcher import bot, READ_ONLY, FULL_ACCESS
 from scr.utils.get_id import get_participants_count
 from scr.utils.models import BadWords, PrivilegedUsers, Groups
 from scr.utils.models import Group, db
@@ -43,12 +43,7 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-# Новый маршрут для "Количество участников"
-@app.get("/restrictions_on_messages")
-async def restrictions_on_messages(request: Request):
-    return templates.TemplateResponse(
-        "restrictions_on_messages.html", {"request": request}
-    )
+
 
 
 # Новый маршрут для "Ограничения на сообщения"
@@ -142,10 +137,10 @@ async def save_username(username_chat_channel: str = Form(...)):
 """Удаление группы по username группы"""
 
 
-@app.get("/groups_del")
-async def get_groups_dell(chat_title: str):
-    group = Group.get(Group.chat_title == chat_title)
-    return {"chat_title": group.chat_title, "id_chat": group.chat_id}
+# @app.get("/groups_del")
+# async def get_groups_dell(chat_title: str):
+#     group = Group.get(Group.chat_title == chat_title)
+#     return {"chat_title": group.chat_title, "id_chat": group.chat_id}
 
 
 @app.post("/delete_group")
@@ -229,15 +224,21 @@ async def get_groups(user_id: int = Query(...)):
     except Exception as e:
         return {"chat_title": [], "error": str(e)}
 
+# Количество участников
+@app.get("/restrictions_on_messages")
+async def restrictions_on_messages(request: Request):
+    return templates.TemplateResponse(
+        "restrictions_on_messages.html", {"request": request}
+    )
 
-@app.get("/get-participants")
-async def get_participants(chat_title: str):
-    """
-    Получение количества участников в группе.
-    """
-    group = Group.get(Group.chat_title == chat_title)
-    # Здесь можно вызвать Telegram API для актуального числа участников
-    return {"success": True, "participants_count": group.chat_total}
+# @app.get("/get-participants")
+# async def get_participants(chat_title: str):
+#     """
+#     Получение количества участников в группе.
+#     """
+#     group = Group.get(Group.chat_title == chat_title)
+#     # Здесь можно вызвать Telegram API для актуального числа участников
+#     return {"success": True, "participants_count": group.chat_total}
 
 
 @app.get("/update-participants")
@@ -260,66 +261,66 @@ async def update_participants(chat_title: str):
         return {"success": False, "error": str(e)}
 
 
-# Получение списка групп для отображения на странице
-@app.get("/chat_title_groups_select")
-async def get_groups():
-    """
-    Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
-    группы с базы данных.
-    """
-    chat_title = list(Group.select().dicts())
-    return {"chat_title": chat_title}
+# # Получение списка групп для отображения на странице
+# @app.get("/chat_title_groups_select")
+# async def get_groups():
+#     """
+#     Получение списка групп, для отображения на странице пользователя количества участников. Отображается название
+#     группы с базы данных.
+#     """
+#     chat_title = list(Group.select().dicts())
+#     return {"chat_title": chat_title}
 
 
-@app.get("/update-restrict-messages")
-async def update_restrict_messages(chat_title: str, restricted: bool = True):
-    """
-    Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если
-    "True", то блокировка сообщений выключена.
-    """
-    try:
-        group = Group.get(Group.chat_title == chat_title)
-        permission_to_write = "False"
-        # Обновляем запись в базе
-        Group.update(permission_to_write=permission_to_write).where(
-            Group.chat_title == chat_title
-        ).execute()
-        return {"success": True, "permission_to_write": permission_to_write}
-    except Exception as e:
-        logger.exception(e)
+# @app.get("/update-restrict-messages")
+# async def update_restrict_messages(chat_title: str, restricted: bool = True):
+#     """
+#     Обновление статуса блокировки сообщений в группе.  Если в группе "False", то блокировка сообщений включена. Если
+#     "True", то блокировка сообщений выключена.
+#     """
+#     try:
+#         group = Group.get(Group.chat_title == chat_title)
+#         permission_to_write = "False"
+#         # Обновляем запись в базе
+#         Group.update(permission_to_write=permission_to_write).where(
+#             Group.chat_title == chat_title
+#         ).execute()
+#         return {"success": True, "permission_to_write": permission_to_write}
+#     except Exception as e:
+#         logger.exception(e)
 
 
 # 🔒 Установить только чтение
-@app.get("/readonly")
-async def chat_readonly(chat_id: int):
-    """
-    Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
+# @app.get("/readonly")
+# async def chat_readonly(chat_id: int):
+#     """
+#     Переводит чат в режим «только чтение». Передаваемый chat_id, должен быть в формате -1001234567890, и являться числовым значением.
+#
+#     :param chat_id: ID чата, в формате -1001234567890
+#     :return: Словарь с ключами "success" и "message" или "error"
+#     """
+#     try:
+#         chat_id = str(f"-100{chat_id}")
+#         await bot.set_chat_permissions(chat_id=int(chat_id), permissions=READ_ONLY)
+#         return {"success": True, "message": "Чат переведён в режим «только чтение»"}
+#     except Exception as e:
+#         return {"success": False, "error": str(e)}
 
-    :param chat_id: ID чата, в формате -1001234567890
-    :return: Словарь с ключами "success" и "message" или "error"
-    """
-    try:
-        chat_id = str(f"-100{chat_id}")
-        await bot.set_chat_permissions(chat_id=int(chat_id), permissions=READ_ONLY)
-        return {"success": True, "message": "Чат переведён в режим «только чтение»"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
 
-
-@app.get("/writeable")
-async def chat_writeable(chat_id: int):
-    """
-    Переводит чат в режим «все могут писать». Передаваемый chat_id, должен быть в формате -1001234567890, и являться
-    числовым значением.
-
-    :param chat_id: ID чата, в формате -1001234567890
-    """
-    try:
-        chat_id = str(f"-100{chat_id}")
-        await bot.set_chat_permissions(chat_id=chat_id, permissions=FULL_ACCESS)
-        return {"success": True, "message": "Чат переведён в режим «все могут писать»"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
+# @app.get("/writeable")
+# async def chat_writeable(chat_id: int):
+#     """
+#     Переводит чат в режим «все могут писать». Передаваемый chat_id, должен быть в формате -1001234567890, и являться
+#     числовым значением.
+#
+#     :param chat_id: ID чата, в формате -1001234567890
+#     """
+#     try:
+#         chat_id = str(f"-100{chat_id}")
+#         await bot.set_chat_permissions(chat_id=chat_id, permissions=FULL_ACCESS)
+#         return {"success": True, "message": "Чат переведён в режим «все могут писать»"}
+#     except Exception as e:
+#         return {"success": False, "error": str(e)}
 
 
 @app.get("/set-bad-words")

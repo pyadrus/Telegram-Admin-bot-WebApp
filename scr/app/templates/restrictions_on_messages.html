@@ -9,20 +9,89 @@
     <option value="">-- Загрузка... --</option>
 </select>
 
+<!-- скрытое поле для user_id -->
+<input type="hidden" id="user-id-field" />
+
 <button onclick="getParticipants()">Получить количество участников</button>
 <p id="participants-count" class="status"></p>
 <a href="/" class="btn">Назад в админ-панель</a>
 
 <script>
-    // Определяем CURRENT_USER_ID для использования в других скриптах
-    const CURRENT_USER_ID = {{ current_user_id }};
+    const tg = window.Telegram.WebApp;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        tg.expand();
+        tg.BackButton.show();
+
+        tg.BackButton.onClick(() => {
+            tg.expand();
+            setTimeout(() => window.history.back(), 0);
+        });
+
+        const user = tg.initDataUnsafe?.user || {};
+        const user_id = user.id;
+
+        if (!user_id) {
+            console.error("user_id не получен из Telegram WebApp");
+            return;
+        }
+
+        // Устанавливаем user_id в скрытое поле
+        document.getElementById("user-id-field").value = user_id;
+
+        // Сохраняем глобально (если нужно)
+        window.TELEGRAM_USER_ID = user_id;
+
+        // Загружаем список групп пользователя
+        populateSelect(`/chat_title?user_id=${user_id}`, "group-select");
+    });
+
+    // Заполняем select группами
+    function populateSelect(url, selectId) {
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">-- Выберите группу --</option>';
+                const groups = data.chat_title || data.groups || [];
+                groups.forEach((group) => {
+                    const option = document.createElement("option");
+                    option.value = group.chat_title;
+                    option.textContent = group.chat_title;
+                    select.appendChild(option);
+                });
+            })
+            .catch((err) => console.error(`Ошибка загрузки групп:`, err));
+    }
+
+    // Получаем количество участников
+    async function getParticipants() {
+        const chat_title = document.getElementById("group-select").value.trim();
+        if (!chat_title) {
+            alert("Выберите группу из списка");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/update-participants?chat_title=${encodeURIComponent(chat_title)}`
+            );
+            const data = await response.json();
+            const statusEl = document.getElementById("participants-count");
+
+            if (data.success) {
+                statusEl.innerText = `Участников: ${data.participants_count}`;
+                statusEl.className = "status success";
+            } else {
+                throw new Error(data.error || "Ошибка получения данных");
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            const statusEl = document.getElementById("participants-count");
+            statusEl.innerText = "Не удалось получить количество участников";
+            statusEl.className = "status error";
+        }
+    }
 </script>
-
-
-<!-- Сначала подключаем get_id.js, где может использоваться CURRENT_USER_ID -->
-<script src="/scr/app/static/js/get_id.js"></script>
-
-<!-- Затем подключаем admin.js, который использует CURRENT_USER_ID -->
-<script src="/scr/app/static/js/admin.js"></script>
 
 {% endblock %}
