@@ -15,9 +15,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Если нужно использовать user_id глобально, сделайте его глобальным
     window.TELEGRAM_USER_ID = user_id;
-
-//    const user = tg.initDataUnsafe?.user || {};
-//    const card = document.getElementById("usercard");
-//    const greeting = document.createElement("h2");
-//    const user_id = user.id;
 });

@@ -94,12 +94,12 @@ class Group(Model):
     Запись групп в базу данных
     (unique=True - для уникальности. Если ссылка уже есть, то запись не будет создана)
     """
-    user_id = IntegerField()  # ID пользователя
     chat_id = IntegerField()  # ID группы
     chat_title = CharField()  # Название группы
     chat_total = IntegerField()  # Общее количество участников
-    chat_link = CharField(unique=True)  # Ссылка на группу
+    chat_link = CharField()  # Ссылка на группу
     permission_to_write = IntegerField()  # Права на запись в группу
+    user_id = IntegerField()  # ID пользователя
 
     class Meta:
         """
@@ -113,6 +113,10 @@ class Group(Model):
         table_name = "groups_administration"  # Имя таблицы
         # Для запрета автоматически создающегося поля id (как первичный ключ)
         primary_key = False
+        # Составной уникальный индекс: (chat_link, user_id)
+        indexes = (
+            (('chat_link', 'user_id'), True),  # True = UNIQUE
+        )
 
 
 class GroupMembers(Model):
@@ -180,11 +184,11 @@ def initialize_db():
     db.create_tables([BadWords], safe=True)
 
     # Добавляем столбец user_id в таблицу groups_administration, если его нет
-    add_column_if_not_exists(
-        table_name="groups_administration",
-        column_name="user_id",
-        column_type="INTEGER"
-    )
+    # add_column_if_not_exists(
+    #     table_name="groups_administration",
+    #     column_name="user_id",
+    #     column_type="INTEGER"
+    # )
 
     db.close()
 

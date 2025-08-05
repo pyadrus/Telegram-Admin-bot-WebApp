@@ -87,9 +87,9 @@ async def grant_user_special_rights_group(request: Request):
     )
 
 
-# Новый маршрут для "Формирование групп"
+# Маршрут для "Формирование групп"
 @app.get("/formation-groups")
-async def formation_groups(request: Request, user_id: int = Query(...)):
+async def formation_groups(request: Request):
     """
     Отображение страницы с формой для ввода username группы.
 
@@ -99,7 +99,6 @@ async def formation_groups(request: Request, user_id: int = Query(...)):
     """
     return templates.TemplateResponse("formation_groups.html", {
         "request": request,
-        "current_user_id": user_id
     })
 
 
@@ -150,21 +149,20 @@ async def get_groups_dell(chat_title: str):
 
 
 @app.post("/delete_group")
-async def delete_group(chat_id: int = Form(...)):
-    """Удаление группы по ID группы"""
+async def delete_group(chat_id: int = Form(...), user_id: int = Form(...)): # <- Добавить user_id
+    """Удаление группы по ID группы, принадлежащей пользователю."""
     try:
-        # Удаляем группу по chat_id
-        query = Group.delete().where(Group.chat_id == chat_id)
+        # Удаляем группу по chat_id И user_id (для безопасности)
+        query = Group.delete().where((Group.chat_id == chat_id) & (Group.user_id == user_id))
         logger.debug(f"Выполняется запрос: {query}")
         deleted_count = query.execute()  # Выполняем запрос
-
         if deleted_count:
             return {
                 "success": True,
                 "message": f"Группа с ID '{chat_id}' успешно удалена",
             }
         else:
-            return {"success": False, "error": "Группа не найдена"}
+            return {"success": False, "error": "Группа не найдена или доступ запрещён"}
     except Exception as e:
         logger.error(f"Ошибка при удалении группы: {e}")
         return {"success": False, "error": "Не удалось удалить группу"}
@@ -176,14 +174,20 @@ async def delete_group(chat_id: int = Form(...)):
 @app.post("/save-group")
 async def save_group(chat_username: str = Form(...), user_id: int = Form(...)): # Добавляем user_id
     """
-    Запись данных в базу данных по username группы.
+    Запись данных в базу данных по username группы:
+
     chat_id - ID группы,
     chat_title - название группы,
     chat_total - общее количество участников,
-    chat_link - ссылка на группу.
-    user_id - ID пользователя, который добавил группу
+    chat_link - ссылка на группу,
+    user_id - ID пользователя, который добавил группу.
+
+    :param chat_username: Username группы.
+    :param user_id: ID пользователя, который добавляет группу.
     """
     try:
+        logger.debug(f"Пользователь с ID: {user_id} добавляет группу с username: {chat_username}")
+
         chat_id, chat_title, chat_total, chat_link = await get_participants_count(
             chat_username
         )
@@ -193,12 +197,13 @@ async def save_group(chat_username: str = Form(...), user_id: int = Form(...)): 
         with db.atomic():
             # Вставляем новую
             Group.insert(
-                user_id=user_id,  # Добавляем user_id
+
                 chat_id=chat_id,
                 chat_title=chat_title,
                 chat_total=chat_total,
                 chat_link=chat_link,
                 permission_to_write=permission_to_write,
+                user_id=user_id,  # Добавляем user_id
             ).execute()
         return RedirectResponse(url="/formation-groups?success=1", status_code=303)
     except Exception as e:

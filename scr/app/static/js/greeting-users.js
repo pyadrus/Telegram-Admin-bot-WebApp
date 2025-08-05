@@ -1,10 +1,6 @@
 const tg = window.Telegram.WebApp;
 
 document.addEventListener("DOMContentLoaded", () => {
-//    if (!tg) {
-//        console.error("Это не WebApp Telegram");
-//        return;
-//    }
 
     tg.expand();
     tg.BackButton.show();
