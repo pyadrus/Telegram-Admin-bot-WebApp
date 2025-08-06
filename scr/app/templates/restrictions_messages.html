@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% block title %}👥 Формирование групп{% endblock %}
+{% block title %}✉️ Ограничения на сообщения{% endblock %}
 {% block content %}
 </br>
-<h3>👥 Формирование групп</h3>
+<h3>✉️ Ограничения на сообщения</h3>
+
 <!-- Статусы -->
 {% if request.query_params.success %}
 <div class="status success">Группа успешно сохранена!</div>
@@ -11,29 +12,19 @@
 <div class="status error">Ошибка: группа не сохранена (возможно, уже существует).</div>
 {% endif %}
 
-<p>
-    Это страница для формирования пользовательских групп.<br><br>
-    Для дальнейшего взаимодействия с группами, нужно задать <strong>@username</strong> группы.
-</p>
-
-<!-- Форма добавления группы -->
-<form action="/save-group" method="post" enctype="application/x-www-form-urlencoded">
-    <label for="chat-username">Введите username группы или канала в виде @username:</label>
-    <input type="text" id="chat-username" name="chat_username" placeholder="Например: @username"/>
-    <button type="submit">Сохранить группу</button>
-</form>
 
 <hr class="my-8 h-px border-0 bg-gray-300"/>
 
-<!-- Удаление группы -->
+<!-- Выбор группы для ограничений -->
 <section>
-    <h3>Удаление группы</h3>
-    <p>Выберите группу из списка и нажмите «Удалить»</p>
-    <label for="group-select-del">Группа:</label>
-    <select id="group-select-del">
+    <p>Выберите группу из списка и в которой хотите ввести ограничения</p>
+    <label for="group-select">Группа:</label>
+    <select id="group-select">
         <option value="">-- Выберите группу --</option>
     </select>
-    <button onclick="delGroup()">Удалить выбранную группу</button>
+    <!-- Исправленные кнопки -->
+    <button onclick="setReadOnly()">🔒 Заблокировать написание</button>
+    <button onclick="setFullAccess()">🔓 Разрешить писать</button>
     <p id="delete-status" class="status"></p>
 </section>
 
@@ -41,5 +32,90 @@
 
 <!-- Кнопка возврата -->
 <a href="/" class="btn">Назад в админ-панель</a>
+
+
+<script>
+    const tg = window.Telegram.WebApp;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        tg.expand();
+        tg.BackButton.show();
+
+        tg.BackButton.onClick(() => {
+            setTimeout(() => window.history.back(), 0);
+        });
+
+        const user = tg.initDataUnsafe?.user || {};
+        const user_id = user.id;
+
+        if (!user_id) {
+            console.error("user_id не получен из Telegram WebApp");
+            return;
+        }
+
+        window.TELEGRAM_USER_ID = user_id;
+
+        // Загружаем список групп
+        populateSelect(`/chat_title?user_id=${user_id}`, "group-select");
+    });
+
+    function populateSelect(url, selectId) {
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">-- Выберите группу --</option>';
+                const groups = data.chat_title || data.groups || [];
+                groups.forEach((group) => {
+                    const option = document.createElement("option");
+                    option.value = group.chat_title;
+                    option.textContent = group.chat_title;
+                    select.appendChild(option);
+                });
+            })
+            .catch((err) => console.error(`Ошибка загрузки ${selectId}:`, err));
+    }
+
+    async function setReadOnly() {
+        const chat_title = document.getElementById("group-select").value.trim();
+        if (!chat_title) return alert("Выберите группу");
+
+        try {
+            const res = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+            const data = await res.json();
+
+            if (!data.success) return alert("Не найден ID группы");
+
+            const response = await fetch(`/readonly?chat_id=${data.chat_id}`);
+            const result = await response.json();
+
+            alert(result.message || "Ошибка при установке ограничений");
+        } catch (err) {
+            alert("Ошибка запроса");
+            console.error(err);
+        }
+    }
+
+    async function setFullAccess() {
+        const chat_title = document.getElementById("group-select").value.trim();
+        if (!chat_title) return alert("Выберите группу");
+
+        try {
+            const res = await fetch(`/get-chat-id?title=${encodeURIComponent(chat_title)}`);
+            const data = await res.json();
+
+            if (!data.success) return alert("Не найден ID группы");
+
+            const response = await fetch(`/writeable?chat_id=${data.chat_id}`);
+            const result = await response.json();
+
+            alert(result.message || "Ошибка при снятии ограничений");
+        } catch (err) {
+            alert("Ошибка запроса");
+            console.error(err);
+        }
+    }
+</script>
+
 
 {% endblock %}
