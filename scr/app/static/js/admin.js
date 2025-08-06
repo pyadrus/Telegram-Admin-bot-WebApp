@@ -63,40 +63,6 @@ async function getParticipants() {
 }
 
 
-
-
-// Установка ограничения по подписке между двумя группами
-async function toggleSubscriptionRequirement() {
-    const chat_title = document.getElementById("groups-selected").value.trim(); // группа, которую будем ограничивать
-    const required_chat_title = document
-        .getElementById("groups-selecteds")
-        .value.trim(); // группа, на которую нужно подписаться
-
-    if (!chat_title || !required_chat_title) {
-        alert("Выберите обе группы");
-        return;
-    }
-
-    try {
-        // Отправляем два параметра: chat_title и required_chat_title
-        const response = await fetch(
-            `/require-subscription?chat_title=${encodeURIComponent(
-                chat_title
-            )}&required_chat_title=${encodeURIComponent(required_chat_title)}`
-        );
-        const result = await response.json();
-
-        if (result.success) {
-            alert(result.message);
-        } else {
-            throw new Error(result.error || "Неизвестная ошибка");
-        }
-    } catch (error) {
-        console.error("Ошибка:", error);
-        alert("Не удалось сохранить настройки ограничений.");
-    }
-}
-
 // Сохранение запрещённых слов в базу данных
 async function saveBadWords() {
     const inputField = document.getElementById("bad-words");

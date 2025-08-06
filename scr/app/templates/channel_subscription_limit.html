@@ -21,7 +21,81 @@
 </div>
 
 <div>
-<a href="/" class="button">Назад в админ-панель</a>
+    <a href="/" class="button">Назад в админ-панель</a>
 </div>
+
+
+<script>
+    const tg = window.Telegram.WebApp;
+
+    function populateSelect(url, selectId) {
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">-- Выберите группу --</option>';
+                const groups = data.chat_title || data.groups || [];
+                groups.forEach((group) => {
+                    const option = document.createElement("option");
+                    option.value = group.chat_title;
+                    option.textContent = group.chat_title;
+                    select.appendChild(option);
+                });
+            })
+            .catch((err) => {
+                console.error(`Ошибка загрузки ${selectId}:`, err);
+            });
+    }
+
+    async function toggleSubscriptionRequirement() {
+        const chat_title = document.getElementById("groups-selected").value.trim();
+        const required_chat_title = document.getElementById("groups-selecteds").value.trim();
+
+        if (!chat_title || !required_chat_title) {
+            alert("Выберите обе группы");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/require-subscription?chat_title=${encodeURIComponent(chat_title)}&required_chat_title=${encodeURIComponent(required_chat_title)}`
+            );
+            const result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+            } else {
+                throw new Error(result.error || "Неизвестная ошибка");
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            alert("Не удалось сохранить настройки ограничений.");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        tg.expand();
+        tg.BackButton.show();
+
+        tg.BackButton.onClick(() => {
+            setTimeout(() => window.history.back(), 0);
+        });
+
+        const user = tg.initDataUnsafe?.user || {};
+        const user_id = user.id;
+
+        if (!user_id) {
+            console.error("user_id не получен из Telegram WebApp");
+            return;
+        }
+
+        window.TELEGRAM_USER_ID = user_id;
+
+        // Загружаем список групп в оба select
+        const url = `/chat_title?user_id=${user_id}`;
+        populateSelect(url, "groups-selected");
+        populateSelect(url, "groups-selecteds");
+    });
+</script>
 
 {% endblock %}
