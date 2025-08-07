@@ -63,26 +63,5 @@ async function getParticipants() {
 }
 
 
-// Сохранение запрещённых слов в базу данных
-async function saveBadWords() {
-    const inputField = document.getElementById("bad-words");
-    const bad_word = inputField.value.trim();
-
-    try {
-        const response = await fetch(
-            `/set-bad-words?bad_word=${encodeURIComponent(bad_word)}`
-        );
-        const result = await response.json();
-
-        // Очистить поле ввода
-        inputField.value = "";
-
-        // Показать сообщение пользователю
-        alert("Запрещённое слово успешно сохранено!");
-    } catch (error) {
-        console.error("Ошибка:", error);
-        alert("Не удалось сохранить запрещенные слова.");
-    }
-}
 
 

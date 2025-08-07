@@ -8,7 +8,9 @@ from aiogram.types import ChatPermissions
 config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
 # Считываем токен бота с файла config.ini
 config.read("scr/setting/config.ini")
-bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')
+# bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')
+bot_token_2 = config.get('BOT_TOKEN', 'BOT_TOKEN_2')
+
 time_del = config.get('TIME_DEL', 'TIME_DEL')
 
 # === Телеграм (api_id и api_hash для управления аккаунтом) ===
@@ -19,8 +21,11 @@ api_hash = config.get('telegram_settings', 'hash')
 READ_ONLY = ChatPermissions(can_send_messages=False)  # Запрещено писать в чат
 FULL_ACCESS = ChatPermissions(can_send_messages=True)  # Разрешено писать в чат
 
+# token = [bot_token, bot_token_2]
+# for token_bot in token:
 # Инициализация бота и диспетчера
-bot = Bot(token=bot_token)
+bot = Bot(token=bot_token_2)
+
 storage = MemoryStorage()  # Хранилище
 dp = Dispatcher(storage=storage)
 router = Router()
