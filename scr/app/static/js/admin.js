@@ -85,44 +85,4 @@ async function saveBadWords() {
     }
 }
 
-// Функция вызова API
-async function givePrivilege() {
-    const chat_title = document
-        .getElementById("groups-select-privilage")
-        .value.trim();
-    const user_id = document.getElementById("user-id-privilege").value.trim();
 
-    if (!chat_title || !user_id) {
-        alert("Заполните все поля");
-        return;
-    }
-
-    try {
-        const response = await fetch(
-            `give-privileges?chat_title=${encodeURIComponent(
-                chat_title
-            )}&user_id=${encodeURIComponent(user_id)}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: new URLSearchParams({
-                    chat_title: chat_title,
-                    user_id: user_id,
-                }),
-            }
-        );
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert(result.message);
-        } else {
-            alert("Ошибка: " + (result.error || "Неизвестная ошибка"));
-        }
-    } catch (err) {
-        console.error("Ошибка сети:", err);
-        alert("Не удалось выполнить запрос");
-    }
-}
