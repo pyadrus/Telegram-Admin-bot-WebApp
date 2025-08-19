@@ -38,7 +38,6 @@ async def index(request: Request):
 
     :param request: Объект запроса.
     :return: HTML-страница с приветствием.
-
     """
     return templates.TemplateResponse("index.html", {"request": request})
 
