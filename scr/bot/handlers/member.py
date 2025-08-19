@@ -28,7 +28,7 @@ async def handle_new_member(event: ChatMemberUpdated):
             chat_title=event.chat.title,  # Получаем название чата
             user_id=event.from_user.id,  # Получаем ID пользователя, который зашел в группу
             # Получаем username пользователя, который вступил в группу
-            username=event.from_user.username,
+            username=event.from_user.username or "",  # Если username не указан, то записываем пустую строку
             # Получаем имя пользователя который вступил в группу
             first_name=event.from_user.first_name,
             # Получаем фамилию пользователя который вступил в группу
@@ -56,7 +56,7 @@ async def handle_member_left(event: ChatMemberUpdated):
             chat_title=event.chat.title,  # Получаем название чата
             user_id=event.from_user.id,  # Получаем ID пользователя, который зашел в группу
             # Получаем username пользователя, который вступил в группу
-            username=event.from_user.username,
+            username=event.from_user.username or "",  # Если username не указан, то записываем пустую строку
             # Получаем имя пользователя который вступил в группу
             first_name=event.from_user.first_name,
             # Получаем фамилию пользователя который вступил в группу
