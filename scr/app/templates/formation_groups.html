@@ -85,16 +85,16 @@
         fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                const select = document.getElementById(selectId);
-                select.innerHTML = '<option value="">-- Выберите группу --</option>';
-                const groups = data.chat_title || data.groups || [];
-                groups.forEach((group) => {
-                    const option = document.createElement("option");
-                    option.value = group.chat_title;
-                    option.textContent = group.chat_title;
-                    select.appendChild(option);
-                });
-            })
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">-- Выберите группу --</option>';
+            const groups = data.chat_title || data.groups || [];
+            groups.forEach((group) => {
+                const option = document.createElement("option");
+                option.value = group.chat_title;
+                option.textContent = group.chat_title;
+                select.appendChild(option);
+            });
+        })
             .catch((err) => console.error(`Ошибка загрузки ${selectId}:`, err));
     }
 
