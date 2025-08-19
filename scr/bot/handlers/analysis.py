@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import re
+import time
 
 import requests
 from aiogram.fsm.context import FSMContext
@@ -26,8 +27,7 @@ PASSWORD = os.getenv('PASSWORD')  # пароль для прокси
 PORT = os.getenv('PORT')  # порт для прокси
 IP = os.getenv('IP')  # IP для прокси
 
-CLIENT_ID = os.getenv('CLIENT_ID')  # CLIENT_ID
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')  # CLIENT_SECRET
+OAuth = os.getenv('OAuth')
 
 
 def setup_proxy():
@@ -78,46 +78,66 @@ def ai_text_to_list(text: str) -> list[str]:
     return [line.strip() for line in text.splitlines() if line.strip()]
 
 
-def get_oauth_token():
-    logger.debug(f"CLIENT_ID: {CLIENT_ID}, CLIENT_SECRET: {CLIENT_SECRET}")
-
-    url = "https://oauth.yandex.ru/token"
-    data = {
-        "grant_type": "client_credentials",
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-    }
-    response = requests.post(url, data=data)
-    if response.status_code == 200:
-        return response.json()["access_token"]
-    else:
-        print("Ошибка получения токена:", response.text)
-        return None
-
-
-def create_wordstat_report(token, keyword: str):
+def create_wordstat_report(keyword: str):
     """
-    Получение данных по ключевому слову в Wordstat API (Direct API v5)
+    Получение данных по ключевому слову из Wordstat API (v1)
     """
     url = "https://api.wordstat.yandex.net/v1/topRequests"
     headers = {
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {OAuth}",
         "Content-Type": "application/json",
     }
 
     payload = {
-        "phrases": [keyword]  # список ключевых слов
+        "phrase": keyword,
+        "numPhrases": 20,  # по умолчанию 50, максимум 2000
+        "devices": ["all"],  # можно: all, desktop, phone, tablet
     }
 
     response = requests.post(url, json=payload, headers=headers)
 
     if response.status_code == 200:
         data = response.json()
-        print("📊 Ответ Wordstat:", data)
+        logger.debug("📊 Ответ Wordstat:", data)
         return data
     else:
-        print("❌ Ошибка при запросе:", response.status_code, response.text)
+        logger.error(f"❌ Ошибка Wordstat {response.status_code}: {response.text}")
         return None
+
+def get_wordstat_by_regions(keyword: str, region_type: str = "cities"):
+    url = "https://api.wordstat.yandex.net/v1/regions"
+    headers = {
+        "Authorization": f"Bearer {OAuth}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "phrase": keyword,
+        "regionType": region_type,
+        "devices": ["all"],
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        logger.debug(f"📍 Регионы по Wordstat: {data}")
+        return data
+    else:
+        logger.error(f"❌ Ошибка при получении регионов Wordstat {response.status_code}: {response.text}")
+        return None
+
+def pretty_wordstat(data: dict) -> str:
+    lines = []
+    lines.append(f"📊 Запрос: {data['requestPhrase']}")
+    lines.append(f"🔢 Общая частота: {data['totalCount']:,}".replace(",", " "))
+
+    lines.append("\n✨ Топ запросы:")
+    for item in data.get("topRequests", []):
+        lines.append(f"   • {item['phrase']} — {item['count']:,}".replace(",", " "))
+
+    lines.append("\n🔗 Ассоциации:")
+    for item in data.get("associations", []):
+        lines.append(f"   • {item['phrase']} — {item['count']:,}".replace(",", " "))
+
+    return "\n".join(lines)
 
 
 # Хендлер получения ссылки от пользователя
@@ -171,18 +191,21 @@ async def get_link_post_user(message: Message, state: FSMContext):
             ai_answer = await get_chat_completion(work=post_text)
             await message.answer(f"📌 Ключевые слова:\n{ai_answer}")
             keywords = ai_text_to_list(ai_answer)
-            print(keywords)
+            logger.debug(keywords)
         except Exception as e:
             logger.error(f"Ошибка анализа поста: {e}")
             await message.answer("⚠️ Ошибка при обработке поста.")
 
-    token = get_oauth_token()
-    if token:
-        keyword = "купить телефон"
-        report = create_wordstat_report(token, keyword)
-
-        print("Отчёт:", report)
-
+    # --- Работаем с Wordstat ---
+    for keyword in keywords:
+        logger.info(keyword)
+        response_json = create_wordstat_report(keyword)
+        # print(report)
+        print(pretty_wordstat(response_json))
+        time.sleep(1)
+        region = get_wordstat_by_regions(keyword)
+        print(region)
+        time.sleep(1)
 
 def register_analysis_handler() -> None:
     router.callback_query.register(analysis_callback)
