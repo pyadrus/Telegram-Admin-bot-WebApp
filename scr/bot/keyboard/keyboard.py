@@ -21,6 +21,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
 
 """Без проверки"""
+
+
 def create_admin_panel_keyboard() -> InlineKeyboardMarkup:
     """Клавиатура для главного меню"""
     keyboard = InlineKeyboardMarkup(
