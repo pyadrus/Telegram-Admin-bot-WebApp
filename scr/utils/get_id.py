@@ -7,7 +7,7 @@ from scr.bot.system.dispatcher import api_id, api_hash
 
 
 async def get_participants_count(chat_link):
-    async with TelegramClient('scr/setting/session_name', api_id, api_hash) as client:
+    async with TelegramClient('scr/setting/session_name_1', api_id, api_hash) as client:
         # Получение сущности чата (канал, группа, пользователь)
         try:
             entity = await client.get_entity(chat_link)

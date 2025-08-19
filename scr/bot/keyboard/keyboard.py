@@ -30,6 +30,12 @@ def create_admin_panel_keyboard() -> InlineKeyboardMarkup:
                     text="Панель администратора",
                     web_app=WebAppInfo(url="https://mybotadmin.ru.tuna.am"),
                 )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🎯 Выбрать победителя конкурса",
+                    callback_data="choose_winner"
+                )
             ]
         ]
     )

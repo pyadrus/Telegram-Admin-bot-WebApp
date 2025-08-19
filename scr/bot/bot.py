@@ -4,6 +4,7 @@ import asyncio
 from loguru import logger  # https://github.com/Delgan/loguru
 
 from scr.bot.handlers.admin import register_send_id_handler
+from scr.bot.handlers.choose_winner import register_choose_winer_handler
 from scr.bot.handlers.member import register_member_handlers
 from scr.bot.handlers.message_moderation_handler import register_subscription_handlers
 from scr.bot.system.dispatcher import bot, dp
@@ -22,6 +23,9 @@ async def main():
         register_subscription_handlers()  # Регистрация обработчиков для подписки
         register_send_id_handler()  # Регистрация обработчика для отправки ID
         register_member_handlers()  # Регистрация обработчиков для членов
+
+        register_choose_winer_handler()  # Регистрация обработчика для выбора победителя
+
         await dp.start_polling(bot)
     except Exception as error:
         # Логирование исключений, если что-то пошло не так

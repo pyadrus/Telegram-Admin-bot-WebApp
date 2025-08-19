@@ -43,9 +43,6 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-
-
-
 # Новый маршрут для "Ограничения на сообщения"
 @app.get("/restrictions_messages")
 async def restrictions_messages(request: Request):
@@ -105,7 +102,7 @@ async def help(request: Request):
     return templates.TemplateResponse("help.html", {"request": request})
 
 
-"""Формирование групп \ каналов для отслеживания сообщений пользователей в группах и каналах"""
+"""Формирование групп и каналов для отслеживания сообщений пользователей в группах и каналах"""
 
 
 @app.get("/add_groups_for_tracking")
@@ -144,7 +141,7 @@ async def get_groups_dell(chat_title: str):
 
 
 @app.post("/delete_group")
-async def delete_group(chat_id: int = Form(...), user_id: int = Form(...)): # <- Добавить user_id
+async def delete_group(chat_id: int = Form(...), user_id: int = Form(...)):  # <- Добавить user_id
     """Удаление группы по ID группы, принадлежащей пользователю."""
     try:
         # Удаляем группу по chat_id И user_id (для безопасности)
@@ -167,7 +164,7 @@ async def delete_group(chat_id: int = Form(...), user_id: int = Form(...)): # <-
 
 
 @app.post("/save-group")
-async def save_group(chat_username: str = Form(...), user_id: int = Form(...)): # Добавляем user_id
+async def save_group(chat_username: str = Form(...), user_id: int = Form(...)):  # Добавляем user_id
     """
     Запись данных в базу данных по username группы:
 
@@ -224,12 +221,14 @@ async def get_groups(user_id: int = Query(...)):
     except Exception as e:
         return {"chat_title": [], "error": str(e)}
 
+
 # Количество участников
 @app.get("/restrictions_on_messages")
 async def restrictions_on_messages(request: Request):
     return templates.TemplateResponse(
         "restrictions_on_messages.html", {"request": request}
     )
+
 
 @app.get("/get-participants")
 async def get_participants(chat_title: str):
