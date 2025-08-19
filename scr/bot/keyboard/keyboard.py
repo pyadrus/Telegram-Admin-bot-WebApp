@@ -17,6 +17,12 @@ def create_admin_panel_keyboard() -> InlineKeyboardMarkup:
                     text="🎯 Выбрать победителя конкурса",
                     callback_data="choose_winner"
                 )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Анализ аудитории",
+                    callback_data="analysis"
+                )
             ]
         ]
     )
