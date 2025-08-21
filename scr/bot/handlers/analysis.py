@@ -45,9 +45,9 @@ async def get_chat_completion(work: str) -> str:
             model="meta-llama/llama-4-maverick-17b-128e-instruct",
             messages=[
                 {"role": "system",
-                 "content": "Проанализируй текст и найди ключевые слова. Обрати внимание, что мне не нужно писать "
-                            "много текста, мне нужен просто список ключевых слов без 1,2,3 и без лишнего текста. "
-                            "Нужно не более 10 ключевых слов"},
+                 "content": "Проанализируй текст и найди ключевые словосочетания. Обрати внимание, что мне не нужно писать "
+                            "много текста, мне нужен просто список словосочетаний без 1,2,3 и без лишнего текста. "
+                            "Нужно не более 5 ключевых словосочетаний"},
                 {"role": "user", "content": work},  # <-- используем текст поста
             ],
         )
@@ -104,6 +104,7 @@ def create_wordstat_report(keyword: str):
         logger.error(f"❌ Ошибка Wordstat {response.status_code}: {response.text}")
         return None
 
+
 def get_wordstat_by_regions(keyword: str, region_type: str = "cities"):
     url = "https://api.wordstat.yandex.net/v1/regions"
     headers = {
@@ -124,6 +125,7 @@ def get_wordstat_by_regions(keyword: str, region_type: str = "cities"):
         logger.error(f"❌ Ошибка при получении регионов Wordstat {response.status_code}: {response.text}")
         return None
 
+
 def pretty_wordstat(data: dict) -> str:
     lines = []
     lines.append(f"📊 Запрос: {data['requestPhrase']}")
@@ -140,6 +142,15 @@ def pretty_wordstat(data: dict) -> str:
     return "\n".join(lines)
 
 
+def pretty_regions(data: dict) -> str:
+    result = [f"📊 Региональная статистика для запроса: {data['requestPhrase']}"]
+
+    for region in data.get("regions", []):
+        result.append(f"   • {region['regionName']} — {region['count']:,}")
+
+    return "\n".join(result)
+
+
 # Хендлер получения ссылки от пользователя
 @router.message(AnalysisState.link_post)
 async def get_link_post_user(message: Message, state: FSMContext):
@@ -148,7 +159,12 @@ async def get_link_post_user(message: Message, state: FSMContext):
     # Сохраним ссылку в FSM (на всякий случай)
     await state.update_data(link_post=link)
     await state.clear()
-    await message.answer(f"✅ Ссылка получена:\n{link}")
+
+    await message.answer(
+        text=f"✅ Ссылка получена:\n{link}",
+        disable_web_page_preview=True # отключаем превью в Telegram
+    )
+
     # --- Разбираем ссылку ---
     match_public = re.match(r"https://t\.me/([^/]+)/(\d+)", link)
     match_private = re.match(r"https://t\.me/c/(\d+)/(\d+)", link)
@@ -200,12 +216,14 @@ async def get_link_post_user(message: Message, state: FSMContext):
     for keyword in keywords:
         logger.info(keyword)
         response_json = create_wordstat_report(keyword)
-        # print(report)
+
         print(pretty_wordstat(response_json))
         time.sleep(1)
+
         region = get_wordstat_by_regions(keyword)
-        print(region)
+        print(pretty_regions(region))
         time.sleep(1)
+
 
 def register_analysis_handler() -> None:
     router.callback_query.register(analysis_callback)
