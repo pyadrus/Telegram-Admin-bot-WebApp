@@ -149,6 +149,12 @@ async def get_link_post_user(message: Message, state: FSMContext):
         except Exception as e:
             logger.warning(f"Не удалось удалить сообщение: {e}")
 
+    # Удаляем сообщение пользователя со ссылкой
+    try:
+        await message.delete()
+    except Exception as e:
+        logger.warning(f"Не удалось удалить сообщение пользователя: {e}")
+
     link = message.text.strip()
     logger.info(f"Получена ссылка: {link}")
     # Сохраним ссылку в FSM (на всякий случай)
