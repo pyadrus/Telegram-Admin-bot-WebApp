@@ -48,15 +48,6 @@ class AnalysisState(StatesGroup):
     link_post = State()
 
 
-@router.callback_query(lambda c: c.data == "analysis")
-async def analysis_callback(callback: CallbackQuery, state: FSMContext):
-    await callback.message.answer(
-        "Пришлите ссылку на пост в Telegram для анализа поисковых запроссов по ключевым словам:")
-    # Переводим пользователя в состояние ожидания ссылки
-    await state.set_state(AnalysisState.link_post)
-    await callback.answer()
-
-
 def ai_text_to_list(text: str) -> list[str]:
     """
     Преобразует многострочный текст в список строк.
@@ -74,15 +65,12 @@ def create_wordstat_report(keyword: str):
         "Authorization": f"Bearer {OAuth}",
         "Content-Type": "application/json",
     }
-
     payload = {
         "phrase": keyword,
         "numPhrases": 20,  # по умолчанию 50, максимум 2000
         "devices": ["all"],  # можно: all, desktop, phone, tablet
     }
-
     response = requests.post(url, json=payload, headers=headers)
-
     if response.status_code == 200:
         data = response.json()
         logger.debug("📊 Ответ Wordstat:", data)
@@ -117,30 +105,50 @@ def pretty_wordstat(data: dict) -> str:
     lines = []
     lines.append(f"📊 Запрос: {data['requestPhrase']}")
     lines.append(f"🔢 Общая частота: {data['totalCount']:,}".replace(",", " "))
-
     lines.append("\n✨ Топ запросы:")
     for item in data.get("topRequests", []):
         lines.append(f"   • {item['phrase']} — {item['count']:,}".replace(",", " "))
-
     lines.append("\n🔗 Ассоциации:")
     for item in data.get("associations", []):
         lines.append(f"   • {item['phrase']} — {item['count']:,}".replace(",", " "))
-
     return "\n".join(lines)
 
 
 def pretty_regions(data: dict) -> str:
     result = [f"📊 Региональная статистика для запроса: {data['requestPhrase']}"]
-
     for region in data.get("regions", []):
         result.append(f"   • {region['regionName']} — {region['count']:,}")
-
     return "\n".join(result)
+
+
+@router.callback_query(lambda c: c.data == "analysis")
+async def analysis_callback(callback: CallbackQuery, state: FSMContext):
+    """Отвечает на нажатие кнопки 'Анализ'"""
+
+    msg = await callback.message.answer(
+        "Пришлите ссылку на пост в Telegram для анализа поисковых запроссов по ключевым словам:")
+    await state.update_data(prompt_msg_id=msg.message_id)  # сохраним id сообщения для удаления
+
+    # Переводим пользователя в состояние ожидания ссылки
+    await state.set_state(AnalysisState.link_post)
+    await callback.answer()
 
 
 # Хендлер получения ссылки от пользователя
 @router.message(AnalysisState.link_post)
 async def get_link_post_user(message: Message, state: FSMContext):
+    """Получает ссылку от пользователя"""
+
+    data = await state.get_data()
+    prompt_msg_id = data.get("prompt_msg_id")
+
+    # Удаляем сообщение бота "Пришлите ссылку..."
+    if prompt_msg_id:
+        try:
+            await message.bot.delete_message(chat_id=message.chat.id, message_id=prompt_msg_id)
+        except Exception as e:
+            logger.warning(f"Не удалось удалить сообщение: {e}")
+
     link = message.text.strip()
     logger.info(f"Получена ссылка: {link}")
     # Сохраним ссылку в FSM (на всякий случай)
