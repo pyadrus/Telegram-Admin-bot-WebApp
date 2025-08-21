@@ -8,26 +8,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import CallbackQuery
 from aiogram.types import Message
-from dotenv import load_dotenv
 from groq import Groq
 from loguru import logger
 from telethon import TelegramClient
 from telethon.tl.functions.channels import JoinChannelRequest
 
-from scr.bot.system.dispatcher import api_id, api_hash
+from scr.bot.system.dispatcher import api_id, api_hash, USER, PASSWORD, IP, PORT, GROQ_KEY, OAuth, SESSION_NAME
 from scr.bot.system.dispatcher import router
-
-SESSION_NAME = "session_name_1"
-
-load_dotenv(dotenv_path='.env')
-
-GROQ_KEY = os.getenv('GROQ_KEY')  # GROQ_KEY
-USER = os.getenv('USER')  # логин для прокси
-PASSWORD = os.getenv('PASSWORD')  # пароль для прокси
-PORT = os.getenv('PORT')  # порт для прокси
-IP = os.getenv('IP')  # IP для прокси
-
-OAuth = os.getenv('OAuth')
 
 
 def setup_proxy():
@@ -162,7 +149,7 @@ async def get_link_post_user(message: Message, state: FSMContext):
 
     await message.answer(
         text=f"✅ Ссылка получена:\n{link}",
-        disable_web_page_preview=True # отключаем превью в Telegram
+        disable_web_page_preview=True  # отключаем превью в Telegram
     )
 
     # --- Разбираем ссылку ---

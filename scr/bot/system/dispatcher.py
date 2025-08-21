@@ -1,9 +1,23 @@
 # -*- coding: utf-8 -*-
 import configparser
+import os
 
 from aiogram import Bot, Dispatcher, Router
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import ChatPermissions
+from dotenv import load_dotenv
+
+SESSION_NAME = "session_name_1"
+
+load_dotenv(dotenv_path='.env')
+
+GROQ_KEY = os.getenv('GROQ_KEY')  # GROQ_KEY
+USER = os.getenv('USER')  # логин для прокси
+PASSWORD = os.getenv('PASSWORD')  # пароль для прокси
+PORT = os.getenv('PORT')  # порт для прокси
+IP = os.getenv('IP')  # IP для прокси
+
+OAuth = os.getenv('OAuth')
 
 config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
 # Считываем токен бота с файла config.ini
