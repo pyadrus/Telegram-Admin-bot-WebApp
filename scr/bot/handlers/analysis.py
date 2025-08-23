@@ -60,8 +60,21 @@ def pretty_regions(data: dict) -> str:
 async def analysis_callback(callback: CallbackQuery, state: FSMContext):
     """Отвечает на нажатие кнопки 'Анализ'"""
 
+    text = (
+        "🤖 <b>Анализ поста в Telegram</b>\n\n"
+        "Вот что сделает бот после того, как вы отправите ссылку на пост:\n\n"
+        "1️⃣ Извлечёт текст из поста.\n"
+        "2️⃣ AI ✨ определит ключевые фразы.\n"
+        "3️⃣ Для каждой фразы будет сделан запрос в "
+        '<a href="https://wordstat.yandex.ru">Яндекс Wordstat</a>.\n'
+        "4️⃣ 📊 Бот покажет статистику запросов по регионам и частотности.\n\n"
+        "👉 Отправьте ссылку на пост, который хотите проанализировать:"
+    )
+
     msg = await callback.message.answer(
-        "Пришлите ссылку на пост в Telegram для анализа поисковых запроссов по ключевым словам:")
+        text,
+        disable_web_page_preview=True,
+    )
     await state.update_data(prompt_msg_id=msg.message_id)  # сохраним id сообщения для удаления
 
     # Переводим пользователя в состояние ожидания ссылки
@@ -139,9 +152,10 @@ async def get_link_post_user(message: Message, state: FSMContext):
             if not post_text.strip():
                 await message.answer("⚠️ Пост без текста (возможно только медиа).")
                 return
+            await message.answer("🔄 Обрабатываю текст поста через ИИ...")
             # Отправляем в ИИ для анализа
             ai_answer = await get_chat_completion(work=post_text)
-            await message.answer(f"📌 Ключевые слова:\n{ai_answer}")
+            await message.answer(f"🤖 Ключевые слова:\n{ai_answer}")
             keywords = ai_text_to_list(ai_answer)
             logger.debug(keywords)
         except Exception as e:
@@ -151,6 +165,7 @@ async def get_link_post_user(message: Message, state: FSMContext):
     # --- Работаем с Wordstat ---
 
     for keyword in keywords:
+        await message.answer(f"🔎 Анализирую запрос в Wordstat: «{keyword}»...")
         data_sort = yandex_wordstat_py(keyword, OAuth)
         await message.answer(f"Данные:\n{data_sort}")
 
