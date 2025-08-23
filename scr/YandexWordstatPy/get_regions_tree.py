@@ -2,7 +2,7 @@
 import requests
 from loguru import logger
 
-from getting_region import parse_region_tree
+from scr.YandexWordstatPy.getting_region import parse_region_tree
 
 
 def get_regions_tree(OAuth):
@@ -42,7 +42,7 @@ def get_regions_tree(OAuth):
         }
         response = requests.post(URL_REGIONS_TREE, headers=HEADERS)
         response.raise_for_status()
-        print("RAW response:", response.text)  # Вывод необработанного ответа для отладки
+
         tree = response.json()
 
         if not tree:

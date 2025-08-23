@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-import time
 
-import requests
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import CallbackQuery
@@ -12,6 +10,7 @@ from loguru import logger
 from telethon import TelegramClient
 from telethon.tl.functions.channels import JoinChannelRequest
 
+from scr.YandexWordstatPy.yandex_wordstat_py import yandex_wordstat_py
 from scr.bot.system.dispatcher import api_id, api_hash, GROQ_KEY, OAuth, SESSION_NAME, USER, PASSWORD, IP, PORT
 from scr.bot.system.dispatcher import router
 from scr.proxy.proxy import setup_proxy
@@ -48,64 +47,6 @@ def ai_text_to_list(text: str) -> list[str]:
     Убирает пустые строки и пробелы по краям.
     """
     return [line.strip() for line in text.splitlines() if line.strip()]
-
-
-def create_wordstat_report(keyword: str):
-    """
-    Получение данных по ключевому слову из Wordstat API (v1)
-    """
-    url = "https://api.wordstat.yandex.net/v1/topRequests"
-    headers = {
-        "Authorization": f"Bearer {OAuth}",
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "phrase": keyword,
-        "numPhrases": 20,  # по умолчанию 50, максимум 2000
-        "devices": ["all"],  # можно: all, desktop, phone, tablet
-    }
-    response = requests.post(url, json=payload, headers=headers)
-    if response.status_code == 200:
-        data = response.json()
-        logger.debug("📊 Ответ Wordstat:", data)
-        return data
-    else:
-        logger.error(f"❌ Ошибка Wordstat {response.status_code}: {response.text}")
-        return None
-
-
-def get_wordstat_by_regions(keyword: str, region_type: str = "cities"):
-    url = "https://api.wordstat.yandex.net/v1/regions"
-    headers = {
-        "Authorization": f"Bearer {OAuth}",
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "phrase": keyword,
-        "regionType": region_type,
-        "devices": ["all"],
-    }
-    response = requests.post(url, json=payload, headers=headers)
-    if response.status_code == 200:
-        data = response.json()
-        logger.debug(f"📍 Регионы по Wordstat: {data}")
-        return data
-    else:
-        logger.error(f"❌ Ошибка при получении регионов Wordstat {response.status_code}: {response.text}")
-        return None
-
-
-def pretty_wordstat(data: dict) -> str:
-    lines = []
-    lines.append(f"📊 Запрос: {data['requestPhrase']}")
-    lines.append(f"🔢 Общая частота: {data['totalCount']:,}".replace(",", " "))
-    lines.append("\n✨ Топ запросы:")
-    for item in data.get("topRequests", []):
-        lines.append(f"   • {item['phrase']} — {item['count']:,}".replace(",", " "))
-    lines.append("\n🔗 Ассоциации:")
-    for item in data.get("associations", []):
-        lines.append(f"   • {item['phrase']} — {item['count']:,}".replace(",", " "))
-    return "\n".join(lines)
 
 
 def pretty_regions(data: dict) -> str:
@@ -208,16 +149,9 @@ async def get_link_post_user(message: Message, state: FSMContext):
             await message.answer("⚠️ Ошибка при обработке поста.")
 
     # --- Работаем с Wordstat ---
+
     for keyword in keywords:
-        logger.info(keyword)
-        response_json = create_wordstat_report(keyword)
-
-        print(pretty_wordstat(response_json))
-        time.sleep(1)
-
-        region = get_wordstat_by_regions(keyword)
-        print(pretty_regions(region))
-        time.sleep(1)
+        yandex_wordstat_py(keyword, OAuth)
 
 
 def register_analysis_handler() -> None:
