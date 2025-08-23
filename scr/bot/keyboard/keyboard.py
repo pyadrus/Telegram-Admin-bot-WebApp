@@ -8,7 +8,7 @@ def create_admin_panel_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Панель администратора",
+                    text="🛠 Панель администратора",
                     web_app=WebAppInfo(url="https://mybotadmin.ru.tuna.am"),
                 )
             ],
@@ -20,7 +20,7 @@ def create_admin_panel_keyboard() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="Анализ аудитории",
+                    text="📊 Ключевые слова",
                     callback_data="analysis"
                 )
             ]
