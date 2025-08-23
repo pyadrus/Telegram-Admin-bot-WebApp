@@ -12,7 +12,7 @@ from scr.bot.messages.translations_loader import translations
 from scr.bot.system.dispatcher import bot
 from scr.bot.system.dispatcher import router
 from scr.bot.system.dispatcher import time_del
-from scr.utils.models import BadWords, get_privileged_users
+from scr.utils.models import BadWords, get_privileged_users, save_bot_user
 from scr.utils.models import GroupRestrictions
 
 
@@ -39,6 +39,10 @@ async def unified_message_handler(message: Message) -> None:
     # Если личка, просто реагируем на /start
     if message.chat.type == "private":
         if message.text == "/start":
+
+            # сохраняем юзера
+            await save_bot_user(message)
+
             logger.info(f"Пользователь {user_id} прислал команду /start")
             await bot.send_message(
                 chat_id,
