@@ -99,6 +99,7 @@ async def analysis_callback(callback: CallbackQuery, state: FSMContext):
 
     msg = await callback.message.answer(
         text,
+        parse_mode = ParseMode.HTML,
         disable_web_page_preview=True,
     )
     await state.update_data(prompt_msg_id=msg.message_id)  # сохраним id сообщения для удаления
