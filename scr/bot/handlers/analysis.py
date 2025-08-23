@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import re
 import time
 
@@ -13,19 +12,14 @@ from loguru import logger
 from telethon import TelegramClient
 from telethon.tl.functions.channels import JoinChannelRequest
 
-from scr.bot.system.dispatcher import api_id, api_hash, USER, PASSWORD, IP, PORT, GROQ_KEY, OAuth, SESSION_NAME
+from scr.bot.system.dispatcher import api_id, api_hash, GROQ_KEY, OAuth, SESSION_NAME, USER, PASSWORD, IP, PORT
 from scr.bot.system.dispatcher import router
-
-
-def setup_proxy():
-    # Указываем прокси для HTTP и HTTPS
-    os.environ['http_proxy'] = f"http://{USER}:{PASSWORD}@{IP}:{PORT}"
-    os.environ['https_proxy'] = f"http://{USER}:{PASSWORD}@{IP}:{PORT}"
+from scr.proxy.proxy import setup_proxy
 
 
 async def get_chat_completion(work: str) -> str:
     """Возвращает ключевые слова из текста поста через ИИ"""
-    setup_proxy()
+    setup_proxy(USER, PASSWORD, IP, PORT)
     try:
         client = Groq(api_key=GROQ_KEY)
         chat_completion = client.chat.completions.create(

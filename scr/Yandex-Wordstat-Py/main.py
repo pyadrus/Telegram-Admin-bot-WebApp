@@ -9,7 +9,7 @@ from regions import get_wordstat_by_regions
 from regions_utils import pretty_regions
 
 
-def main():
+def Yandex_Wordstat_Py():
     """
     Главная функция скрипта для получения региональной статистики по ключевым словам.
 
@@ -54,4 +54,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    Yandex_Wordstat_Py()
