@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import CallbackQuery
@@ -36,6 +37,31 @@ async def get_chat_completion(work: str) -> str:
         logger.exception(e)
         return "⚠️ Ошибка при обращении к ИИ"
 
+async def get_data_sort(work: str) -> str:
+    """Делает общий акализ текста с помощью ИИ"""
+    setup_proxy(USER, PASSWORD, IP, PORT)
+    try:
+        client = Groq(api_key=GROQ_KEY)
+        chat_completion = client.chat.completions.create(
+            model="meta-llama/llama-4-maverick-17b-128e-instruct",
+            messages=[
+                {"role": "system", "content": (
+                    "Ты — эксперт по анализу поисковых запросов. "
+                    "Твоя задача: взять статистику запросов из Яндекс Wordstat и ключевые фразы, "
+                    "а затем сделать структурированный анализ. "
+                    "Ответ всегда пиши в формате HTML для Telegram.\n\n"
+                    "Структура ответа:\n"
+                    "1. <b>Топ ключевых фраз</b> (самые важные, объясни почему).\n"
+                    "2. <b>Региональный спрос</b> (где чаще ищут, где реже).\n"
+                    "3. <b>Вывод</b> — общий анализ + рекомендации."
+                )},
+                {"role": "user", "content": work},  # <-- используем текст поста
+            ],
+        )
+        return chat_completion.choices[0].message.content
+    except Exception as e:
+        logger.exception(e)
+        return "⚠️ Ошибка при обращении к ИИ"
 
 class AnalysisState(StatesGroup):
     link_post = State()
@@ -163,11 +189,18 @@ async def get_link_post_user(message: Message, state: FSMContext):
             await message.answer("⚠️ Ошибка при обработке поста.")
 
     # --- Работаем с Wordstat ---
+    all_results  = []
 
     for keyword in keywords:
         await message.answer(f"🔎 Анализирую запрос в Wordstat: «{keyword}»...")
-        data_sort = yandex_wordstat_py(keyword, OAuth)
-        await message.answer(f"Данные:\n{data_sort}")
+        data  = yandex_wordstat_py(keyword, OAuth)
+        all_results.append(data)  # собираем результаты в список
+        await message.answer(f"📊 Данные по «{keyword}»:\n{data}")
+
+    # --- Общий анализ через ИИ ---
+    combined_text = "\n\n".join(all_results)  # объединяем всё в один текст
+    ai_answer = await get_data_sort(work=combined_text)
+    await message.answer(f"🧠 <b>Общий анализ:</b>\n{ai_answer}", parse_mode=ParseMode.HTML)
 
 def register_analysis_handler() -> None:
     router.callback_query.register(analysis_callback)
