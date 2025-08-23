@@ -4,12 +4,11 @@ import time
 from loguru import logger
 
 from get_regions_tree import get_regions_tree
-from keys import OAuth
 from regions import get_wordstat_by_regions
 from regions_utils import pretty_regions
 
 
-def Yandex_Wordstat_Py():
+def Yandex_Wordstat_Py(keywords, OAuth):
     """
     Главная функция скрипта для получения региональной статистики по ключевым словам.
 
@@ -36,13 +35,15 @@ def Yandex_Wordstat_Py():
 
     Пример использования:
         Запуск скрипта:
-            python main.py
+            python yandex_wordstat_py.py
         Результат:
             Вывод региональной статистики для каждого ключевого слова
             в читаемом формате с топ-10 регионов.
     """
     region_names = get_regions_tree(OAuth=OAuth)
-    keywords = ["маркетинг", "обучение", "курсы"]
+    
+    # keywords = ["маркетинг", "обучение", "курсы"]
+
     for keyword in keywords:
         logger.info(f"🔍 Обрабатываем ключевое слово: {keyword}")
         data = get_wordstat_by_regions(keyword, OAuth, "cities")
@@ -51,7 +52,3 @@ def Yandex_Wordstat_Py():
         else:
             print(f"❌ Не удалось получить данные для '{keyword}'")
         time.sleep(1)  # чтобы не превысить лимиты
-
-
-if __name__ == "__main__":
-    Yandex_Wordstat_Py()
