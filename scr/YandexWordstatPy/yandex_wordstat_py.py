@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
-
 from loguru import logger
 
 from scr.YandexWordstatPy.get_regions_tree import get_regions_tree
@@ -41,11 +39,11 @@ def yandex_wordstat_py(keyword, OAuth):
             в читаемом формате с топ-10 регионов.
     """
     region_names = get_regions_tree(OAuth=OAuth)
-
     logger.info(f"🔍 Обрабатываем ключевое слово: {keyword}")
     data = get_wordstat_by_regions(keyword, OAuth, "cities")
     if data:
+        data_sort = pretty_regions(keyword, data, region_names)
         print(pretty_regions(keyword, data, region_names))
     else:
-        print(f"❌ Не удалось получить данные для '{keyword}'")
-    time.sleep(1)  # чтобы не превысить лимиты
+        data_sort = "❌ Не удалось получить данные для '{keyword}'"
+    return data_sort

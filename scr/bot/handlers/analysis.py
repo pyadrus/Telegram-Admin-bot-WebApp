@@ -151,8 +151,8 @@ async def get_link_post_user(message: Message, state: FSMContext):
     # --- Работаем с Wordstat ---
 
     for keyword in keywords:
-        yandex_wordstat_py(keyword, OAuth)
-
+        data_sort = yandex_wordstat_py(keyword, OAuth)
+        await message.answer(f"Данные:\n{data_sort}")
 
 def register_analysis_handler() -> None:
     router.callback_query.register(analysis_callback)
